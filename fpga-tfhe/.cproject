@@ -43,11 +43,11 @@
                                     									
                                     <listOptionValue builtIn="false" value="${env_var:XILINX_XRT}/include/"/>
                                     									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_HLS}/include/"/>
+                                    									
                                     <listOptionValue builtIn="false" value="/home/klugo/Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="${env_var:XILINX_HLS}/include/"/>
                                     								
                                 </option>
                                 								
@@ -117,6 +117,18 @@
                             							
                             <tool id="com.xilinx.ide.accel.tool.gcc_compiler.hw_emu.debug.833340825" name="GCC Host Compiler (x86_64)" superClass="com.xilinx.ide.accel.tool.gcc_compiler.hw_emu.debug">
                                 								
+                                <option id="com.xilinx.ide.accel.cpp.compiler.include.paths.1074548864" superClass="com.xilinx.ide.accel.cpp.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_XRT}/include/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_HLS}/include/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="/home/klugo/Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+                                    								
+                                </option>
+                                								
                                 <inputType id="com.xilinx.ide.accel.managedbuild.input.cpp.2126929157" superClass="com.xilinx.ide.accel.managedbuild.input.cpp"/>
                                 								
                                 <inputType id="com.xilinx.ide.accel.managedbuild.input.c.680376033" superClass="com.xilinx.ide.accel.managedbuild.input.c"/>
@@ -182,6 +194,18 @@
                             <tool id="com.xilinx.ide.accel.tool.emconfigutil.1405547674" name="emconfigutil" superClass="com.xilinx.ide.accel.tool.emconfigutil"/>
                             							
                             <tool id="com.xilinx.ide.accel.tool.gcc_compiler.hw.535502204" name="GCC Host Compiler (x86_64)" superClass="com.xilinx.ide.accel.tool.gcc_compiler.hw">
+                                								
+                                <option id="com.xilinx.ide.accel.cpp.compiler.include.paths.2062328092" superClass="com.xilinx.ide.accel.cpp.compiler.include.paths" useByScannerDiscovery="false" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_XRT}/include/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="${env_var:XILINX_HLS}/include/"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="/home/klugo/Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+                                    								
+                                </option>
                                 								
                                 <inputType id="com.xilinx.ide.accel.managedbuild.input.cpp.393362565" superClass="com.xilinx.ide.accel.managedbuild.input.cpp"/>
                                 								

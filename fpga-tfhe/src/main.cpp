@@ -37,7 +37,7 @@ int32_t main(int32_t argc, char **argv)
     }
 
 
-    hls::stream<T_in> inData[SSR];
+  hls::stream<T_in> inData[SSR];
 	hls::stream<T_out> outData[SSR];
 	T_in inDataArr[SSR][FFT_LEN / SSR];
 	T_out outDataArr[SSR][FFT_LEN / SSR];

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
-<systemproject:SystemProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:systemproject="http://www.xilinx.com/systemproject" name="fpga-tfhe_system" platform="/opt/xilinx/platforms/xilinx_u50_gen3x16_xdma_201920_3/xilinx_u50_gen3x16_xdma_201920_3.xpfm" platformUID="xilinx:u50:gen3x16_xdma:201920.3" sysConfig="config0_0" rootFSLocation="" linuxImage="" sysroot="">
+<systemproject:SystemProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:systemproject="http://www.xilinx.com/systemproject" name="fpga-tfhe_system" platform="/opt/xilinx/platforms/xilinx_u55n_gen3x4_xdma_1_202110_1/xilinx_u55n_gen3x4_xdma_1_202110_1.xpfm" platformUID="xilinx:u55n:gen3x4_xdma_1:202110.1" sysConfig="config0_0" dimmRepoPath="" rootFSLocation="" linuxImage="" sysroot="">
   <configuration name="Emulation-SW" id="com.xilinx.sdx.system.managedbuilder.swemu.configuration.627866604">
     <configBuildOptions xsi:type="systemproject:SystemOptions">
       <applications name="fpga-tfhe_system_hw_link" domainName="" domainPrettyName="pl" appBuildConfig="Emulation-SW"/>
@@ -18,6 +18,11 @@
       <applications name="fpga-tfhe_kernels" domainName="" domainPrettyName="pl" appBuildConfig="Emulation-HW"/>
       <applications name="fpga-tfhe" domainName="x86" domainPrettyName="x86" appBuildConfig="Emulation-HW"/>
     </configBuildOptions>
+    <lastBuildOptions xsi:type="systemproject:SystemOptions" target="hw_emu">
+      <applications name="fpga-tfhe_system_hw_link" domainName="" domainPrettyName="pl" appBuildConfig="Emulation-HW"/>
+      <applications name="fpga-tfhe_kernels" domainName="" domainPrettyName="pl" appBuildConfig="Emulation-HW"/>
+      <applications name="fpga-tfhe" domainName="x86" domainPrettyName="x86" appBuildConfig="Emulation-HW"/>
+    </lastBuildOptions>
   </configuration>
   <configuration name="Hardware" id="com.xilinx.sdx.system.managedbuilder.hw.configuration.1028326780">
     <configBuildOptions xsi:type="systemproject:SystemOptions" target="hw">
@@ -25,5 +30,10 @@
       <applications name="fpga-tfhe_kernels" domainName="" domainPrettyName="pl" appBuildConfig="Hardware"/>
       <applications name="fpga-tfhe" domainName="x86" domainPrettyName="x86" appBuildConfig="Hardware"/>
     </configBuildOptions>
+    <lastBuildOptions xsi:type="systemproject:SystemOptions" target="hw">
+      <applications name="fpga-tfhe_system_hw_link" domainName="" domainPrettyName="pl" appBuildConfig="Hardware"/>
+      <applications name="fpga-tfhe_kernels" domainName="" domainPrettyName="pl" appBuildConfig="Hardware"/>
+      <applications name="fpga-tfhe" domainName="x86" domainPrettyName="x86" appBuildConfig="Hardware"/>
+    </lastBuildOptions>
   </configuration>
 </systemproject:SystemProject>

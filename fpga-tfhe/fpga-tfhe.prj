@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="ASCII"?>
-<hostApp:AcceleratedHostProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:hostApp="http://www.xilinx.com/acceleration/hostApplication" name="fpga-tfhe" location="/home/klugo/workspace/fpga-tfhe" platform="/opt/xilinx/platforms/xilinx_u50_gen3x16_xdma_201920_3/xilinx_u50_gen3x16_xdma_201920_3.xpfm" platformUID="xilinx:u50:gen3x16_xdma:201920.3" systemProject="fpga-tfhe_system" sysConfig="config0_0" cpu="x86" cpuInstance="x86" os="Linux">
+<hostApp:AcceleratedHostProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:hostApp="http://www.xilinx.com/acceleration/hostApplication" name="fpga-tfhe" location="/home/klugo/workspace/fpga-tfhe" platform="/opt/xilinx/platforms/xilinx_u55n_gen3x4_xdma_1_202110_1/xilinx_u55n_gen3x4_xdma_1_202110_1.xpfm" platformUID="xilinx:u55n:gen3x4_xdma_1:202110.1" systemProject="fpga-tfhe_system" sysConfig="config0_0" cpu="x86" cpuInstance="Unknown">
   <configuration name="Emulation-SW" id="com.xilinx.ide.accel.config.sw_emu.x86.1514413194">
     <configBuildOptions xsi:type="hostApp:HostApplicationOptions"/>
     <lastBuildOptions xsi:type="hostApp:HostApplicationOptions"/>
   </configuration>
-  <configuration name="Emulation-HW" id="com.xilinx.ide.accel.config.hw_emu.x86.52726034" dirty="true">
+  <configuration name="Emulation-HW" id="com.xilinx.ide.accel.config.hw_emu.x86.52726034">
     <configBuildOptions xsi:type="hostApp:HostApplicationOptions" target="hw_emu"/>
+    <lastBuildOptions xsi:type="hostApp:HostApplicationOptions" target="hw_emu"/>
   </configuration>
-  <configuration name="Hardware" id="com.xilinx.ide.accel.config.hw.x86.348240059" dirty="true">
+  <configuration name="Hardware" id="com.xilinx.ide.accel.config.hw.x86.348240059">
     <configBuildOptions xsi:type="hostApp:HostApplicationOptions" target="hw"/>
+    <lastBuildOptions xsi:type="hostApp:HostApplicationOptions" target="hw"/>
   </configuration>
 </hostApp:AcceleratedHostProject>
