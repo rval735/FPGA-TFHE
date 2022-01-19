@@ -33,17 +33,31 @@ using namespace xf::dsp::fft;
 typedef std::complex<ap_fixed<IN_WL, IN_IL> > T_in;
 
 // Define parameter structure for FFT
-struct fftParams : ssr_fft_default_params {
+struct fftForward : ssr_fft_default_params {
     static const int N = FFT_LEN;
     static const int R = SSR;
     static const scaling_mode_enum scaling_mode = SSR_FFT_NO_SCALING;
     static const fft_output_order_enum output_data_order = SSR_FFT_NATURAL;
     static const int twiddle_table_word_length = TW_WL;
     static const int twiddle_table_intger_part_length = TW_IL;
+    static const transform_direction_enum transform_direction = FORWARD_TRANSFORM;
 };
 
-typedef ssr_fft_output_type<fftParams, T_in>::t_ssr_fft_out T_out;
+// Define parameter structure for FFT
+struct fftInverse : ssr_fft_default_params {
+    static const int N = FFT_LEN;
+    static const int R = SSR;
+    static const scaling_mode_enum scaling_mode = SSR_FFT_NO_SCALING;
+    static const fft_output_order_enum output_data_order = SSR_FFT_NATURAL;
+    static const int twiddle_table_word_length = TW_WL;
+    static const int twiddle_table_intger_part_length = TW_IL;
+    static const transform_direction_enum transform_direction = REVERSE_TRANSFORM;
+};
 
-void fft_top(hls::stream<T_in> p_inData[SSR], hls::stream<T_out> p_outData[SSR]);
+typedef ssr_fft_output_type<fftForward, T_in>::t_ssr_fft_out T_out_F;
+typedef ssr_fft_output_type<fftInverse, T_out_F>::t_ssr_fft_out T_out_I;
+
+void fft_top(hls::stream<T_in> p_inData[SSR], hls::stream<T_out_F> p_outData[SSR]);
+void fft_top(hls::stream<T_out_F> p_inData[SSR], hls::stream<T_out_I> p_outData[SSR]);
 
 #endif // _VITIS-FFT_H_

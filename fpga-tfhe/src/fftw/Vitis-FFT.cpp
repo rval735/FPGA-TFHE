@@ -10,7 +10,12 @@
 
 #include "Vitis-FFT.h"
 
-void fft_top(hls::stream<T_in> p_inData[SSR], hls::stream<T_out> p_outData[SSR])
+void fft_top(hls::stream<T_in> p_inData[SSR], hls::stream<T_out_F> p_outData[SSR])
 {
-    xf::dsp::fft::fft<fftParams, IID>(p_inData, p_outData);
+    xf::dsp::fft::fft<fftForward, IID>(p_inData, p_outData);
+}
+
+void fft_top(hls::stream<T_out_F> p_inData[SSR], hls::stream<T_out_I> p_outData[SSR])
+{
+    xf::dsp::fft::fft<fftInverse, IID>(p_inData, p_outData);
 }

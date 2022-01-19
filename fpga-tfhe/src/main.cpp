@@ -29,45 +29,99 @@ using namespace std;
 
 int32_t main(int32_t argc, char **argv)
 {
+    hls::stream<T_in> inData[SSR];
+    hls::stream<T_out_F> outData[SSR];
+    hls::stream<T_out_I> revData[SSR];
+    T_in inDataArr[SSR][FFT_LEN / SSR];
+    T_out_F outDataArr[SSR][FFT_LEN / SSR];
+    T_out_I revDataArr[SSR][FFT_LEN / SSR];
+
+	for (int r = 0; r < SSR; ++r)
+	{
+		for (int t = 0; t < FFT_LEN / SSR; ++t)
+		{
+			if (r == 0 && t == 0)
+			{
+				inData[r].write(T_in(1));
+				inDataArr[r][t] = 1;
+			}
+			else
+			{
+				inData[r].write(T_in(0));
+				inDataArr[r][t] = 0;
+			}
+		}
+	}
+
+	for (int t = 0; t < 1; ++t)
+	{
+		// Added Dummy loop iterations
+		// to make II measurable in cosim
+		fft_top(inData, outData);
+	}
+
+	for (int t = 0; t < 1; ++t)
+	{
+		// Added Dummy loop iterations
+		// to make II measurable in cosim
+		fft_top(outData, revData);
+	}
+
+	int errs = 0;
+	for (int r = 0; r < SSR; ++r)
+	{
+		for (int t = 0; t < FFT_LEN / SSR; ++t)
+		{
+			T_out_F tmp = outData[r].read();
+			outDataArr[r][t] = tmp;
+			if (tmp.real() != 1 || tmp.imag() != 0) errs++;
+
+			revDataArr[r][t] = revData[r].read();
+		}
+	}
+
+	std::cout << "===============================================================" << std::endl;
+	std::cout << "--Input Impulse:" << std::endl;
+
+	for (int r = 0; r < SSR; ++r)
+	{
+		for (int t = 0; t < FFT_LEN / SSR; ++t)
+		{
+			std::cout << inDataArr[r][t] << std::endl;
+		}
+	}
+
+	std::cout << "===============================================================" << std::endl;
+	std::cout << "--Output Step function:" << std::endl;
+	for (int r = 0; r < SSR; ++r)
+	{
+		for (int t = 0; t < FFT_LEN / SSR; ++t)
+		{
+	        std::cout << outDataArr[r][t] << std::endl;
+	    }
+	}
+
+	std::cout << "===============================================================" << std::endl;
+
+	std::cout << "--Inverse Step function:" << std::endl;
+	for (int r = 0; r < SSR; ++r)
+	{
+		for (int t = 0; t < FFT_LEN / SSR; ++t)
+		{
+			std::cout << revDataArr[r][t] << std::endl;
+		}
+	}
+
+
+	std::cout << "===============================================================" << std::endl;
+	std::cout << "===============================================================" << std::endl;
+
     if (argc == 2)
     {
         uint32_t seed = atoi(argv[1]);
         srand(seed);
         tfhe_random_generator_setSeed(&seed, 1);
     }
-
-
-  hls::stream<T_in> inData[SSR];
-	hls::stream<T_out> outData[SSR];
-	T_in inDataArr[SSR][FFT_LEN / SSR];
-	T_out outDataArr[SSR][FFT_LEN / SSR];
-	for (int r = 0; r < SSR; ++r) {
-		for (int t = 0; t < FFT_LEN / SSR; ++t) {
-			if (r == 0 && t == 0) {
-				inData[r].write(T_in(1));
-				inDataArr[r][t] = 1;
-			} else {
-				inData[r].write(T_in(0));
-				inDataArr[r][t] = 0;
-			}
-		}
-	}
-	for (int t = 0; t < 1; ++t) {
-		// Added Dummy loop iterations
-		// to make II measurable in cosim
-		fft_top(inData, outData);
-	}
-
-	std::cout << "===============================================================" << std::endl;
-	    std::cout << "--Output Step fuction:" << std::endl;
-	    for (int r = 0; r < SSR; ++r) {
-	        for (int t = 0; t < FFT_LEN / SSR; ++t) {
-	            std::cout << outDataArr[r][t] << std::endl;
-	        }
-	    }
-	    std::cout << "===============================================================" << std::endl;
-
-
 //TODO: parallelization
     static const int32_t NAND_GATE = 0;
     static const int32_t OR_GATE = 1;
