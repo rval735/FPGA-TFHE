@@ -23,17 +23,25 @@
             			
             <storageModule moduleId="cdtBuildSystem" version="4.0.0">
                 				
-                <configuration buildProperties="" description="" id="com.xilinx.ide.accel.config.hwkernel.sw_emu.243574235" name="Emulation-SW" parent="com.xilinx.ide.accel.config.hwkernel.sw_emu">
+                <configuration artifactExtension="" artifactName="${ProjName}" buildProperties="" description="" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;com.xilinx.ide.accel.VppErrorParser;org.eclipse.cdt.core.CWDLocator" id="com.xilinx.ide.accel.config.hwkernel.sw_emu.243574235" name="Emulation-SW" parent="com.xilinx.ide.accel.config.hwkernel.sw_emu" postannouncebuildStep="" postbuildStep="" preannouncebuildStep="" prebuildStep="">
                     					
                     <folderInfo id="com.xilinx.ide.accel.config.hwkernel.sw_emu.243574235." name="/" resourcePath="">
                         						
-                        <toolChain id="com.xilinx.ide.accel.toolchain.hwKernelCompiler.sw_emu.298262100" name="Hardware Kernel Compiler" superClass="com.xilinx.ide.accel.toolchain.hwKernelCompiler.sw_emu">
+                        <toolChain errorParsers="com.xilinx.ide.accel.VppErrorParser" id="com.xilinx.ide.accel.toolchain.hwKernelCompiler.sw_emu.298262100" name="Hardware Kernel Compiler" superClass="com.xilinx.ide.accel.toolchain.hwKernelCompiler.sw_emu">
                             							
                             <targetPlatform id="com.xilinx.ide.accel.config.hwkernel.sw_emu.243574235..1652286948" name=""/>
                             							
-                            <builder buildPath="${workspace_loc:/fpga-tfhe_kernels}/Emulation-SW" enableAutoBuild="true" id="com.xilinx.ide.accel.builder.kernel.1348327983" managedBuildOn="true" name="Kernel Project Builder.Emulation-SW" superClass="com.xilinx.ide.accel.builder.kernel"/>
+                            <builder buildPath="${workspace_loc:/fpga-tfhe_kernels}/Emulation-SW" enableAutoBuild="true" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.CWDLocator" id="com.xilinx.ide.accel.builder.kernel.1348327983" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Kernel Project Builder" superClass="com.xilinx.ide.accel.builder.kernel"/>
                             							
-                            <tool id="com.xilinx.ide.accel.tool.hwKernelCompiler.1499104127" name="V++ Kernel Compiler" superClass="com.xilinx.ide.accel.tool.hwKernelCompiler">
+                            <tool command="${XILINX_VITIS}/bin/v++" commandLinePattern="${COMMAND} $(VPP_OPTS) --compile ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="" id="com.xilinx.ide.accel.tool.hwKernelCompiler.1499104127" name="V++ Kernel Compiler" superClass="com.xilinx.ide.accel.tool.hwKernelCompiler">
+                                								
+                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.include_paths.387168485" superClass="com.xilinx.accelerated.toolchain.hw_compiler.include_paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/dsp/L2/include/hw/vitis_fft/fixed&quot;"/>
+                                    								
+                                </option>
                                 								
                                 <inputType id="com.xilinx.accelerated.toolchain.hw_compiler.input.cl.1703250198" name="OpenCL files" superClass="com.xilinx.accelerated.toolchain.hw_compiler.input.cl"/>
                                 							
@@ -71,17 +79,25 @@
             			
             <storageModule moduleId="cdtBuildSystem" version="4.0.0">
                 				
-                <configuration buildProperties="" description="" id="com.xilinx.ide.accel.config.hwkernel.hw_emu.1644444310" name="Emulation-HW" parent="com.xilinx.ide.accel.config.hwkernel.hw_emu">
+                <configuration artifactExtension="" artifactName="${ProjName}" buildProperties="" description="" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;com.xilinx.ide.accel.VppErrorParser;org.eclipse.cdt.core.CWDLocator" id="com.xilinx.ide.accel.config.hwkernel.hw_emu.1644444310" name="Emulation-HW" parent="com.xilinx.ide.accel.config.hwkernel.hw_emu" postannouncebuildStep="" postbuildStep="" preannouncebuildStep="" prebuildStep="">
                     					
                     <folderInfo id="com.xilinx.ide.accel.config.hwkernel.hw_emu.1644444310." name="/" resourcePath="">
                         						
-                        <toolChain id="com.xilinx.ide.accel.toolchain.hwKernelCompiler.hw_emu.1865654780" name="Hardware Kernel Compiler" superClass="com.xilinx.ide.accel.toolchain.hwKernelCompiler.hw_emu">
+                        <toolChain errorParsers="com.xilinx.ide.accel.VppErrorParser" id="com.xilinx.ide.accel.toolchain.hwKernelCompiler.hw_emu.1865654780" name="Hardware Kernel Compiler" superClass="com.xilinx.ide.accel.toolchain.hwKernelCompiler.hw_emu">
                             							
-                            <targetPlatform id="com.xilinx.ide.accel.config.hwkernel.hw_emu.1644444310..279473832" name=""/>
+                            <targetPlatform binaryParser="" id="com.xilinx.ide.accel.config.hwkernel.hw_emu.1644444310..279473832" name=""/>
                             							
-                            <builder buildPath="${workspace_loc:/fpga-tfhe_kernels}/Emulation-HW" enableAutoBuild="true" id="com.xilinx.ide.accel.builder.kernel.1800410073" managedBuildOn="true" name="Kernel Project Builder.Emulation-HW" superClass="com.xilinx.ide.accel.builder.kernel"/>
+                            <builder buildPath="${workspace_loc:/fpga-tfhe_kernels}/Emulation-HW" enableAutoBuild="true" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.CWDLocator" id="com.xilinx.ide.accel.builder.kernel.1800410073" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Kernel Project Builder" superClass="com.xilinx.ide.accel.builder.kernel"/>
                             							
-                            <tool id="com.xilinx.ide.accel.tool.hwKernelCompiler.1348487098" name="V++ Kernel Compiler" superClass="com.xilinx.ide.accel.tool.hwKernelCompiler">
+                            <tool errorParsers="" id="com.xilinx.ide.accel.tool.hwKernelCompiler.1348487098" name="V++ Kernel Compiler" superClass="com.xilinx.ide.accel.tool.hwKernelCompiler">
+                                								
+                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.include_paths.81295636" superClass="com.xilinx.accelerated.toolchain.hw_compiler.include_paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/dsp/L2/include/hw/vitis_fft/fixed&quot;"/>
+                                    								
+                                </option>
                                 								
                                 <inputType id="com.xilinx.accelerated.toolchain.hw_compiler.input.cl.262151566" name="OpenCL files" superClass="com.xilinx.accelerated.toolchain.hw_compiler.input.cl"/>
                                 							
@@ -119,17 +135,25 @@
             			
             <storageModule moduleId="cdtBuildSystem" version="4.0.0">
                 				
-                <configuration buildProperties="" description="" id="com.xilinx.ide.accel.config.hwkernel.hw.873656417" name="Hardware" parent="com.xilinx.ide.accel.config.hwkernel.hw">
+                <configuration artifactExtension="" artifactName="${ProjName}" buildProperties="" description="" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;com.xilinx.ide.accel.VppErrorParser;org.eclipse.cdt.core.CWDLocator" id="com.xilinx.ide.accel.config.hwkernel.hw.873656417" name="Hardware" parent="com.xilinx.ide.accel.config.hwkernel.hw" postannouncebuildStep="" postbuildStep="" preannouncebuildStep="" prebuildStep="">
                     					
                     <folderInfo id="com.xilinx.ide.accel.config.hwkernel.hw.873656417." name="/" resourcePath="">
                         						
-                        <toolChain id="com.xilinx.ide.accel.toolchain.hwKernelCompiler.hw.422218742" name="Hardware Kernel Compiler" superClass="com.xilinx.ide.accel.toolchain.hwKernelCompiler.hw">
+                        <toolChain errorParsers="com.xilinx.ide.accel.VppErrorParser" id="com.xilinx.ide.accel.toolchain.hwKernelCompiler.hw.422218742" name="Hardware Kernel Compiler" superClass="com.xilinx.ide.accel.toolchain.hwKernelCompiler.hw">
                             							
                             <targetPlatform id="com.xilinx.ide.accel.config.hwkernel.hw.873656417..452815621" name=""/>
                             							
-                            <builder buildPath="${workspace_loc:/fpga-tfhe_kernels}/Hardware" enableAutoBuild="true" id="com.xilinx.ide.accel.builder.kernel.1796687788" managedBuildOn="true" name="Kernel Project Builder.Hardware" superClass="com.xilinx.ide.accel.builder.kernel"/>
+                            <builder buildPath="${workspace_loc:/fpga-tfhe_kernels}/Hardware" enableAutoBuild="true" errorParsers="org.eclipse.cdt.core.GmakeErrorParser;org.eclipse.cdt.core.CWDLocator" id="com.xilinx.ide.accel.builder.kernel.1796687788" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Kernel Project Builder" superClass="com.xilinx.ide.accel.builder.kernel"/>
                             							
-                            <tool id="com.xilinx.ide.accel.tool.hwKernelCompiler.513939375" name="V++ Kernel Compiler" superClass="com.xilinx.ide.accel.tool.hwKernelCompiler">
+                            <tool errorParsers="" id="com.xilinx.ide.accel.tool.hwKernelCompiler.513939375" name="V++ Kernel Compiler" superClass="com.xilinx.ide.accel.tool.hwKernelCompiler">
+                                								
+                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.include_paths.1939598041" superClass="com.xilinx.accelerated.toolchain.hw_compiler.include_paths" valueType="includePath">
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/dsp/L2/include/hw/vitis_fft/fixed&quot;"/>
+                                    								
+                                </option>
                                 								
                                 <inputType id="com.xilinx.accelerated.toolchain.hw_compiler.input.cl.2047301440" name="OpenCL files" superClass="com.xilinx.accelerated.toolchain.hw_compiler.input.cl"/>
                                 							

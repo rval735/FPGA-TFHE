@@ -45,9 +45,15 @@
                                     									
                                     <listOptionValue builtIn="false" value="${env_var:XILINX_HLS}/include/"/>
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
+                                    <listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/src}"/>
                                     									
                                     <listOptionValue builtIn="false" value="${ProjDirPath}/../Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="${ProjDirPath}/../Vitis_Libraries/dsp/L2/include/hw/vitis_fft/fixed"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="${ProjDirPath}/../Vitis_Libraries/utils/L1/include"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="${workspace_loc:/fpga-tfhe_kernels/src}"/>
                                     								
                                 </option>
                                 								

@@ -10,54 +10,46 @@
 
 ///Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed
 
-#ifndef _VITIS-FFT_H_
-#define _VITIS-FFT_H_
+#ifndef VITISFFT
 
-#include <ap_fixed.h>
-#include <complex>
-#include <hls_stream.h>
-#include <vt_fft.hpp>
+#define VITISFFT
 
-using namespace xf::dsp::fft;
+#include <xcl/xcl2.hpp>
+#include <xf_utils_sw/logger.hpp>
 
-// Define FFT Size and Super Sample Rate
-#define FFT_LEN 16
-#define SSR 4
+#define OCLFLAGS	CL_QUEUE_PROFILING_ENABLE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE
+//#define OCLFLAGS	CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE
 
-#define IN_WL 16
-#define IN_IL 2
-#define TW_WL 16
-#define TW_IL 2
-#define IID 0
+// echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode
+struct OCLFFT
+{
+	OCLFFT(std::string xclbinPath);
+	void executeFFT();
 
-typedef std::complex<ap_fixed<IN_WL, IN_IL> > T_in;
-
-// Define parameter structure for FFT
-struct fftForward : ssr_fft_default_params {
-    static const int N = FFT_LEN;
-    static const int R = SSR;
-    static const scaling_mode_enum scaling_mode = SSR_FFT_NO_SCALING;
-    static const fft_output_order_enum output_data_order = SSR_FFT_NATURAL;
-    static const int twiddle_table_word_length = TW_WL;
-    static const int twiddle_table_intger_part_length = TW_IL;
-    static const transform_direction_enum transform_direction = FORWARD_TRANSFORM;
+	cl::Device device;
+	cl::Context context;
+	cl::CommandQueue cmdQ;
+	cl::Program program;
+	cl::Kernel kernel;
+	xf::common::utils_sw::Logger logger = xf::common::utils_sw::Logger(std::cout, std::cerr);
 };
 
-// Define parameter structure for FFT
-struct fftInverse : ssr_fft_default_params {
-    static const int N = FFT_LEN;
-    static const int R = SSR;
-    static const scaling_mode_enum scaling_mode = SSR_FFT_NO_SCALING;
-    static const fft_output_order_enum output_data_order = SSR_FFT_NATURAL;
-    static const int twiddle_table_word_length = TW_WL;
-    static const int twiddle_table_intger_part_length = TW_IL;
-    static const transform_direction_enum transform_direction = REVERSE_TRANSFORM;
-};
 
-typedef ssr_fft_output_type<fftForward, T_in>::t_ssr_fft_out T_out_F;
-typedef ssr_fft_output_type<fftInverse, T_out_F>::t_ssr_fft_out T_out_I;
 
-void fft_top(hls::stream<T_in> p_inData[SSR], hls::stream<T_out_F> p_outData[SSR]);
-void fft_top(hls::stream<T_out_F> p_inData[SSR], hls::stream<T_out_I> p_outData[SSR]);
+/**
+ * FFT functions
+// */
+//EXPORT void IntPolynomial_ifft(LagrangeHalfCPolynomial* result, const IntPolynomial* p) {
+//    LagrangeHalfCPolynomial_IMPL* r = (LagrangeHalfCPolynomial_IMPL*) result;
+//    fp1024_nayuki.execute_reverse_int(r->coefsC, p->coefs);
+//}
+//EXPORT void TorusPolynomial_ifft(LagrangeHalfCPolynomial* result, const TorusPolynomial* p) {
+//    LagrangeHalfCPolynomial_IMPL* r = (LagrangeHalfCPolynomial_IMPL*) result;
+//    fp1024_nayuki.execute_reverse_torus32(r->coefsC, p->coefsT);
+//}
+//EXPORT void TorusPolynomial_fft(TorusPolynomial* result, const LagrangeHalfCPolynomial* p) {
+//    LagrangeHalfCPolynomial_IMPL* r = (LagrangeHalfCPolynomial_IMPL*) p;
+//    fp1024_nayuki.execute_direct_torus32(result->coefsT, r->coefsC);
+//}
 
-#endif // _VITIS-FFT_H_
+#endif // VITISFFT

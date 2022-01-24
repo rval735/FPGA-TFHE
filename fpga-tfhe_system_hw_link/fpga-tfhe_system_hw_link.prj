@@ -1,15 +1,55 @@
 <?xml version="1.0" encoding="ASCII"?>
 <hwlink:HwLinkProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:hwlink="http://www.xilinx.com/acceleration/hwlink" name="fpga-tfhe_system_hw_link" platform="/opt/xilinx/platforms/xilinx_u55n_gen3x4_xdma_1_202110_1/xilinx_u55n_gen3x4_xdma_1_202110_1.xpfm" platformUID="xilinx:u55n:gen3x4_xdma_1:202110.1" systemProject="fpga-tfhe_system" sysConfig="config0_0" cpu="pl">
   <configuration name="Emulation-SW" id="com.xilinx.ide.accel.config.hwlink.sw_emu.1652534942">
-    <configBuildOptions xsi:type="hwlink:LinkOptions"/>
-    <lastBuildOptions xsi:type="hwlink:LinkOptions"/>
+    <configBuildOptions xsi:type="hwlink:LinkOptions">
+      <binaryContainers name="fftKernel">
+        <kernels name="fft1DKernel" projectName="fpga-tfhe_kernels">
+          <computeUnits name="fft1DKernel_1" slr="">
+            <args name="p_inData" master="true" memory=""/>
+            <args name="p_outData" master="true" memory=""/>
+            <args name="n_frames"/>
+          </computeUnits>
+        </kernels>
+      </binaryContainers>
+    </configBuildOptions>
+    <lastBuildOptions xsi:type="hwlink:LinkOptions">
+      <binaryContainers name="fftKernel">
+        <kernels name="fft1DKernel" projectName="fpga-tfhe_kernels">
+          <computeUnits name="fft1DKernel_1" slr="">
+            <args name="p_inData" master="true" memory=""/>
+            <args name="p_outData" master="true" memory=""/>
+            <args name="n_frames"/>
+          </computeUnits>
+        </kernels>
+      </binaryContainers>
+    </lastBuildOptions>
   </configuration>
   <configuration name="Emulation-HW" id="com.xilinx.ide.accel.config.hwlink.hw_emu.1045880344">
-    <configBuildOptions xsi:type="hwlink:LinkOptions" target="hw_emu"/>
+    <configBuildOptions xsi:type="hwlink:LinkOptions" target="hw_emu">
+      <binaryContainers name="fftKernel">
+        <kernels name="fft1DKernel" projectName="fpga-tfhe_kernels">
+          <computeUnits name="fft1DKernel_1" slr="">
+            <args name="p_inData" master="true" memory=""/>
+            <args name="p_outData" master="true" memory=""/>
+            <args name="n_frames"/>
+          </computeUnits>
+        </kernels>
+      </binaryContainers>
+    </configBuildOptions>
     <lastBuildOptions xsi:type="hwlink:LinkOptions" target="hw_emu"/>
   </configuration>
   <configuration name="Hardware" id="com.xilinx.ide.accel.config.hwlink.hw.539242641">
-    <configBuildOptions xsi:type="hwlink:LinkOptions" target="hw"/>
+    <configBuildOptions xsi:type="hwlink:LinkOptions" target="hw">
+      <binaryContainers name="fftKernel">
+        <kernels name="fft1DKernel" projectName="fpga-tfhe_kernels">
+          <computeUnits name="fft1DKernel_1" slr="">
+            <args name="p_inData" master="true" memory=""/>
+            <args name="p_outData" master="true" memory=""/>
+            <args name="n_frames"/>
+          </computeUnits>
+        </kernels>
+      </binaryContainers>
+    </configBuildOptions>
     <lastBuildOptions xsi:type="hwlink:LinkOptions" target="hw"/>
   </configuration>
 </hwlink:HwLinkProject>
