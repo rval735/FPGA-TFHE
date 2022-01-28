@@ -29,7 +29,7 @@ using namespace std;
 int32_t main(int32_t argc, char **argv)
 {
 	OCLFFT fft = OCLFFT(std::string(argv[1]));
-	fft.executeFFT();
+	fft.executeFFTAlt();
 
 //    hls::stream<T_in> inData[SSR];
 //    hls::stream<T_out_F> outData[SSR];

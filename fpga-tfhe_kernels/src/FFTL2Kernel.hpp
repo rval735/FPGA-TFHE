@@ -16,8 +16,8 @@
 */
 //================================== End Lic =================================================
 #include "data_path.hpp"
-#include <hls_stream.h>
 
-extern "C" void fft1DKernel(ap_uint<512> p_inData[FFT_LEN * N_FFT / SSR],
-                            ap_uint<512> p_outData[FFT_LEN * N_FFT / SSR],
-                            int n_frames);
+extern "C" void FFTL2Kernel(ap_uint<512> inData[FFT_LEN * N_FFT / SSR],
+							ap_uint<512> outData[FFT_LEN * N_FFT / SSR],
+							int n_frames,
+							bool isForward);

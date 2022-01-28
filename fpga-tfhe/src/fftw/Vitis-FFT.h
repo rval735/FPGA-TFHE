@@ -25,6 +25,9 @@ struct OCLFFT
 {
 	OCLFFT(std::string xclbinPath);
 	void executeFFT();
+	void executeFFTAlt();
+
+	static void ocl_check(const cl_int &err);
 
 	cl::Device device;
 	cl::Context context;

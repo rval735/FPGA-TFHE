@@ -17,22 +17,12 @@
 #include <hls_stream.h>
 #include <vt_fft.hpp>
 #include <data_path.hpp>
+#include <stdio.h>
 
 
 #include "Vitis-FFT.h"
 
 using namespace std;
-
-void fft_forward(hls::stream<T_in> p_inData[SSR], hls::stream<T_out_F> p_outData[SSR])
-{
-    xf::dsp::fft::fft<fftForward, IID>(p_inData, p_outData);
-}
-
-void fft_reverse(hls::stream<T_out_F> p_inData[SSR], hls::stream<T_out_I> p_outData[SSR])
-{
-    xf::dsp::fft::fft<fftInverse, IID>(p_inData, p_outData);
-}
-
 
 inline int tvdiff(struct timeval* tv0, struct timeval* tv1) {
     return (tv1->tv_sec - tv0->tv_sec) * 1000000 + (tv1->tv_usec - tv0->tv_usec);
@@ -44,6 +34,15 @@ T* alignedAlloc(size_t num)
     void* ptr = nullptr;
     if (posix_memalign(&ptr, 4096, num * sizeof(T))) throw bad_alloc();
     return reinterpret_cast<T*>(ptr);
+}
+
+void OCLFFT::ocl_check(const cl_int &err)
+{
+	if (err != CL_SUCCESS)
+	{
+		printf("%s:%d Error code is: %d\n", __FILE__, __LINE__, err);
+	    exit(EXIT_FAILURE);
+	}
 }
 
 OCLFFT::OCLFFT(string xclbinPath)
@@ -77,7 +76,7 @@ OCLFFT::OCLFFT(string xclbinPath)
 void OCLFFT::executeFFT()
 {
 	// Number of FFTs to run
-	int nffts = 3;
+	int nffts = 1024;
 
 	ap_uint<512>* inData = alignedAlloc<ap_uint<512> >(FFT_LEN * nffts / SSR);
 	ap_uint<512>* outData = alignedAlloc<ap_uint<512> >(FFT_LEN * nffts / SSR);
@@ -137,7 +136,7 @@ void OCLFFT::executeFFT()
 	cmdQ.enqueueMigrateMemObjects(ob, CL_MIGRATE_MEM_OBJECT_HOST, &kernel_events[0], &read_events[0][0]);
 
 	// wait all to finish
-	cmdQ.flush();
+	//cmdQ.flush();
 	cmdQ.finish();
 	gettimeofday(&end_time, 0);
 
@@ -172,6 +171,104 @@ void OCLFFT::executeFFT()
 							  << outData[n * FFT_LEN / SSR + t].range(TW_WL - 1 + TW_WL * 2 * r, TW_WL * 2 * r)
 							  << "    Imag = "
 							  << outData[n * FFT_LEN / SSR + t].range(TW_WL * 2 - 1 + TW_WL * 2 * r,
+																	  TW_WL + TW_WL * 2 * r)
+							  << std::endl;
+				}
+			}
+		}
+	}
+
+	errs ? logger.error(xf::common::utils_sw::Logger::Message::TEST_FAIL)
+		 : logger.info(xf::common::utils_sw::Logger::Message::TEST_PASS);
+
+	return;
+}
+
+void OCLFFT::executeFFTAlt()
+{
+	cl_int err;
+	// Number of FFTs to run
+	int nffts = 1;
+	int fftSSR = FFT_LEN / SSR;
+	int memSize = nffts * fftSSR;
+
+	ap_uint<512>* inData = alignedAlloc<ap_uint<512> >(memSize);
+	ap_uint<512>* midData = alignedAlloc<ap_uint<512> >(memSize);
+	ap_uint<512>* outData = alignedAlloc<ap_uint<512> >(memSize);
+
+	// impulse as input
+	for (int n = 0; n < nffts; ++n)
+	{
+		for (int t = 0; t < fftSSR; ++t)
+		{
+			if (t == 0)
+			{
+				inData[n * fftSSR + t] = 1;
+			}
+			else
+			{
+				inData[n * fftSSR + t] = 0;
+			}
+		}
+	}
+
+	std::cout << "Host buffer has been allocated and set.\n";
+
+	cl::Buffer inBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+			(size_t)(sizeof(ap_uint<512>) * memSize), inData, &err);
+	ocl_check(err);
+
+	cl::Buffer midBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+			(size_t)(sizeof(ap_uint<512>) * memSize), midData, &err);
+	ocl_check(err);
+
+	cl::Buffer outBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY,
+			(size_t)(sizeof(ap_uint<512>) * memSize), outData, &err);
+	ocl_check(err);
+
+	cmdQ.finish();
+	std::cout << "DDR buffers have been mapped/copy-and-mapped\n";
+
+	struct timeval start_time, end_time;
+	gettimeofday(&start_time, 0);
+
+	// set args and enqueue kernel
+	int j = 0;
+	kernel.setArg(j++, inBuff);
+	kernel.setArg(j++, outBuff);
+	kernel.setArg(j++, nffts);
+
+	// write data to DDR
+	err = cmdQ.enqueueMigrateMemObjects({ inBuff }, 0 /* 0 means from host*/);
+	ocl_check(err);
+
+	err = cmdQ.enqueueTask(kernel);
+	ocl_check(err);
+	//cmdQ.finish();
+
+	// read data from DDR
+	err = cmdQ.enqueueMigrateMemObjects({ outBuff }, CL_MIGRATE_MEM_OBJECT_HOST);
+	ocl_check(err);
+	cmdQ.finish();
+
+	gettimeofday(&end_time, 0);
+
+	// total execution time from CPU wall time
+	std::cout << "Total execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
+
+	// check results
+	int errs = 0;
+	// step as output
+	for (int n = 0; n < nffts; ++n) {
+		for (int t = 0; t < fftSSR; ++t) {
+			for (int r = 0; r < SSR; r++) {
+				if (outData[n * fftSSR + t].range(TW_WL - 1 + TW_WL * 2 * r, TW_WL * 2 * r) != 1 ||
+					outData[n * fftSSR + t].range(TW_WL * 2 - 1 + TW_WL * 2 * r, TW_WL + TW_WL * 2 * r) != 0) {
+					errs++;
+					std::cout << "Real = "
+							  << outData[n * fftSSR + t].range(TW_WL - 1 + TW_WL * 2 * r, TW_WL * 2 * r)
+							  << "    Imag = "
+							  << outData[n * fftSSR + t].range(TW_WL * 2 - 1 + TW_WL * 2 * r,
 																	  TW_WL + TW_WL * 2 * r)
 							  << std::endl;
 				}
