@@ -67,7 +67,7 @@ OCLFFT::OCLFFT(string xclbinPath)
 	program = cl::Program(context, devices, xclBins, NULL, &err);
 	logger.logCreateProgram(err);
 
-	kernel = cl::Kernel(program, "fft1DKernel", &err);
+	kernel = cl::Kernel(program, "FFTL2Kernel", &err);
 	logger.logCreateKernel(err);
 	std::cout << "Kernel has been created.\n";
 
@@ -189,6 +189,7 @@ void OCLFFT::executeFFTAlt()
 	cl_int err;
 	// Number of FFTs to run
 	int nffts = 1;
+	bool isForwardFFT = true;
 	int fftSSR = FFT_LEN / SSR;
 	int memSize = nffts * fftSSR;
 
@@ -218,7 +219,7 @@ void OCLFFT::executeFFTAlt()
 			(size_t)(sizeof(ap_uint<512>) * memSize), inData, &err);
 	ocl_check(err);
 
-	cl::Buffer midBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+	cl::Buffer midBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
 			(size_t)(sizeof(ap_uint<512>) * memSize), midData, &err);
 	ocl_check(err);
 
@@ -235,12 +236,24 @@ void OCLFFT::executeFFTAlt()
 	// set args and enqueue kernel
 	int j = 0;
 	kernel.setArg(j++, inBuff);
-	kernel.setArg(j++, outBuff);
+	kernel.setArg(j++, midBuff);
 	kernel.setArg(j++, nffts);
+	kernel.setArg(j++, isForwardFFT);
 
 	// write data to DDR
 	err = cmdQ.enqueueMigrateMemObjects({ inBuff }, 0 /* 0 means from host*/);
 	ocl_check(err);
+
+	err = cmdQ.enqueueTask(kernel);
+	ocl_check(err);
+	//cmdQ.finish();
+
+	j = 0;
+	isForwardFFT = false;
+	kernel.setArg(j++, midBuff);
+	kernel.setArg(j++, outBuff);
+	kernel.setArg(j++, nffts);
+	kernel.setArg(j++, isForwardFFT);
 
 	err = cmdQ.enqueueTask(kernel);
 	ocl_check(err);
@@ -256,28 +269,23 @@ void OCLFFT::executeFFTAlt()
 	// total execution time from CPU wall time
 	std::cout << "Total execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
 
-	// check results
-	int errs = 0;
-	// step as output
-	for (int n = 0; n < nffts; ++n) {
-		for (int t = 0; t < fftSSR; ++t) {
-			for (int r = 0; r < SSR; r++) {
-				if (outData[n * fftSSR + t].range(TW_WL - 1 + TW_WL * 2 * r, TW_WL * 2 * r) != 1 ||
-					outData[n * fftSSR + t].range(TW_WL * 2 - 1 + TW_WL * 2 * r, TW_WL + TW_WL * 2 * r) != 0) {
-					errs++;
-					std::cout << "Real = "
-							  << outData[n * fftSSR + t].range(TW_WL - 1 + TW_WL * 2 * r, TW_WL * 2 * r)
-							  << "    Imag = "
-							  << outData[n * fftSSR + t].range(TW_WL * 2 - 1 + TW_WL * 2 * r,
-																	  TW_WL + TW_WL * 2 * r)
-							  << std::endl;
-				}
+	for (int n = 0; n < nffts; ++n)
+	{
+		for (int t = 0; t < fftSSR; ++t)
+		{
+			if (inData[n * fftSSR + t] != outData[n * fftSSR + t])
+			{
+				err++;
+				//logger.error(xf::common::utils_sw::Logger::Message::TEST_FAIL);
+				cout << "In: " << inData[n * fftSSR + t] << "\t Out: " << outData[n * fftSSR + t] << endl;
 			}
+
 		}
 	}
 
-	errs ? logger.error(xf::common::utils_sw::Logger::Message::TEST_FAIL)
-		 : logger.info(xf::common::utils_sw::Logger::Message::TEST_PASS);
+	err > 0 ? logger.error(xf::common::utils_sw::Logger::Message::TEST_FAIL)
+		    : logger.info(xf::common::utils_sw::Logger::Message::TEST_PASS);
+
 
 	return;
 }

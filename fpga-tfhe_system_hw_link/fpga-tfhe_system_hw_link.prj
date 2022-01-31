@@ -3,13 +3,20 @@
   <configuration name="Emulation-SW" id="com.xilinx.ide.accel.config.hwlink.sw_emu.1652534942">
     <configBuildOptions xsi:type="hwlink:LinkOptions">
       <binaryContainers name="fftKernel">
-        <kernels name="FFTL2Kernel" projectName="fpga-tfhe_kernels"/>
+        <kernels name="FFTL2Kernel" projectName="fpga-tfhe_kernels">
+          <computeUnits name="FFTL2Kernel_1" slr="">
+            <args name="inData" master="true" memory=""/>
+            <args name="outData" master="true" memory=""/>
+            <args name="nFrames"/>
+            <args name="isForward"/>
+          </computeUnits>
+        </kernels>
       </binaryContainers>
     </configBuildOptions>
     <lastBuildOptions xsi:type="hwlink:LinkOptions">
       <binaryContainers name="fftKernel">
-        <kernels name="FFTL2ForwardKernel" projectName="fpga-tfhe_kernels">
-          <computeUnits name="FFTL2ForwardKernel_1" slr="">
+        <kernels name="FFTL2Kernel" projectName="fpga-tfhe_kernels">
+          <computeUnits name="FFTL2Kernel_1" slr="">
             <args name="inData" master="true" memory=""/>
             <args name="outData" master="true" memory=""/>
             <args name="nFrames"/>
@@ -23,7 +30,12 @@
     <configBuildOptions xsi:type="hwlink:LinkOptions" target="hw_emu">
       <binaryContainers name="fftKernel">
         <kernels name="FFTL2Kernel" projectName="fpga-tfhe_kernels">
-          <computeUnits name="FFTL2Kernel_1" slr=""/>
+          <computeUnits name="FFTL2Kernel_1" slr="">
+            <args name="inData" master="true" memory=""/>
+            <args name="outData" master="true" memory=""/>
+            <args name="nFrames"/>
+            <args name="isForward"/>
+          </computeUnits>
         </kernels>
       </binaryContainers>
     </configBuildOptions>
@@ -43,7 +55,12 @@
     <configBuildOptions xsi:type="hwlink:LinkOptions" target="hw">
       <binaryContainers name="fftKernel">
         <kernels name="FFTL2Kernel" projectName="fpga-tfhe_kernels">
-          <computeUnits name="FFTL2Kernel_1" slr=""/>
+          <computeUnits name="FFTL2Kernel_1" slr="">
+            <args name="inData" master="true" memory=""/>
+            <args name="outData" master="true" memory=""/>
+            <args name="nFrames"/>
+            <args name="isForward"/>
+          </computeUnits>
         </kernels>
       </binaryContainers>
     </configBuildOptions>

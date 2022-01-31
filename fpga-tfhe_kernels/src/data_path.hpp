@@ -37,11 +37,10 @@ using namespace hls;
 /// quantization mode is set to round to plus infinity and the default wrap-around mode
 /// is used for overflow.
 /// ap_fixed<18,6,AP_RND > my_type;
-
-#define IN_WL 10
-#define IN_IL 4
-#define TW_WL 10
-#define TW_IL 4
+#define IN_WL 16
+#define IN_IL 2
+#define TW_WL 16
+#define TW_IL 2
 #define IID 0
 
 // Define parameter structure for FFT
