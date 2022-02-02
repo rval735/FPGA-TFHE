@@ -1,20 +1,17 @@
-/*
- * Copyright 2019 Xilinx, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+// Project FPGA-TFHE
+// https://github.com/rval735/FPGA-TFHE
+//
+// Based on code from project
+// https://github.com/tfhe/tfhe/
+// Copyright 2016 - Nicolas Gama <nicolas.gama@gmail.com> et al.
+//
+//                    GNU GENERAL PUBLIC LICENSE
+//                       Version 3, 29 June 2007
+//
+// Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+// Everyone is permitted to copy and distribute verbatim copies
+// of this license document, but changing it is not allowed.
 
-*/
-//================================== End Lic =================================================
 #ifndef _DATA_PATH_H_
 #define _DATA_PATH_H_
 
@@ -27,8 +24,8 @@ using namespace xf::dsp::fft;
 using namespace hls;
 
 // Define number of FFTs, FFT Size, and Super Sample Rate
-#define N_FFT 1024
-#define FFT_LEN 1024
+#define N_FFT 32
+#define FFT_LEN 32
 #define SSR 16
 
 /// In this example the Vitis HLS ap_fixed type is used to define an 18-bit variable
