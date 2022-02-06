@@ -13,14 +13,18 @@
 
 #include "FFTL2Kernel.hpp"
 
-static FFTProcessor processor;
+//static FFTProcessor processor;
 
-extern "C" void FFTL2Kernel(const int32_t inData[FFT_LEN * N_FFT / SSR],
-							cplx outData[FFT_LEN * N_FFT / SSR],
-							int nFrames,
-							bool isForward)
+extern "C" void FFTL2Kernel(const int32_t poly1[FFTTables::FFTSize],
+							const int32_t poly2[FFTTables::FFTSize],
+							FFTProcessor *processor,
+							cplx lagrange1[FFTTables::FFTSize],
+							cplx lagrange2[FFTTables::FFTSize])
 {
-	processor.executeReverseInt(outData, inData);
+	executeReverseInt(processor, lagrange1, poly1);
+//	FFTProcessor::executeReverseTorus32(processor, lagrange2, poly2);
+
+
 //#pragma HLS interface m_axi port inData = gmem0 offset = slave
 //#pragma HLS interface s_axilite port = inData bundle = control
 //

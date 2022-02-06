@@ -38,7 +38,8 @@ struct FftTables {
 /*---- Function implementations ----*/
 
 // This is a C implementation that models the x86-64 AVX implementation.
-void fft_transform(const void *tables, double *real, double *imag) {
+void fft_transform(const void *tables, double *real, double *imag)
+{
 	struct FftTables *tbl = (struct FftTables *)tables;
 	uint64_t n = tbl->n;
 	

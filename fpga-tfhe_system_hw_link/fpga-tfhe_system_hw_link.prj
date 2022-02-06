@@ -5,10 +5,11 @@
       <binaryContainers name="fftKernel">
         <kernels name="FFTL2Kernel" projectName="fpga-tfhe_kernels">
           <computeUnits name="FFTL2Kernel_1" slr="">
-            <args name="inData" master="true" memory=""/>
-            <args name="outData" master="true" memory=""/>
-            <args name="nFrames"/>
-            <args name="isForward"/>
+            <args name="poly1" master="true" memory=""/>
+            <args name="poly2" master="true" memory=""/>
+            <args name="processor" master="true" memory=""/>
+            <args name="lagrange1" master="true" memory=""/>
+            <args name="lagrange2" master="true" memory=""/>
           </computeUnits>
         </kernels>
       </binaryContainers>
@@ -17,10 +18,11 @@
       <binaryContainers name="fftKernel">
         <kernels name="FFTL2Kernel" projectName="fpga-tfhe_kernels">
           <computeUnits name="FFTL2Kernel_1" slr="">
-            <args name="inData" master="true" memory=""/>
-            <args name="outData" master="true" memory=""/>
-            <args name="nFrames"/>
-            <args name="isForward"/>
+            <args name="poly1" master="true" memory=""/>
+            <args name="poly2" master="true" memory=""/>
+            <args name="processor" master="true" memory=""/>
+            <args name="lagrange1" master="true" memory=""/>
+            <args name="lagrange2" master="true" memory=""/>
           </computeUnits>
         </kernels>
       </binaryContainers>
@@ -31,21 +33,24 @@
       <binaryContainers name="fftKernel">
         <kernels name="FFTL2Kernel" projectName="fpga-tfhe_kernels">
           <computeUnits name="FFTL2Kernel_1" slr="">
-            <args name="inData" master="true" memory=""/>
-            <args name="outData" master="true" memory=""/>
-            <args name="nFrames"/>
-            <args name="isForward"/>
+            <args name="poly1" master="true" memory=""/>
+            <args name="poly2" master="true" memory=""/>
+            <args name="processor" master="true" memory=""/>
+            <args name="lagrange1" master="true" memory=""/>
+            <args name="lagrange2" master="true" memory=""/>
           </computeUnits>
         </kernels>
       </binaryContainers>
     </configBuildOptions>
     <lastBuildOptions xsi:type="hwlink:LinkOptions" target="hw_emu">
       <binaryContainers name="fftKernel">
-        <kernels name="fft1DKernel" projectName="fpga-tfhe_kernels">
-          <computeUnits name="fft1DKernel_1" slr="">
-            <args name="p_inData" master="true" memory=""/>
-            <args name="p_outData" master="true" memory=""/>
-            <args name="n_frames"/>
+        <kernels name="FFTL2Kernel" projectName="fpga-tfhe_kernels">
+          <computeUnits name="FFTL2Kernel_1" slr="">
+            <args name="poly1" master="true" memory=""/>
+            <args name="poly2" master="true" memory=""/>
+            <args name="processor" master="true" memory=""/>
+            <args name="lagrange1" master="true" memory=""/>
+            <args name="lagrange2" master="true" memory=""/>
           </computeUnits>
         </kernels>
       </binaryContainers>
@@ -56,21 +61,24 @@
       <binaryContainers name="fftKernel">
         <kernels name="FFTL2Kernel" projectName="fpga-tfhe_kernels">
           <computeUnits name="FFTL2Kernel_1" slr="">
-            <args name="inData" master="true" memory=""/>
-            <args name="outData" master="true" memory=""/>
-            <args name="nFrames"/>
-            <args name="isForward"/>
+            <args name="poly1" master="true" memory=""/>
+            <args name="poly2" master="true" memory=""/>
+            <args name="processor" master="true" memory=""/>
+            <args name="lagrange1" master="true" memory=""/>
+            <args name="lagrange2" master="true" memory=""/>
           </computeUnits>
         </kernels>
       </binaryContainers>
     </configBuildOptions>
     <lastBuildOptions xsi:type="hwlink:LinkOptions" target="hw">
       <binaryContainers name="fftKernel">
-        <kernels name="fft1DKernel" projectName="fpga-tfhe_kernels">
-          <computeUnits name="fft1DKernel_1" slr="">
-            <args name="p_inData" master="true" memory=""/>
-            <args name="p_outData" master="true" memory=""/>
-            <args name="n_frames"/>
+        <kernels name="FFTL2Kernel" projectName="fpga-tfhe_kernels">
+          <computeUnits name="FFTL2Kernel_1" slr="">
+            <args name="poly1" master="true" memory=""/>
+            <args name="poly2" master="true" memory=""/>
+            <args name="processor" master="true" memory=""/>
+            <args name="lagrange1" master="true" memory=""/>
+            <args name="lagrange2" master="true" memory=""/>
           </computeUnits>
         </kernels>
       </binaryContainers>

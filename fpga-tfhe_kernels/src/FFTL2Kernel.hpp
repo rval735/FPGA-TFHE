@@ -11,10 +11,16 @@
 // Everyone is permitted to copy and distribute verbatim copies
 // of this license document, but changing it is not allowed.
 
-#include "data_path.hpp"
+#ifndef TORUSOPS_HPP
+#define TORUSOPS_HPP
+
+#include "FFTTables.hpp"
 #include "FFTProc.hpp"
 
-extern "C" void FFTL2Kernel(const int32_t inData[FFT_LEN * N_FFT / SSR],
-							cplx outData[FFT_LEN * N_FFT / SSR],
-							int nFrames,
-							bool isForward);
+extern "C" void FFTL2Kernel(const int32_t poly1[FFTTables::FFTSize],
+							const int32_t poly2[FFTTables::FFTSize],
+							FFTProcessor *processor,
+							cplx lagrange1[FFTTables::FFTSize],
+							cplx lagrange2[FFTTables::FFTSize]);
+
+#endif // TORUSOPS

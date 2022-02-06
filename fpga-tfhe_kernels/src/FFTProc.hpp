@@ -30,21 +30,20 @@ typedef int32_t Torus32; //avant uint32_t
 class FFTProcessor
 {
 public:
-    constexpr static int32_t _2N = FFTTables::FFTSize;
+    constexpr static int32_t N2 = FFTTables::FFTSize;
     constexpr static int32_t N = FFTTables::FFTSize / 2;
     constexpr static int32_t Ns2 = FFTTables::FFTSize / 4;
 
-    double realInOut[_2N];
-    double imagInOut[_2N];
-    cplx omegaxminus1[_2N];
+    double realInOut[N2];
+    double imagInOut[N2];
+
     FFTTables tablesForward = FFTTables(false);
     FFTTables tablesInverse = FFTTables(true);
-
-    FFTProcessor();
-    void executeReverseInt(cplx *res, const int32_t *a);
-    void executeReverseTorus32(cplx *res, const Torus32 *a);
-    void executeDirectTorus32(Torus32 *res, const cplx *a);
 };
+
+void executeReverseInt(FFTProcessor *proc, cplx res[FFTProcessor::N], const int32_t a[FFTProcessor::N]);
+void executeReverseTorus32(FFTProcessor *proc, cplx res[FFTProcessor::N], const Torus32 a[FFTProcessor::N]);
+void executeDirectTorus32(FFTProcessor *proc, Torus32 res[FFTProcessor::N], const cplx a[FFTProcessor::N]);
 
 ////extern thread_local FFT_Processor_nayuki fp1024_nayuki;
 //

@@ -11,28 +11,29 @@
 // Everyone is permitted to copy and distribute verbatim copies
 // of this license document, but changing it is not allowed.
 
-
+#include <math.h>
 #include "FFTTables.hpp"
 
-#include <math.h>
+using namespace std;
 
 // Returns a pointer to an opaque structure of FFT tables. n must be a power of 2 and n >= 4.
-void FFTTables::FFTTables(bool isInverse)
+FFTTables::FFTTables(bool isInverse)
 {
 	size_t n = FFTSize;
 	// Precompute bit reversal table
-	int32_t levels = FFTTables::floorLog2(n);
+	int32_t levels = floorLog2(n);
 	uint64_t i;
 
 	for (i = 0; i < n; i++)
 	{
-		tables.bit_reversed[i] = reverse_bits(i, levels);
+		bitReversed[i] = reverseBits(i, levels);
 	}
 
 	// Precompute the packed trigonometric table for each FFT internal level
 	uint64_t size;
 	uint64_t k = 0;
 	double sign = isInverse ? -1 : 1;
+
 	for (size = 8; size <= n; size *= 2)
 	{
 		for (i = 0; i < size / 2; i += 4)
@@ -40,11 +41,11 @@ void FFTTables::FFTTables(bool isInverse)
 			uint64_t j;
 			for (j = 0; j < 4; j++, k++)
 			{
-				tables.trig_tables[k] = accurate_sine(i + j + size / 4, size);  // Cosine
+				trigTables[k] = accurateSin(i + j + size / 4, size);  // Cosine
 			}
 			for (j = 0; j < 4; j++, k++)
 			{
-				tables.trig_tables[k] = sign * accurate_sine(i + j, size);  // Sine
+				trigTables[k] = sign * accurateSin(i + j, size);  // Sine
 			}
 		}
 
@@ -56,7 +57,7 @@ void FFTTables::FFTTables(bool isInverse)
 }
 
 // Returns sin(2 * pi * i / n), for n that is a multiple of 4.
-static double FFTTables::accurateSin(uint64_t i, uint64_t n)
+double accurateSin(uint64_t i, uint64_t n)
 {
 	if (n % 4 != 0)
 	{
@@ -80,6 +81,7 @@ static double FFTTables::accurateSin(uint64_t i, uint64_t n)
 		{
 			i = n / 2 - i;
 		}
+
 		double val;
 		// Reduce to eighth cycle
 		if (i * 8 < n)
@@ -96,7 +98,7 @@ static double FFTTables::accurateSin(uint64_t i, uint64_t n)
 }
 
 // Returns the largest i such that 2^i <= n.
-static int32_t FFTTables::floorLog2(uint64_t n)
+int32_t floorLog2(uint64_t n)
 {
 	int32_t result = 0;
 	for (; n > 1; n /= 2)
@@ -109,7 +111,7 @@ static int32_t FFTTables::floorLog2(uint64_t n)
 
 
 // Returns the bit reversal of the n-bit unsigned integer x.
-static uint64_t FFTTables::reverseBits(uint64_t x, uint32_t n)
+uint64_t reverseBits(uint64_t x, uint32_t n)
 {
 	uint64_t result = 0;
 	uint32_t i;
@@ -122,17 +124,16 @@ static uint64_t FFTTables::reverseBits(uint64_t x, uint32_t n)
 }
 
 // Real and Imag sizes are expected to be FFTSize
-void FFTTables::fftForward(const FFTTables &tbl, double *real, double *imag)
+void fftForward(const FFTTables *tbl, double *real, double *imag)
 {
-	uint64_t n = tbl.FFTSize;
+	uint64_t n = FFTTables::FFTSize;
 
 	// Bit-reversed addressing permutation
 	uint64_t i;
-	uint64_t *bitreversed = tbl.bit_reversed;
 
 	for (i = 0; i < n; i++)
 	{
-		uint64_t j = bitreversed[i];
+		uint64_t j = tbl->bitReversed[i];
 
 		if (i < j)
 		{
@@ -187,8 +188,8 @@ void FFTTables::fftForward(const FFTTables &tbl, double *real, double *imag)
 	}
 
 	// Size 8 and larger merges (general)
-	double *trigtables = tbl.trig_tables;
 	uint64_t size;
+	uint64_t tblOffset = 0;
 
 	for (size = 8; size <= n; size <<= 1)
 	{
@@ -207,8 +208,8 @@ void FFTTables::fftForward(const FFTTables &tbl, double *real, double *imag)
 					uint64_t ti = off + k;    // Table index
 					double re = real[vi + halfsize];
 					double im = imag[vi + halfsize];
-					double tpre = re * trigtables[ti] + im * trigtables[ti + 4];
-					double tpim = im * trigtables[ti] - re * trigtables[ti + 4];
+					double tpre = re * tbl->trigTables[tblOffset + ti] + im * tbl->trigTables[tblOffset + ti + 4];
+					double tpim = im * tbl->trigTables[tblOffset + ti] - re * tbl->trigTables[tblOffset + ti + 4];
 					real[vi + halfsize] = real[vi] - tpre;
 					imag[vi + halfsize] = imag[vi] - tpim;
 					real[vi] += tpre;
@@ -222,22 +223,21 @@ void FFTTables::fftForward(const FFTTables &tbl, double *real, double *imag)
 			break;
 		}
 
-		trigtables += size;
+		tblOffset += size;
 	}
 }
 
 // Real and Imag sizes are expected to be FFTSize
-void FFTTables::fftInverse(const FFTTables &tbl, double *real, double *imag)
+void fftInverse(const FFTTables *tbl, double *real, double *imag)
 {
-	uint64_t n = tbl->n;
+	uint64_t n = FFTTables::FFTSize;
 
 	// Bit-reversed addressing permutation
 	uint64_t i;
-	uint64_t *bitreversed = tbl->bit_reversed;
 
 	for (i = 0; i < n; i++)
 	{
-		uint64_t j = bitreversed[i];
+		uint64_t j = tbl->bitReversed[i];
 		if (i < j)
 		{
 			double tp0re = real[i];
@@ -291,8 +291,8 @@ void FFTTables::fftInverse(const FFTTables &tbl, double *real, double *imag)
 	}
 
 	// Size 8 and larger merges (general)
-	double *trigtables = tbl->trig_tables;
 	uint64_t size;
+	uint64_t tblOffset = 0;
 
 	for (size = 8; size <= n; size <<= 1)
 	{
@@ -312,8 +312,8 @@ void FFTTables::fftInverse(const FFTTables &tbl, double *real, double *imag)
 					uint64_t ti = off + k;    // Table index
 					double re = real[vi + halfsize];
 					double im = imag[vi + halfsize];
-					double tpre = re * trigtables[ti] + im * trigtables[ti + 4];
-					double tpim = im * trigtables[ti] - re * trigtables[ti + 4];
+					double tpre = re * tbl->trigTables[tblOffset + ti] + im * tbl->trigTables[tblOffset + ti + 4];
+					double tpim = im * tbl->trigTables[tblOffset + ti] - re * tbl->trigTables[tblOffset + ti + 4];
 					real[vi + halfsize] = real[vi] - tpre;
 					imag[vi + halfsize] = imag[vi] - tpim;
 					real[vi] += tpre;
@@ -327,6 +327,6 @@ void FFTTables::fftInverse(const FFTTables &tbl, double *real, double *imag)
 			break;
 		}
 
-		trigtables += size;
+		tblOffset += size;
 	}
 }

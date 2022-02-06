@@ -29,11 +29,6 @@ FFT_Processor_nayuki::FFT_Processor_nayuki(const int32_t N): _2N(2*N),N(N),Ns2(N
     imag_inout = (double*) malloc(sizeof(double) * _2N);
     tables_direct = fft_init(_2N);
     tables_reverse = fft_init_reverse(_2N);
-    omegaxminus1 = (cplx*) malloc(sizeof(cplx) * _2N);
-    for (int32_t x=0; x<_2N; x++) {
-	omegaxminus1[x]=cplx(cos(x*M_PI/N)-1., sin(x*M_PI/N)); // instead of cos(x*M_PI/N)-1. + sin(x*M_PI/N) * 1i
-	//exp(i.x.pi/N)-1
-    }
 }
 
 void FFT_Processor_nayuki::check_alternate_real() {
@@ -109,7 +104,6 @@ FFT_Processor_nayuki::~FFT_Processor_nayuki() {
     fft_destroy(tables_reverse);
     free(real_inout);
     free(imag_inout);
-    free(omegaxminus1);
 }
 
 thread_local FFT_Processor_nayuki fp1024_nayuki(1024);

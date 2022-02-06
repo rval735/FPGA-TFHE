@@ -13,119 +13,116 @@
 
 
 #include <complex>
-#include <cassert>
-#include <cmath>
 
 #include "FFTProc.hpp"
 //#include "tfhe/polynomials.h"
 //#include "lagrangehalfc_impl.h"
 //#include "fft.h"
 
-FFTProcessor::FFTProcessor()
+void executeReverseInt(FFTProcessor *proc, cplx res[FFTProcessor::N], const int32_t a[FFTProcessor::N])
 {
-    for (int32_t x=0; x<_2N; x++)
+	int n = FFTProcessor::N;
+	int n2 = FFTProcessor::N2;
+	double *res_dbl=(double *)res;
+
+    for (int32_t i = 0; i < n; i++)
     {
-    	omegaxminus1[x] = cplx(cos(x*M_PI/N)-1., sin(x*M_PI/N));
+    	proc->realInOut[i] = a[i]/2.;
+    }
+
+    for (int32_t i = 0; i < n; i++)
+    {
+    	proc->realInOut[n + i] =-proc->realInOut[i];
+    }
+
+    for (int32_t i = 0; i < n2; i++)
+    {
+    	proc->imagInOut[i] = 0;
+    }
+
+    fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
+
+    for (int32_t i = 0; i < n; i += 2)
+    {
+    	res_dbl[i] = proc->realInOut[i + 1];
+    	res_dbl[i + 1] = proc->imagInOut[i + 1];
     }
 }
 
-void FFTProcessor::executeReverseInt(cplx *res, const int32_t *a)
-{
-    double *res_dbl=(double *)res;
-    for (int32_t i = 0; i < N; i++)
-    {
-    	realInOut[i] = a[i]/2.;
-    }
-
-    for (int32_t i = 0; i < N; i++)
-    {
-    	realInOut[N + i] =-realInOut[i];
-    }
-
-    for (int32_t i = 0; i <_2N; i++)
-    {
-    	imagInOut[i] = 0;
-    }
-
-    FFTTables::fftInverse(tablesInverse, realInOut, imagInOut);
-
-    for (int32_t i = 0; i < N; i += 2)
-    {
-    	res_dbl[i] = realInOut[i + 1];
-    	res_dbl[i + 1] = imagInOut[i + 1];
-    }
-}
-
-void FFTProcessor::executeReverseTorus32(cplx *res, const Torus32 *a)
+void executeReverseTorus32(FFTProcessor *proc, cplx res[FFTProcessor::N], const Torus32 a[FFTProcessor::N])
 {
     static const double _2pm33 = 1./double(INT64_C(1)<<33);
+    int n = FFTProcessor::N;
+    int n2 = FFTProcessor::N2;
     int32_t *aa = (int32_t *)a;
 
-    for (int32_t i = 0; i < N; i++)
+    for (int32_t i = 0; i < n; i++)
     {
-    	realInOut[i] = aa[i] * _2pm33;
+    	proc->realInOut[i] = aa[i] * _2pm33;
     }
 
-    for (int32_t i = 0; i < N; i++)
+    for (int32_t i = 0; i < n; i++)
     {
-    	realInOut[N + i] = -realInOut[i];
+    	proc->realInOut[n + i] = -proc->realInOut[i];
     }
 
-    for (int32_t i = 0; i < _2N; i++)
+    for (int32_t i = 0; i < n2; i++)
     {
-    	imagInOut[i] = 0;
+    	proc->imagInOut[i] = 0;
     }
 
-    FFTTables::fftInverse(tablesInverse, realInOut, imagInOut);
+    fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
 
-    for (int32_t i = 0; i < Ns2; i++)
+    for (int32_t i = 0; i < FFTProcessor::Ns2; i++)
     {
-    	res[i] = cplx(realInOut[2 * i + 1], imagInOut[2 * i + 1]);
+    	res[i] = cplx(proc->realInOut[2 * i + 1], proc->imagInOut[2 * i + 1]);
     }
 }
 
-void FFTProcessor::executeDirectTorus32(Torus32 *res, const cplx *a)
+void executeDirectTorus32(FFTProcessor *proc, Torus32 res[FFTProcessor::N], const cplx a[FFTProcessor::N])
 {
     static const double _2p32 = double(INT64_C(1)<<32);
-    static const double _1sN = double(1)/double(N);
+    int n = FFTProcessor::N;
+    int n2 = FFTProcessor::N2;
+    int ns2 = FFTProcessor::Ns2;
+    static const double _1sN = double(1)/double(n);
 
-    for (int32_t i = 0; i < N; i++)
+    for (int32_t i = 0; i < n; i++)
     {
-    	realInOut[2 * i] = 0;
+    	proc->realInOut[2 * i] = 0;
     }
 
-    for (int32_t i = 0; i < N; i++)
+    for (int32_t i = 0; i < n; i++)
     {
-    	imagInOut[2 * i] = 0;
+    	proc->imagInOut[2 * i] = 0;
     }
 
-    for (int32_t i = 0; i < Ns2; i++)
+    for (int32_t i = 0; i < ns2; i++)
     {
-    	realInOut[2 * i + 1] = real(a[i]);
+    	proc->realInOut[2 * i + 1] = real(a[i]);
     }
 
-    for (int32_t i = 0; i < Ns2; i++)
+    for (int32_t i = 0; i < ns2; i++)
     {
-    	imagInOut[2 * i + 1] = imag(a[i]);
+    	proc->imagInOut[2 * i + 1] = imag(a[i]);
     }
 
-    for (int32_t i = 0; i < Ns2; i++)
+    for (int32_t i = 0; i < ns2; i++)
     {
-    	realInOut[_2N - 1 - 2 * i] = real(a[i]);
+    	proc->realInOut[n2 - 1 - 2 * i] = real(a[i]);
     }
 
-    for (int32_t i = 0; i < Ns2; i++)
+    for (int32_t i = 0; i < ns2; i++)
     {
-    	imagInOut[_2N - 1 - 2 * i] = -imag(a[i]);
+    	proc->imagInOut[n2 - 1 - 2 * i] = -imag(a[i]);
     }
 
-    FFTTables::fftForward(tablesForward, realInOut, imagInOut);
+    fftForward(&proc->tablesForward, proc->realInOut, proc->imagInOut);
 
-    for (int32_t i = 0; i < N; i++)
+    for (int32_t i = 0; i < n; i++)
     {
-    	res[i] = Torus32(int64_t(realInOut[i] * _1sN * _2p32));
+    	res[i] = Torus32(int64_t(proc->realInOut[i] * _1sN * _2p32));
     }
-
 }
 
 

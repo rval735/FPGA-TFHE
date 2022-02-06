@@ -29,17 +29,15 @@ typedef std::complex< double > cplx; // https://stackoverflow.com/a/31800404
 #include "tfhe/polynomials.h"
 
 class FFT_Processor_nayuki {
-    public:
+public:
     const int32_t _2N;
     const int32_t N;
     const int32_t Ns2;
-    private:
+
     double* real_inout;
     double* imag_inout;
     void* tables_direct;
     void* tables_reverse;
-    public:
-    cplx* omegaxminus1;
 
     FFT_Processor_nayuki(const int32_t N);
     void check_alternate_real();
