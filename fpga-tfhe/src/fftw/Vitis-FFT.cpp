@@ -49,23 +49,30 @@ void OCLFFT::ocl_check(const cl_int &err)
 OCLFFT::OCLFFT(string xclbinPath)
 {
 	cl_int err;
+
+	// read_binary_file() is a utility API which will load the binaryFile
+	// and will return the pointer to file buffer.
+	std::vector<unsigned char> fileBuf = xcl::read_binary_file(xclbinPath);
+    cl::Program::Binaries xclBins{{fileBuf.data(), fileBuf.size()}};
+
 	// Get CL devices
 	vector<cl::Device> devices = xcl::get_xil_devices();
 	// Select first device
 	device = devices[0];
-	// Create context and command queue for selected device
-	context = cl::Context(device, NULL, NULL, NULL, &err);
+
+	// Create OCL context for selected device
+	context = cl::Context(device, nullptr, nullptr, nullptr, &err);
 	logger.logCreateContext(err);
 
+	// Create command queue for selected device
 	cmdQ = cl::CommandQueue(context, device, OCLFLAGS, &err);
-
 	logger.logCreateCommandQueue(err);
+
+
 	string devName = device.getInfo<CL_DEVICE_NAME>();
 	std::cout << "Selected Device " << devName << "\n";
-
-	cl::Program::Binaries xclBins = xcl::import_binary_file(xclbinPath);
 	devices.resize(1);
-	program = cl::Program(context, devices, xclBins, NULL, &err);
+	program = cl::Program(context, devices, xclBins, nullptr, &err);
 	logger.logCreateProgram(err);
 
 	kernel = cl::Kernel(program, "FFTL2Kernel", &err);
@@ -82,6 +89,8 @@ void OCLFFT::executeFFT()
 	int err = 0;
 
 	FFT_Processor_nayuki cpuFFT(n);
+	//aligned_allocator<FFTProcessor> allocProc;
+	//FFTProcessor *processor = allocProc.allocate(1);
 	FFTProcessor *processor = alignedAlloc<FFTProcessor>(1);
 
 	for (int i = 0; i < n; i++)
@@ -144,8 +153,9 @@ pair<cplx *, int32_t *> cpuFFT(const int &n)
 
 pair<APCplx *, APInt32 *> fpgaFFT(OCLFFT *oclFFT, const int &n)
 {
-	APCplx *res = alignedAlloc<APCplx>(n);
-	APInt32 *reals = alignedAlloc<APInt32>(n);
+	cl_int err;
+	vector<APCplx, aligned_allocator<APCplx>> res(n);
+	vector<APInt32, aligned_allocator<APInt32>> reals(n);
 	FFTProcessor *processor = alignedAlloc<FFTProcessor>(1);
 
 	for (int i = 0; i < n; i++)
@@ -161,18 +171,24 @@ pair<APCplx *, APInt32 *> fpgaFFT(OCLFFT *oclFFT, const int &n)
 		}
 	}
 
-	cl_mem_ext_ptr_t mextIn, mextOut, mextProc;
-	mextIn = {XCL_MEM_DDR_BANK0, res, 0};
-	mextOut = {XCL_MEM_DDR_BANK0, reals, 0};
-	mextProc = {XCL_MEM_DDR_BANK0, processor, 0};
+//	cl_mem_ext_ptr_t mextIn, mextOut, mextProc;
+//	mextIn = {XCL_MEM_DDR_BANK0, res, 0};
+//	mextOut = {XCL_MEM_DDR_BANK0, reals, 0};
+//	mextProc = {XCL_MEM_DDR_BANK0, processor, 0};
 
-	cl::Buffer inBuff = cl::Buffer(oclFFT->context, CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-						(size_t)(sizeof(APCplx) * n), &mextIn);
-	cl::Buffer outBuff = cl::Buffer(oclFFT->context, CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY,
-						 (size_t)(sizeof(APUInt32) * n), &mextOut);
-	cl::Buffer procBuff = cl::Buffer(oclFFT->context, CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-						  (size_t)(sizeof(processor)), &mextProc);
-	oclFFT->cmdQ.finish();
+//	cl::Buffer inBuff = cl::Buffer(oclFFT->context, CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+//						(size_t)(sizeof(APCplx) * n), &mextIn);
+//	cl::Buffer outBuff = cl::Buffer(oclFFT->context, CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY,
+//						 (size_t)(sizeof(APUInt32) * n), &mextOut);
+//	cl::Buffer procBuff = cl::Buffer(oclFFT->context, CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+//						  (size_t)(sizeof(processor)), &mextProc);
+
+	cl::Buffer inBuff = cl::Buffer(oclFFT->context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+						(size_t)(sizeof(APCplx) * n), reals.data());
+	cl::Buffer outBuff = cl::Buffer(oclFFT->context, CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY,
+						 (size_t)(sizeof(APUInt32) * n), res.data());
+	cl::Buffer procBuff = cl::Buffer(oclFFT->context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+						  (size_t)(sizeof(processor)), processor);
 
 	std::cout << "DDR buffers have been mapped/copy-and-mapped\n";
 
@@ -187,27 +203,30 @@ pair<APCplx *, APInt32 *> fpgaFFT(OCLFFT *oclFFT, const int &n)
 	vector<std::vector<cl::Event> > read_events(1);
 	read_events[0].resize(1);
 
-	// write data to DDR
-	vector<cl::Memory> ib;
-	ib.push_back(inBuff);
-	ib.push_back(procBuff);
-	oclFFT->cmdQ.enqueueMigrateMemObjects(ib, 0, nullptr, &write_events[0][0]);
-
 	// set arguments and enqueue kernel
 	int j = 0;
-	oclFFT->kernel.setArg(j++, inBuff);
-	oclFFT->kernel.setArg(j++, inBuff);
-	oclFFT->kernel.setArg(j++, procBuff);
-	oclFFT->kernel.setArg(j++, outBuff);
-	oclFFT->kernel.setArg(j++, outBuff);
+	err = oclFFT->kernel.setArg(j++, inBuff);
+//	err = oclFFT->kernel.setArg(j++, inBuff);
+	err = oclFFT->kernel.setArg(j++, procBuff);
+//	err = oclFFT->kernel.setArg(j++, outBuff);
+	err = oclFFT->kernel.setArg(j++, outBuff);
+	oclFFT->logger.logCommonCheck(err, true);
+
+	// write data to DDR
+	vector<cl::Memory> ib = {inBuff, procBuff};
+	//err = oclFFT->cmdQ.enqueueMigrateMemObjects(ib, 0, nullptr, &write_events[0][0]);
+	err = oclFFT->cmdQ.enqueueMigrateMemObjects(ib, 0);
+	oclFFT->logger.logCommonCheck(err, true);
 
 	// Ask for kernel to execute
-	oclFFT->cmdQ.enqueueTask(oclFFT->kernel, &write_events[0], &kernel_events[0][0]);
+	//err = oclFFT->cmdQ.enqueueTask(oclFFT->kernel, &write_events[0], &kernel_events[0][0]);
+	err = oclFFT->cmdQ.enqueueTask(oclFFT->kernel);
+	oclFFT->logger.logCommonCheck(err, true);
 
 	// read data from DDR
-	std::vector<cl::Memory> ob;
-	ob.push_back(outBuff);
-	oclFFT->cmdQ.enqueueMigrateMemObjects(ob, CL_MIGRATE_MEM_OBJECT_HOST, &kernel_events[0], &read_events[0][0]);
+	std::vector<cl::Memory> ob = {outBuff};
+	//err = oclFFT->cmdQ.enqueueMigrateMemObjects(ob, CL_MIGRATE_MEM_OBJECT_HOST, &kernel_events[0], &read_events[0][0]);
+	err = oclFFT->cmdQ.enqueueMigrateMemObjects(ob, CL_MIGRATE_MEM_OBJECT_HOST);
 
 	// wait all to finish
 	oclFFT->cmdQ.flush();
@@ -234,7 +253,7 @@ pair<APCplx *, APInt32 *> fpgaFFT(OCLFFT *oclFFT, const int &n)
 	// total execution time from CPU wall time
 	std::cout << "Total execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
 
-	return {res, reals};
+	return {res.data(), reals.data()};
 }
 
 //	// Number of FFTs to run

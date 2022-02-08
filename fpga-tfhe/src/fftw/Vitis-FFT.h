@@ -24,8 +24,9 @@
 // typedef double _Complex cplx;
 typedef std::complex<double> cplx; // https://stackoverflow.com/a/31800404
 
-#define OCLFLAGS	CL_QUEUE_PROFILING_ENABLE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE
+//#define OCLFLAGS	CL_QUEUE_PROFILING_ENABLE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE
 //#define OCLFLAGS	CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE
+#define OCLFLAGS	CL_QUEUE_PROFILING_ENABLE
 
 // echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode
 struct OCLFFT

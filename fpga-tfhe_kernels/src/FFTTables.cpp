@@ -130,7 +130,7 @@ APUInt64 reverseBits(APUInt64 x, APUInt32 n)
 }
 
 // Real and Imag sizes are expected to be FFTSize
-void fftForward(const FFTTables *tbl, APDouble *real, APDouble *imag)
+void fftForward(const FFTTables &tbl, APDouble *real, APDouble *imag)
 {
 	APUInt64 n = FFTTables::FFTSize;
 
@@ -139,7 +139,7 @@ void fftForward(const FFTTables *tbl, APDouble *real, APDouble *imag)
 
 	for (i = 0; i < n; i++)
 	{
-		APUInt64 j = tbl->bitReversed[i];
+		APUInt64 j = tbl.bitReversed[i];
 
 		if (i < j)
 		{
@@ -214,8 +214,8 @@ void fftForward(const FFTTables *tbl, APDouble *real, APDouble *imag)
 					APUInt64 ti = off + k;    // Table index
 					APDouble re = real[vi + halfsize];
 					APDouble im = imag[vi + halfsize];
-					APDouble tpre = re * tbl->trigTables[tblOffset + ti] + im * tbl->trigTables[tblOffset + ti + 4];
-					APDouble tpim = im * tbl->trigTables[tblOffset + ti] - re * tbl->trigTables[tblOffset + ti + 4];
+					APDouble tpre = re * tbl.trigTables[tblOffset + ti] + im * tbl.trigTables[tblOffset + ti + 4];
+					APDouble tpim = im * tbl.trigTables[tblOffset + ti] - re * tbl.trigTables[tblOffset + ti + 4];
 					real[vi + halfsize] = real[vi] - tpre;
 					imag[vi + halfsize] = imag[vi] - tpim;
 					real[vi] += tpre;
@@ -234,7 +234,7 @@ void fftForward(const FFTTables *tbl, APDouble *real, APDouble *imag)
 }
 
 // Real and Imag sizes are expected to be FFTSize
-void fftInverse(const FFTTables *tbl, APDouble *real, APDouble *imag)
+void fftInverse(const FFTTables &tbl, APDouble *real, APDouble *imag)
 {
 	APUInt64 n = FFTTables::FFTSize;
 
@@ -243,7 +243,7 @@ void fftInverse(const FFTTables *tbl, APDouble *real, APDouble *imag)
 
 	for (i = 0; i < n; i++)
 	{
-		APUInt64 j = tbl->bitReversed[i];
+		APUInt64 j = tbl.bitReversed[i];
 		if (i < j)
 		{
 			APDouble tp0re = real[i];
@@ -318,8 +318,8 @@ void fftInverse(const FFTTables *tbl, APDouble *real, APDouble *imag)
 					APUInt64 ti = off + k;    // Table index
 					APDouble re = real[vi + halfsize];
 					APDouble im = imag[vi + halfsize];
-					APDouble tpre = re * tbl->trigTables[tblOffset + ti] + im * tbl->trigTables[tblOffset + ti + 4];
-					APDouble tpim = im * tbl->trigTables[tblOffset + ti] - re * tbl->trigTables[tblOffset + ti + 4];
+					APDouble tpre = re * tbl.trigTables[tblOffset + ti] + im * tbl.trigTables[tblOffset + ti + 4];
+					APDouble tpim = im * tbl.trigTables[tblOffset + ti] - re * tbl.trigTables[tblOffset + ti + 4];
 					real[vi + halfsize] = real[vi] - tpre;
 					imag[vi + halfsize] = imag[vi] - tpim;
 					real[vi] += tpre;

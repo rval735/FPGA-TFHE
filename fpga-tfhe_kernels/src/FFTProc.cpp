@@ -13,15 +13,12 @@
 
 
 #include "FFTProc.hpp"
-//#include "tfhe/polynomials.h"
-//#include "lagrangehalfc_impl.h"
-//#include "fft.h"
 
 void executeReverseInt(FFTProcessor *proc, APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N])
 {
-	int n = FFTProcessor::N;
-	int n2 = FFTProcessor::N2;
-	APDouble *res_dbl=(APDouble *)res;
+	constexpr int n = FFTProcessor::N;
+	constexpr int n2 = FFTProcessor::N2;
+	APDouble *res_dbl = (APDouble *)res;
 
     for (int i = 0; i < n; i++)
     {
@@ -38,7 +35,7 @@ void executeReverseInt(FFTProcessor *proc, APCplx res[FFTProcessor::N], const AP
     	proc->imagInOut[i] = 0;
     }
 
-    fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
+    fftInverse(proc->tablesInverse, proc->realInOut, proc->imagInOut);
 
     for (int i = 0; i < n; i += 2)
     {
@@ -70,7 +67,7 @@ void executeReverseTorus32(FFTProcessor *proc, APCplx res[FFTProcessor::N], cons
     	proc->imagInOut[i] = 0;
     }
 
-    fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
+    fftInverse(proc->tablesInverse, proc->realInOut, proc->imagInOut);
 
     for (int i = 0; i < FFTProcessor::Ns2; i++)
     {
@@ -116,7 +113,7 @@ void executeDirectTorus32(FFTProcessor *proc, APTorus32 res[FFTProcessor::N], co
     	proc->imagInOut[n2 - 1 - 2 * i] = -a[i].imag();
     }
 
-    fftForward(&proc->tablesForward, proc->realInOut, proc->imagInOut);
+    fftForward(proc->tablesForward, proc->realInOut, proc->imagInOut);
 
     for (int i = 0; i < n; i++)
     {

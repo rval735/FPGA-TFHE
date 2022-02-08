@@ -17,13 +17,13 @@
 //static FFTProcessor processor;
 
 extern "C" void FFTL2Kernel(const APInt32 poly1[FFTTables::FFTSize],
-							const APInt32 poly2[FFTTables::FFTSize],
+							//const APInt32 poly2[FFTTables::FFTSize],
 							FFTProcessor *processor,
-							APCplx lagrange1[FFTTables::FFTSize],
-							APCplx lagrange2[FFTTables::FFTSize])
+							APCplx lagrange1[FFTTables::FFTSize]
+							//APCplx lagrange2[FFTTables::FFTSize]
+							)
 {
-	//executeReverseInt(processor, lagrange1, poly1);
-	printf("FFTL2");
+	executeReverseInt(processor, lagrange1, poly1);
 //	FFTProcessor::executeReverseTorus32(processor, lagrange2, poly2);
 
 
