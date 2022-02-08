@@ -12,16 +12,18 @@
 // of this license document, but changing it is not allowed.
 
 #include "FFTL2Kernel.hpp"
+#include <stdio.h>
 
 //static FFTProcessor processor;
 
-extern "C" void FFTL2Kernel(const int32_t poly1[FFTTables::FFTSize],
-							const int32_t poly2[FFTTables::FFTSize],
+extern "C" void FFTL2Kernel(const APInt32 poly1[FFTTables::FFTSize],
+							const APInt32 poly2[FFTTables::FFTSize],
 							FFTProcessor *processor,
-							cplx lagrange1[FFTTables::FFTSize],
-							cplx lagrange2[FFTTables::FFTSize])
+							APCplx lagrange1[FFTTables::FFTSize],
+							APCplx lagrange2[FFTTables::FFTSize])
 {
-	executeReverseInt(processor, lagrange1, poly1);
+	//executeReverseInt(processor, lagrange1, poly1);
+	printf("FFTL2");
 //	FFTProcessor::executeReverseTorus32(processor, lagrange2, poly2);
 
 

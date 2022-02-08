@@ -15,35 +15,39 @@
 #ifndef FFTPROC_HPP
 #define FFTPROC_HPP
 
-#include <cassert>
-#include <cmath>
-#include <complex>
+//#include <complex>
+#include <hls_x_complex.h>
 
 #include "FFTTables.hpp"
 
 // typedef double _Complex cplx;
-typedef std::complex<double> cplx; // https://stackoverflow.com/a/31800404
-typedef int32_t Torus32; //avant uint32_t
+//typedef std::complex<double> cplx; // https://stackoverflow.com/a/31800404
+typedef APInt32 APTorus32; //avant uint32_t
 //#include "tfhe/tfhe.h"
 //#include "tfhe/polynomials.h"
+
+//https://support.xilinx.com/s/question/0D52E00006mhdOTSAY/whats-better-stdcomplex-or-hlsxcomplex?language=en_US
+// Every variable needs to add "__attribute((no_ctor))"
+//typedef std::complex<APDouble> APCplx;
+typedef hls::x_complex<APDouble> APCplx;
 
 class FFTProcessor
 {
 public:
-    constexpr static int32_t N2 = FFTTables::FFTSize;
-    constexpr static int32_t N = FFTTables::FFTSize / 2;
-    constexpr static int32_t Ns2 = FFTTables::FFTSize / 4;
+    constexpr static int N2 = FFTTables::FFTSize;
+    constexpr static int N = FFTTables::FFTSize / 2;
+    constexpr static int Ns2 = FFTTables::FFTSize / 4;
 
-    double realInOut[N2];
-    double imagInOut[N2];
+    APDouble realInOut[N2];
+    APDouble imagInOut[N2];
 
     FFTTables tablesForward = FFTTables(false);
     FFTTables tablesInverse = FFTTables(true);
 };
 
-void executeReverseInt(FFTProcessor *proc, cplx res[FFTProcessor::N], const int32_t a[FFTProcessor::N]);
-void executeReverseTorus32(FFTProcessor *proc, cplx res[FFTProcessor::N], const Torus32 a[FFTProcessor::N]);
-void executeDirectTorus32(FFTProcessor *proc, Torus32 res[FFTProcessor::N], const cplx a[FFTProcessor::N]);
+void executeReverseInt(FFTProcessor *proc, APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N]);
+void executeReverseTorus32(FFTProcessor *proc, APCplx res[FFTProcessor::N], const APTorus32 a[FFTProcessor::N]);
+void executeDirectTorus32(FFTProcessor *proc, APTorus32 res[FFTProcessor::N], const APCplx a[FFTProcessor::N]);
 
 ////extern thread_local FFT_Processor_nayuki fp1024_nayuki;
 //

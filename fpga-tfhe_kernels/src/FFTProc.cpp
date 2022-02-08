@@ -12,116 +12,115 @@
 // of this license document, but changing it is not allowed.
 
 
-#include <complex>
-
 #include "FFTProc.hpp"
 //#include "tfhe/polynomials.h"
 //#include "lagrangehalfc_impl.h"
 //#include "fft.h"
 
-void executeReverseInt(FFTProcessor *proc, cplx res[FFTProcessor::N], const int32_t a[FFTProcessor::N])
+void executeReverseInt(FFTProcessor *proc, APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N])
 {
 	int n = FFTProcessor::N;
 	int n2 = FFTProcessor::N2;
-	double *res_dbl=(double *)res;
+	APDouble *res_dbl=(APDouble *)res;
 
-    for (int32_t i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
     	proc->realInOut[i] = a[i]/2.;
     }
 
-    for (int32_t i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
     	proc->realInOut[n + i] =-proc->realInOut[i];
     }
 
-    for (int32_t i = 0; i < n2; i++)
+    for (int i = 0; i < n2; i++)
     {
     	proc->imagInOut[i] = 0;
     }
 
     fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
 
-    for (int32_t i = 0; i < n; i += 2)
+    for (int i = 0; i < n; i += 2)
     {
     	res_dbl[i] = proc->realInOut[i + 1];
     	res_dbl[i + 1] = proc->imagInOut[i + 1];
     }
 }
 
-void executeReverseTorus32(FFTProcessor *proc, cplx res[FFTProcessor::N], const Torus32 a[FFTProcessor::N])
+void executeReverseTorus32(FFTProcessor *proc, APCplx res[FFTProcessor::N], const APTorus32 a[FFTProcessor::N])
 {
-    static const double _2pm33 = 1./double(INT64_C(1)<<33);
+	static const APInt64 pm33 = APInt64(1) << 33;
+    static const APDouble _2pm33 = 1. / pm33;
     int n = FFTProcessor::N;
     int n2 = FFTProcessor::N2;
-    int32_t *aa = (int32_t *)a;
+    APInt32 *aa = (APInt32 *)a;
 
-    for (int32_t i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
     	proc->realInOut[i] = aa[i] * _2pm33;
     }
 
-    for (int32_t i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
     	proc->realInOut[n + i] = -proc->realInOut[i];
     }
 
-    for (int32_t i = 0; i < n2; i++)
+    for (int i = 0; i < n2; i++)
     {
     	proc->imagInOut[i] = 0;
     }
 
     fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
 
-    for (int32_t i = 0; i < FFTProcessor::Ns2; i++)
+    for (int i = 0; i < FFTProcessor::Ns2; i++)
     {
-    	res[i] = cplx(proc->realInOut[2 * i + 1], proc->imagInOut[2 * i + 1]);
+    	res[i] = APCplx(proc->realInOut[2 * i + 1], proc->imagInOut[2 * i + 1]);
     }
 }
 
-void executeDirectTorus32(FFTProcessor *proc, Torus32 res[FFTProcessor::N], const cplx a[FFTProcessor::N])
+void executeDirectTorus32(FFTProcessor *proc, APTorus32 res[FFTProcessor::N], const APCplx a[FFTProcessor::N])
 {
-    static const double _2p32 = double(INT64_C(1)<<32);
     int n = FFTProcessor::N;
     int n2 = FFTProcessor::N2;
     int ns2 = FFTProcessor::Ns2;
-    static const double _1sN = double(1)/double(n);
+    static const APDouble _1sN = APDouble(1) / APDouble(n);
+    static const APDouble _2p32 = APDouble(APInt64(1) << 32);
 
-    for (int32_t i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
     	proc->realInOut[2 * i] = 0;
     }
 
-    for (int32_t i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
     	proc->imagInOut[2 * i] = 0;
     }
 
-    for (int32_t i = 0; i < ns2; i++)
+    for (int i = 0; i < ns2; i++)
     {
-    	proc->realInOut[2 * i + 1] = real(a[i]);
+    	proc->realInOut[2 * i + 1] = a[i].real();
     }
 
-    for (int32_t i = 0; i < ns2; i++)
+    for (int i = 0; i < ns2; i++)
     {
-    	proc->imagInOut[2 * i + 1] = imag(a[i]);
+    	proc->imagInOut[2 * i + 1] = a[i].imag();
     }
 
-    for (int32_t i = 0; i < ns2; i++)
+    for (int i = 0; i < ns2; i++)
     {
-    	proc->realInOut[n2 - 1 - 2 * i] = real(a[i]);
+    	proc->realInOut[n2 - 1 - 2 * i] = a[i].real();
     }
 
-    for (int32_t i = 0; i < ns2; i++)
+    for (int i = 0; i < ns2; i++)
     {
-    	proc->imagInOut[n2 - 1 - 2 * i] = -imag(a[i]);
+    	proc->imagInOut[n2 - 1 - 2 * i] = -a[i].imag();
     }
 
     fftForward(&proc->tablesForward, proc->realInOut, proc->imagInOut);
 
-    for (int32_t i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
-    	res[i] = Torus32(int64_t(proc->realInOut[i] * _1sN * _2p32));
+    	res[i] = APTorus32(APInt64(proc->realInOut[i] * _1sN * _2p32));
     }
 }
 

@@ -16,7 +16,13 @@
 #include <xcl/xcl2.hpp>
 #include <xf_utils_sw/logger.hpp>
 #include <utility> // std::pair
+#include <complex>
+
+#include "FFTTables.hpp"
 #include "FFTProc.hpp"
+
+// typedef double _Complex cplx;
+typedef std::complex<double> cplx; // https://stackoverflow.com/a/31800404
 
 #define OCLFLAGS	CL_QUEUE_PROFILING_ENABLE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE
 //#define OCLFLAGS	CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE
@@ -38,8 +44,8 @@ struct OCLFFT
 	xf::common::utils_sw::Logger logger = xf::common::utils_sw::Logger(std::cout, std::cerr);
 };
 
-std::pair<cplx *, int32_t*> cpuFFT(const int &n);
-std::pair<cplx *, int32_t*> fpgaFFT(OCLFFT *oclFFT, const int &n);
+std::pair<cplx *, int32_t *> cpuFFT(const int &n);
+std::pair<APCplx *, APInt32 *> fpgaFFT(OCLFFT *oclFFT, const int &n);
 
 
 /**

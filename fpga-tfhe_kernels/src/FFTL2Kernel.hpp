@@ -17,10 +17,10 @@
 #include "FFTTables.hpp"
 #include "FFTProc.hpp"
 
-extern "C" void FFTL2Kernel(const int32_t poly1[FFTTables::FFTSize],
-							const int32_t poly2[FFTTables::FFTSize],
+extern "C" void FFTL2Kernel(const APInt32 poly1[FFTTables::FFTSize],
+							const APInt32 poly2[FFTTables::FFTSize],
 							FFTProcessor *processor,
-							cplx lagrange1[FFTTables::FFTSize],
-							cplx lagrange2[FFTTables::FFTSize]);
+							APCplx lagrange1[FFTTables::FFTSize],
+							APCplx lagrange2[FFTTables::FFTSize]);
 
 #endif // TORUSOPS

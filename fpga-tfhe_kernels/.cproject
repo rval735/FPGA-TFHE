@@ -35,11 +35,9 @@
                             							
                             <tool command="${XILINX_VITIS}/bin/v++" commandLinePattern="${COMMAND} $(VPP_OPTS) --compile ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="" id="com.xilinx.ide.accel.tool.hwKernelCompiler.1499104127" name="V++ Kernel Compiler" superClass="com.xilinx.ide.accel.tool.hwKernelCompiler">
                                 								
-                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.include_paths.387168485" superClass="com.xilinx.accelerated.toolchain.hw_compiler.include_paths" valueType="includePath">
+                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.include_paths.387168485" name="Include paths (-I)" superClass="com.xilinx.accelerated.toolchain.hw_compiler.include_paths" useByScannerDiscovery="false" valueType="includePath">
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/dsp/L2/include/hw/vitis_fft/fixed&quot;"/>
+                                    <listOptionValue builtIn="false" value="/opt/Xilinx/Vitis_HLS/2021.2/include"/>
                                     								
                                 </option>
                                 								
@@ -91,11 +89,9 @@
                             							
                             <tool errorParsers="" id="com.xilinx.ide.accel.tool.hwKernelCompiler.1348487098" name="V++ Kernel Compiler" superClass="com.xilinx.ide.accel.tool.hwKernelCompiler">
                                 								
-                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.include_paths.81295636" superClass="com.xilinx.accelerated.toolchain.hw_compiler.include_paths" valueType="includePath">
+                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.include_paths.81295636" name="Include paths (-I)" superClass="com.xilinx.accelerated.toolchain.hw_compiler.include_paths" valueType="includePath">
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/dsp/L2/include/hw/vitis_fft/fixed&quot;"/>
+                                    <listOptionValue builtIn="false" value="/opt/Xilinx/Vitis_HLS/2021.2/include"/>
                                     								
                                 </option>
                                 								
@@ -147,11 +143,9 @@
                             							
                             <tool errorParsers="" id="com.xilinx.ide.accel.tool.hwKernelCompiler.513939375" name="V++ Kernel Compiler" superClass="com.xilinx.ide.accel.tool.hwKernelCompiler">
                                 								
-                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.include_paths.1939598041" superClass="com.xilinx.accelerated.toolchain.hw_compiler.include_paths" valueType="includePath">
+                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.include_paths.1939598041" name="Include paths (-I)" superClass="com.xilinx.accelerated.toolchain.hw_compiler.include_paths" valueType="includePath">
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed&quot;"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/dsp/L2/include/hw/vitis_fft/fixed&quot;"/>
+                                    <listOptionValue builtIn="false" value="/opt/Xilinx/Vitis_HLS/2021.2/include"/>
                                     								
                                 </option>
                                 								

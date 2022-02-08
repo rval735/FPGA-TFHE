@@ -14,39 +14,45 @@
 #ifndef FFTTABLES_HPP
 #define FFTTABLES_HPP
 
-#include <stdint.h>
+#include <ap_fixed.h>
+#include <ap_int.h>
 
 // M_PI isn't defined with C99 for whatever reason
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
 #endif
 
+/// https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/C-Arbitrary-Precision-Fixed-Point-Types
 /// In this example the Vitis HLS ap_fixed type is used to define an 18-bit variable
 /// with 6 bits representing the numbers above the decimal point and 12-bits representing
 /// the value below the decimal point. The variable is specified as signed, the
 /// quantization mode is set to round to plus infinity and the default wrap-around mode
 /// is used for overflow.
 /// ap_fixed<18,6,AP_RND > my_type;
-#define IN_WL 16
-#define IN_IL 2
+#define AP_TOTAL 16
+#define AP_DECIMAL 2
 
-typedef std::complex<ap_fixed<IN_WL, IN_IL>> FFTType;
+typedef ap_fixed<64, 52> APDouble;
+typedef ap_uint<64> APUInt64;
+typedef ap_int<64> APInt64;
+typedef ap_uint<32> APUInt32;
+typedef ap_int<32> APInt32;
 
 // Private data structure
 struct FFTTables
 {
-	constexpr static uint64_t FFTSize = 2048;
-	uint64_t bitReversed[FFTSize];
-	double trigTables[(FFTSize - 4) * 2];
+	constexpr static int FFTSize = 2048;
+	APUInt64 bitReversed[FFTSize];
+	APDouble trigTables[(FFTSize - 4) * 2];
 
 	FFTTables(bool isInverse);
 };
 
-double accurateSin(uint64_t i, uint64_t n);
-int32_t floorLog2(uint64_t n);
-uint64_t reverseBits(uint64_t x, uint32_t n);
+APDouble accurateSin(APUInt64 i, APUInt64 n);
+APInt32 floorLog2(APUInt64 n);
+APUInt64 reverseBits(APUInt64 x, APUInt32 n);
 
-void fftForward(const FFTTables *tbl, double *real, double *imag);
-void fftInverse(const FFTTables *tbl, double *real, double *imag);
+void fftForward(const FFTTables *tbl, APDouble *real, APDouble *imag);
+void fftInverse(const FFTTables *tbl, APDouble *real, APDouble *imag);
 
 #endif // FFTTABLES_HPP
