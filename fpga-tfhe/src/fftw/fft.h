@@ -44,4 +44,11 @@ void fft_destroy(void *tables);
 }
 #endif
 
+// Private data structure
+struct FftTables {
+	uint64_t n;
+	uint64_t *bit_reversed;
+	double *trig_tables;
+};
+
 #endif //FFT_NAYUKI_H

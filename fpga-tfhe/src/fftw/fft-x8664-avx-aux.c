@@ -33,13 +33,6 @@
     #define M_PI 3.14159265358979323846
 #endif
 
-// Private data structure
-struct FftTables {
-	uint64_t n;
-	uint64_t *bit_reversed;
-	double *trig_tables;
-};
-
 
 // Private function prototypes
 static double accurate_sine(uint64_t i, uint64_t n);

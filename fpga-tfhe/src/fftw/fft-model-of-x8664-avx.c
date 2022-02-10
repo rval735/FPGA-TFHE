@@ -26,15 +26,6 @@
 #include <stdlib.h>
 #include "fft.h"
 
-
-// Private data structure
-struct FftTables {
-	uint64_t n;
-	uint64_t *bit_reversed;
-	double *trig_tables;
-};
-
-
 /*---- Function implementations ----*/
 
 // This is a C implementation that models the x86-64 AVX implementation.

@@ -20,9 +20,6 @@
 #include "Vitis-FFT.h"
 #include "FFTTables.hpp"
 #include "fft.h"
-#include "fftw/lagrangehalfc_impl.h"
-
-using namespace std;
 
 inline int tvdiff(struct timeval* tv0, struct timeval* tv1)
 {
@@ -83,24 +80,33 @@ OCLFFT::OCLFFT(string xclbinPath)
 void OCLFFT::executeFFT()
 {
 	int n = FFTTables::FFTSize / 2;
-	pair<cplx *, int32_t *> cpuLagrange = cpuFFT(n);
-	pair<APCplx *, APInt32 *> fpgaLagrange = fpgaFFT(this, n);
+	tuple<vector<cplx>, vector<int32_t>, FFT_Processor_nayuki *> cpuLagrange = cpuFFT(n);
+	//pair<APCplx *, APInt32 *> fpgaLagrange = fpgaFFT(this, n);
+	tuple<vector<APCplx>, vector<APInt32>, FFTProcessor *> fpgaLagrange = kernelFFT(n);
 
 	int err = 0;
 
-	FFT_Processor_nayuki cpuFFT(n);
-	//aligned_allocator<FFTProcessor> allocProc;
-	//FFTProcessor *processor = allocProc.allocate(1);
-	FFTProcessor *processor = alignedAlloc<FFTProcessor>(1);
+	FFT_Processor_nayuki *nay = get<2>(cpuLagrange);
+	FftTables *tbd = (FftTables *)(nay->tables_direct);
+	FftTables *tbi = (FftTables *)(nay->tables_reverse);
+	FFTProcessor *fpg = get<2>(fpgaLagrange);
+	const double EPSILON = 1e-8;
 
 	for (int i = 0; i < n; i++)
 	{
-		cplx cpuFElem = cpuLagrange.first[i];
-		APCplx fpgaFElem = fpgaLagrange.first[i];
-		int32_t cpuSElem = cpuLagrange.second[i];
-		APInt32 fpgaSElem = fpgaLagrange.second[i];
+		cplx cpuFElem = get<0>(cpuLagrange)[i];
+		APCplx fpgaFElem = get<0>(fpgaLagrange)[i];
+		int32_t cpuSElem = get<1>(cpuLagrange)[i];
+		APInt32 fpgaSElem = get<1>(fpgaLagrange)[i];
 
-		if (real(cpuFElem) != fpgaFElem.real().to_double())
+		double rElem = real(cpuFElem);
+		double rFlem = fpgaFElem.real().to_double();
+		bool rEq = abs(rElem - rFlem) < EPSILON;
+		double cElem = imag(cpuFElem);
+		double cFlem = fpgaFElem.imag().to_double();
+		bool cEq = abs(cElem - cFlem) < EPSILON;
+
+		if (rEq == false || cEq == false)
 		{
 			cout << "Complex diff: " << cpuFElem << " != " << fpgaFElem << endl;
 			err++;
@@ -112,26 +118,52 @@ void OCLFFT::executeFFT()
 			err++;
 		}
 
+		double rNay = nay->real_inout[i];
+		double rFpg = fpg->realInOut[i];
+		double cNay = nay->imag_inout[i];
+		double cFpg = fpg->imagInOut[i];
+		bool rEq1 = abs(rNay - rFpg) < EPSILON;
+		bool cEq1 = abs(rNay - rFpg) < EPSILON;
 
-//		if (cpuFFT.real_inout != processor->realInOut)
-//		{
-//			cout << "Err proc realInOut: " << cpuFFT.real_inout << " != " << processor->realInOut << endl;
-//		}
-//
-//		if (cpuFFT.imag_inout != double(processor->imagInOut))
-//		{
-//			cout << "Err proc imagInout: " << cpuFFT.imag_inout << " != " << processor->imagInOut << endl;
-//		}
+
+		uint64_t bFNay = tbd->bit_reversed[i];
+		double tFNay = tbd->trig_tables[i];
+		APInt64 bFFpg = fpg->tablesForward.bitReversed[i];
+		double tFFpg = fpg->tablesForward.trigTables[i].to_double();
+		bool bFEq = bFNay == bFFpg;
+		bool tFEq = abs(tFNay - tFFpg) < EPSILON;
+
+		uint64_t bINay = tbi->bit_reversed[i];
+		double tINay = tbi->trig_tables[i];
+		APInt64 bIFpg = fpg->tablesInverse.bitReversed[i];
+		double tIFpg = fpg->tablesInverse.trigTables[i].to_double();
+		bool bIEq = bINay == bIFpg;
+		bool tIEq = abs(tINay - tIFpg) < EPSILON;
+
+		if (rEq1 == false || cEq1 == false)
+		{
+			cout << "R&C: " << rNay << " != " << rFpg << " // " << cNay << " != " << cFpg << endl;
+			err++;
+		}
+
+		if (bFEq == false || tFEq == false || bIEq == false || tIEq == false)
+		{
+			cout << "Tab " << bFNay << " != " << bFFpg << endl;
+			cout << " \t " << tFNay << " != " << tFFpg << endl;
+			cout << " \t " << bINay << " != " << bIFpg << endl;
+			cout << " \t " << tINay << " != " << tIFpg << endl;
+			err++;
+		}
 	}
 
 	cout << "Errors: " << err << endl;
 }
 
-pair<cplx *, int32_t *> cpuFFT(const int &n)
+tuple<vector<cplx>, vector<int32_t>, FFT_Processor_nayuki *> cpuFFT(const int &n)
 {
-	FFT_Processor_nayuki cpuFFT(n);
-	cplx res[n];
-	int32_t reals[n];
+	FFT_Processor_nayuki *cpuFFT = new FFT_Processor_nayuki(n);
+	vector<cplx> res(n, 0);
+	vector<int32_t> reals(n, 0);
 
 	for (int i = 0; i < n; i++)
 	{
@@ -146,9 +178,40 @@ pair<cplx *, int32_t *> cpuFFT(const int &n)
 		}
 	}
 
-	cpuFFT.execute_reverse_int(res, reals);
+	cpuFFT->execute_reverse_int(res.data(), reals.data());
+	cpuFFT->execute_reverse_torus32(res.data(), reals.data());
+	cpuFFT->execute_direct_torus32(reals.data(), res.data());
+//	fft_transform_reverse(cpuFFT.tables_reverse, cpuFFT.real_inout, cpuFFT.imag_inout);
 
-	return {res, reals};
+	return {res, reals, cpuFFT};
+}
+
+tuple<vector<APCplx>, vector<APInt32>, FFTProcessor *> kernelFFT(const int &n)
+{
+	cl_int err;
+	vector<APCplx> res(n, APCplx(0));
+	vector<APInt32> reals(n, 0);
+	FFTProcessor *proc = new FFTProcessor;
+
+	for (int i = 0; i < n; i++)
+	{
+		if (i % 5)
+		{
+			res[i] = 1 + i;
+		}
+
+		if (i % 7)
+		{
+			reals[i] = 1;
+		}
+	}
+
+	executeReverseInt(proc, res.data(), reals.data());
+	executeReverseTorus32(proc, res.data(), reals.data());
+	executeDirectTorus32(proc, reals.data(), res.data());
+	//fftInverse(proc.tablesInverse, proc.realInOut, proc.imagInOut);
+
+	return {res, reals, proc};
 }
 
 pair<APCplx *, APInt32 *> fpgaFFT(OCLFFT *oclFFT, const int &n)

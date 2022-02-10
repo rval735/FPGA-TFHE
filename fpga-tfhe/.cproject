@@ -47,13 +47,9 @@
                                     									
                                     <listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/src}"/>
                                     									
-                                    <listOptionValue builtIn="false" value="${workspace_loc:/fpga-tfhe_kernels/src}"/>
+                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/utils/L1/include&quot;"/>
                                     									
-                                    <listOptionValue builtIn="false" value="${ProjDirPath}/../Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="${ProjDirPath}/../Vitis_Libraries/dsp/L2/include/hw/vitis_fft/fixed"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="${ProjDirPath}/../Vitis_Libraries/utils/L1/include"/>
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/kernels}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -84,6 +80,8 @@
             </storageModule>
             			
             <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+            			
+            <storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
             		
         </cconfiguration>
         		
@@ -133,11 +131,7 @@
                                     									
                                     <listOptionValue builtIn="false" value="${workspace_loc:/fpga-tfhe_kernels/src}"/>
                                     									
-                                    <listOptionValue builtIn="false" value="${ProjDirPath}/../Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="${ProjDirPath}/../Vitis_Libraries/dsp/L2/include/hw/vitis_fft/fixed"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="${ProjDirPath}/../Vitis_Libraries/utils/L1/include"/>
+                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/utils/L1/include&quot;"/>
                                     								
                                 </option>
                                 								
@@ -217,11 +211,7 @@
                                     									
                                     <listOptionValue builtIn="false" value="${workspace_loc:/fpga-tfhe_kernels/src}"/>
                                     									
-                                    <listOptionValue builtIn="false" value="${ProjDirPath}/../Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="${ProjDirPath}/../Vitis_Libraries/dsp/L2/include/hw/vitis_fft/fixed"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="${ProjDirPath}/../Vitis_Libraries/utils/L1/include"/>
+                                    <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/utils/L1/include&quot;"/>
                                     								
                                 </option>
                                 								
@@ -284,6 +274,8 @@
         <configuration configurationName="Emulation-SW">
             			
             <resource resourceType="PROJECT" workspacePath="/fpga-tfhe"/>
+            			
+            <resource resourceType="FOLDER" workspacePath="/fpga-tfhe_kernels/src"/>
             		
         </configuration>
         		

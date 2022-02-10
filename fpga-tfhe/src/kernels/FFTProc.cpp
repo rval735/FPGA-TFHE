@@ -20,41 +20,40 @@ void executeReverseInt(FFTProcessor *proc, APCplx res[FFTProcessor::N], const AP
 	constexpr int n2 = FFTProcessor::N2;
 	APDouble *res_dbl = (APDouble *)res;
 
-//    for (int i = 0; i < n; i++)
-//    {
-//    	proc->realInOut[i] = a[i]/2.;
-//    }
-//
-//    for (int i = 0; i < n; i++)
-//    {
-//    	proc->realInOut[n + i] =-proc->realInOut[i];
-//    }
-//
-//    for (int i = 0; i < n2; i++)
-//    {
-//    	proc->imagInOut[i] = 0;
-//    }
-//
+    for (int i = 0; i < n; i++)
+    {
+    	proc->realInOut[i] = a[i]/2.;
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+    	proc->realInOut[n + i] =-proc->realInOut[i];
+    }
+
+    for (int i = 0; i < n2; i++)
+    {
+    	proc->imagInOut[i] = 0;
+    }
+
     fftInverse(proc->tablesInverse, proc->realInOut, proc->imagInOut);
-//
-//    for (int i = 0; i < n; i += 2)
-//    {
-//    	res_dbl[i] = proc->realInOut[i + 1];
-//    	res_dbl[i + 1] = proc->imagInOut[i + 1];
-//    }
+
+    for (int i = 0; i < n; i += 2)
+    {
+    	res_dbl[i] = proc->realInOut[i + 1];
+    	res_dbl[i + 1] = proc->imagInOut[i + 1];
+    }
 }
 
 void executeReverseTorus32(FFTProcessor *proc, APCplx res[FFTProcessor::N], const APTorus32 a[FFTProcessor::N])
 {
-	static const APInt64 pm33 = APInt64(1) << 33;
-    static const APDouble _2pm33 = 1. / pm33;
+	static const APDouble pm33 = 1. / (APInt64(1) << 33);
+	//static const double pm33 = 1.1641532182693481e-10;
     int n = FFTProcessor::N;
     int n2 = FFTProcessor::N2;
-    APInt32 *aa = (APInt32 *)a;
 
     for (int i = 0; i < n; i++)
     {
-    	proc->realInOut[i] = aa[i] * _2pm33;
+    	proc->realInOut[i] = a[i] * pm33;
     }
 
     for (int i = 0; i < n; i++)
@@ -80,8 +79,9 @@ void executeDirectTorus32(FFTProcessor *proc, APTorus32 res[FFTProcessor::N], co
     int n = FFTProcessor::N;
     int n2 = FFTProcessor::N2;
     int ns2 = FFTProcessor::Ns2;
-    static const APDouble _1sN = APDouble(1) / APDouble(n);
-    static const APDouble _2p32 = APDouble(APInt64(1) << 32);
+//    static const double snD = 1.0 / n; // 0.0009765625;
+    static const APDouble sN1 = 1.0 / n; //APDouble(snD);
+    static const APDouble p32 = APDouble(APInt64(1) << 32);
 
     for (int i = 0; i < n; i++)
     {
@@ -117,7 +117,9 @@ void executeDirectTorus32(FFTProcessor *proc, APTorus32 res[FFTProcessor::N], co
 
     for (int i = 0; i < n; i++)
     {
-    	res[i] = APTorus32(APInt64(proc->realInOut[i] * _1sN * _2p32));
+    	APInt64 partial = APInt64(proc->realInOut[i] * sN1 * p32);
+    	res[i] = APTorus32(partial);
+    	std::cout << "TorUS:" << res[i] << ", rio: " << proc->realInOut[i] << ", sn1: " << sN1 << ", p32: " << p32 << std::endl;
     }
 }
 

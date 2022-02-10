@@ -20,6 +20,7 @@
 
 #include "FFTTables.hpp"
 #include "FFTProc.hpp"
+#include "fftw/lagrangehalfc_impl.h"
 
 // typedef double _Complex cplx;
 typedef std::complex<double> cplx; // https://stackoverflow.com/a/31800404
@@ -27,6 +28,8 @@ typedef std::complex<double> cplx; // https://stackoverflow.com/a/31800404
 //#define OCLFLAGS	CL_QUEUE_PROFILING_ENABLE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE
 //#define OCLFLAGS	CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE
 #define OCLFLAGS	CL_QUEUE_PROFILING_ENABLE
+
+using namespace std;
 
 // echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode
 struct OCLFFT
@@ -45,8 +48,9 @@ struct OCLFFT
 	xf::common::utils_sw::Logger logger = xf::common::utils_sw::Logger(std::cout, std::cerr);
 };
 
-std::pair<cplx *, int32_t *> cpuFFT(const int &n);
-std::pair<APCplx *, APInt32 *> fpgaFFT(OCLFFT *oclFFT, const int &n);
+tuple<vector<cplx>, vector<int32_t>, FFT_Processor_nayuki *> cpuFFT(const int &n);
+tuple<vector<APCplx>, vector<APInt32>, FFTProcessor *> kernelFFT(const int &n);
+pair<APCplx *, APInt32 *> fpgaFFT(OCLFFT *oclFFT, const int &n);
 
 
 /**
