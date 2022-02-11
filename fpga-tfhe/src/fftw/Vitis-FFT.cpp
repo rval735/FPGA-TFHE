@@ -101,9 +101,11 @@ void OCLFFT::executeFFT()
 
 		double rElem = real(cpuFElem);
 		double rFlem = fpgaFElem.real().to_double();
+//		double rFlem = fpgaFElem.real();
 		bool rEq = abs(rElem - rFlem) < EPSILON;
 		double cElem = imag(cpuFElem);
 		double cFlem = fpgaFElem.imag().to_double();
+//		double cFlem = fpgaFElem.imag();
 		bool cEq = abs(cElem - cFlem) < EPSILON;
 
 		if (rEq == false || cEq == false)
@@ -130,6 +132,7 @@ void OCLFFT::executeFFT()
 		double tFNay = tbd->trig_tables[i];
 		APInt64 bFFpg = fpg->tablesForward.bitReversed[i];
 		double tFFpg = fpg->tablesForward.trigTables[i].to_double();
+//		double tFFpg = fpg->tablesForward.trigTables[i];
 		bool bFEq = bFNay == bFFpg;
 		bool tFEq = abs(tFNay - tFFpg) < EPSILON;
 
@@ -137,6 +140,7 @@ void OCLFFT::executeFFT()
 		double tINay = tbi->trig_tables[i];
 		APInt64 bIFpg = fpg->tablesInverse.bitReversed[i];
 		double tIFpg = fpg->tablesInverse.trigTables[i].to_double();
+//		double tIFpg = fpg->tablesInverse.trigTables[i];
 		bool bIEq = bINay == bIFpg;
 		bool tIEq = abs(tINay - tIFpg) < EPSILON;
 
@@ -178,10 +182,24 @@ tuple<vector<cplx>, vector<int32_t>, FFT_Processor_nayuki *> cpuFFT(const int &n
 		}
 	}
 
+	for (int i = 0; i < FFTTables::FFTSize; i++)
+	{
+		if (i % 5)
+		{
+			cpuFFT->real_inout[i] = 0.5;
+		}
+
+		if (i % 7)
+		{
+			cpuFFT->imag_inout[i] = -0.5;
+		}
+	}
+
 	cpuFFT->execute_reverse_int(res.data(), reals.data());
 	cpuFFT->execute_reverse_torus32(res.data(), reals.data());
 	cpuFFT->execute_direct_torus32(reals.data(), res.data());
-//	fft_transform_reverse(cpuFFT.tables_reverse, cpuFFT.real_inout, cpuFFT.imag_inout);
+//	fft_transform(cpuFFT->tables_direct, cpuFFT->real_inout, cpuFFT->imag_inout);
+//	fft_transform_reverse(cpuFFT->tables_reverse, cpuFFT->real_inout, cpuFFT->imag_inout);
 
 	return {res, reals, cpuFFT};
 }
@@ -206,10 +224,24 @@ tuple<vector<APCplx>, vector<APInt32>, FFTProcessor *> kernelFFT(const int &n)
 		}
 	}
 
+	for (int i = 0; i < FFTTables::FFTSize; i++)
+	{
+		if (i % 5)
+		{
+			proc->realInOut[i] = 0.5;
+		}
+
+		if (i % 7)
+		{
+			proc->imagInOut[i] = -0.5;
+		}
+	}
+
 	executeReverseInt(proc, res.data(), reals.data());
 	executeReverseTorus32(proc, res.data(), reals.data());
 	executeDirectTorus32(proc, reals.data(), res.data());
-	//fftInverse(proc.tablesInverse, proc.realInOut, proc.imagInOut);
+//	fftForward(&proc->tablesForward, proc->realInOut, proc->imagInOut);
+//	fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
 
 	return {res, reals, proc};
 }

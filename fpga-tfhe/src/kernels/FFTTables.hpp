@@ -27,7 +27,9 @@
 #define AP_TOTAL 16
 #define AP_DECIMAL 2
 
-typedef ap_fixed<128, 50> APDouble;
+typedef ap_fixed<128, 40, AP_RND_ZERO, AP_SAT_ZERO> APDouble;
+//typedef ap_fixed<64, 53, AP_RND_ZERO, AP_SAT_ZERO> APDouble; // like the std::double
+//typedef double APDouble;
 typedef ap_uint<64> APUInt64;
 typedef ap_int<64> APInt64;
 typedef ap_uint<32> APUInt32;
@@ -47,7 +49,7 @@ APDouble accurateSin(APUInt64 i, APUInt64 n);
 APInt32 floorLog2(APUInt64 n);
 APUInt64 reverseBits(APUInt64 x, APUInt32 n);
 
-void fftForward(const FFTTables &tbl, APDouble *real, APDouble *imag);
-void fftInverse(const FFTTables &tbl, APDouble *real, APDouble *imag);
+void fftForward(const FFTTables tbl[1], APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize]);
+void fftInverse(const FFTTables tbl[1], APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize]);
 
 #endif // FFTTABLES_HPP

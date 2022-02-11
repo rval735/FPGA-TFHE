@@ -14,7 +14,7 @@
 
 #include "FFTProc.hpp"
 
-void executeReverseInt(FFTProcessor *proc, APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N])
+void executeReverseInt(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N])
 {
 	constexpr int n = FFTProcessor::N;
 	constexpr int n2 = FFTProcessor::N2;
@@ -35,7 +35,7 @@ void executeReverseInt(FFTProcessor *proc, APCplx res[FFTProcessor::N], const AP
     	proc->imagInOut[i] = 0;
     }
 
-    fftInverse(proc->tablesInverse, proc->realInOut, proc->imagInOut);
+    fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
 
     for (int i = 0; i < n; i += 2)
     {
@@ -44,7 +44,7 @@ void executeReverseInt(FFTProcessor *proc, APCplx res[FFTProcessor::N], const AP
     }
 }
 
-void executeReverseTorus32(FFTProcessor *proc, APCplx res[FFTProcessor::N], const APTorus32 a[FFTProcessor::N])
+void executeReverseTorus32(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const APTorus32 a[FFTProcessor::N])
 {
 	static const APDouble pm33 = 1. / (APInt64(1) << 33);
 	//static const double pm33 = 1.1641532182693481e-10;
@@ -66,7 +66,7 @@ void executeReverseTorus32(FFTProcessor *proc, APCplx res[FFTProcessor::N], cons
     	proc->imagInOut[i] = 0;
     }
 
-    fftInverse(proc->tablesInverse, proc->realInOut, proc->imagInOut);
+    fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
 
     for (int i = 0; i < FFTProcessor::Ns2; i++)
     {
@@ -74,7 +74,7 @@ void executeReverseTorus32(FFTProcessor *proc, APCplx res[FFTProcessor::N], cons
     }
 }
 
-void executeDirectTorus32(FFTProcessor *proc, APTorus32 res[FFTProcessor::N], const APCplx a[FFTProcessor::N])
+void executeDirectTorus32(FFTProcessor proc[1], APTorus32 res[FFTProcessor::N], const APCplx a[FFTProcessor::N])
 {
     int n = FFTProcessor::N;
     int n2 = FFTProcessor::N2;
@@ -113,13 +113,14 @@ void executeDirectTorus32(FFTProcessor *proc, APTorus32 res[FFTProcessor::N], co
     	proc->imagInOut[n2 - 1 - 2 * i] = -a[i].imag();
     }
 
-    fftForward(proc->tablesForward, proc->realInOut, proc->imagInOut);
+    fftForward(&proc->tablesForward, proc->realInOut, proc->imagInOut);
 
+//    std::cout <<"Rio\t\tpartial\n";
     for (int i = 0; i < n; i++)
     {
-    	APInt64 partial = APInt64(proc->realInOut[i] * sN1 * p32);
-    	res[i] = APTorus32(partial);
-    	std::cout << "TorUS:" << res[i] << ", rio: " << proc->realInOut[i] << ", sn1: " << sN1 << ", p32: " << p32 << std::endl;
+    	APDouble partial = proc->realInOut[i] * sN1 * p32;
+    	res[i] = partial.to_ap_int();
+//    	std::cout << std::setprecision (12) << res[i] << "\t\t" << partial << std::endl;
     }
 }
 

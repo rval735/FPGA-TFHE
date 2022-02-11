@@ -20,6 +20,7 @@
 #include <complex>
 #include <cassert>
 #include <cmath>
+#include <string.h>
 #include "tfhe/polynomials.h"
 #include "lagrangehalfc_impl.h"
 #include "fft.h"
@@ -27,6 +28,10 @@
 FFT_Processor_nayuki::FFT_Processor_nayuki(const int32_t N): _2N(2*N),N(N),Ns2(N/2) {
     real_inout = (double*) malloc(sizeof(double) * _2N);
     imag_inout = (double*) malloc(sizeof(double) * _2N);
+
+    memset(real_inout, 0, sizeof(double) * _2N);
+    memset(imag_inout, 0, sizeof(double) * _2N);
+
     tables_direct = fft_init(_2N);
     tables_reverse = fft_init_reverse(_2N);
 }
