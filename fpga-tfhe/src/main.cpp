@@ -1,3 +1,5 @@
+#include <fpga/Vitis-FFT.h>
+
 // Project FPGA-TFHE
 // https://github.com/rval735/FPGA-TFHE
 //
@@ -17,7 +19,6 @@
 #include "tfhe/tfhe.h"
 
 #include <iostream>
-#include "fftw/Vitis-FFT.h"
 
 using namespace std;
 
@@ -30,7 +31,7 @@ int32_t main(int32_t argc, char **argv)
 {
 	OCLFFT fft = OCLFFT(std::string(argv[1]));
 	fft.executeFFT();
-
+	return 0;
 //    hls::stream<T_in> inData[SSR];
 //    hls::stream<T_out_F> outData[SSR];
 //    hls::stream<T_out_I> revData[SSR];

@@ -20,36 +20,47 @@
 #include "tfhe/polynomials.h"
 #include "lagrangehalfc_impl.h"
 
-LagrangeHalfCPolynomial_IMPL::LagrangeHalfCPolynomial_IMPL(const int32_t N) {
+LagrangeHalfCPolynomial_IMPL::LagrangeHalfCPolynomial_IMPL(const int32_t N)
+{
     assert(N==1024);
     coefsC = new cplx[N/2];
     proc = &fp1024_nayuki;
+//    proc = &fp1024FPGA;
 }
 
-LagrangeHalfCPolynomial_IMPL::~LagrangeHalfCPolynomial_IMPL() {
+LagrangeHalfCPolynomial_IMPL::~LagrangeHalfCPolynomial_IMPL()
+{
     delete[] coefsC;
-
 }
+
 //initialize the key structure
 //(equivalent of the C++ constructor)
-EXPORT void init_LagrangeHalfCPolynomial(LagrangeHalfCPolynomial* obj, const int32_t N) {
+EXPORT void init_LagrangeHalfCPolynomial(LagrangeHalfCPolynomial* obj, const int32_t N)
+{
     new(obj) LagrangeHalfCPolynomial_IMPL(N);
 }
-EXPORT void init_LagrangeHalfCPolynomial_array(int32_t nbelts, LagrangeHalfCPolynomial* obj, const int32_t N) {
-    for (int32_t i=0; i<nbelts; i++) {
+
+EXPORT void init_LagrangeHalfCPolynomial_array(int32_t nbelts, LagrangeHalfCPolynomial* obj, const int32_t N)
+{
+    for (int32_t i=0; i<nbelts; i++)
+    {
 	new(obj+i) LagrangeHalfCPolynomial_IMPL(N);
     }
 }
 
 //destroys the LagrangeHalfCPolynomial structure
 //(equivalent of the C++ destructor)
-EXPORT void destroy_LagrangeHalfCPolynomial(LagrangeHalfCPolynomial* obj) {
+EXPORT void destroy_LagrangeHalfCPolynomial(LagrangeHalfCPolynomial* obj)
+{
     LagrangeHalfCPolynomial_IMPL* objbis = (LagrangeHalfCPolynomial_IMPL*) obj;
     objbis->~LagrangeHalfCPolynomial_IMPL();
 }
-EXPORT void destroy_LagrangeHalfCPolynomial_array(int32_t nbelts, LagrangeHalfCPolynomial* obj) {
+
+EXPORT void destroy_LagrangeHalfCPolynomial_array(int32_t nbelts, LagrangeHalfCPolynomial* obj)
+{
     LagrangeHalfCPolynomial_IMPL* objbis = (LagrangeHalfCPolynomial_IMPL*) obj;
-    for (int32_t i=0; i<nbelts; i++) {
+    for (int32_t i=0; i<nbelts; i++)
+    {
 	(objbis+i)->~LagrangeHalfCPolynomial_IMPL();
     }
 }
@@ -87,7 +98,8 @@ EXPORT void LagrangeHalfCPolynomialAddTorusConstant(LagrangeHalfCPolynomial* res
 EXPORT void LagrangeHalfCPolynomialMul(
 	LagrangeHalfCPolynomial* result,
 	const LagrangeHalfCPolynomial* a,
-	const LagrangeHalfCPolynomial* b) {
+	const LagrangeHalfCPolynomial* b)
+{
     LagrangeHalfCPolynomial_IMPL* result1 = (LagrangeHalfCPolynomial_IMPL*) result;
     const int32_t Ns2 = result1->proc->Ns2;
     cplx* aa = ((LagrangeHalfCPolynomial_IMPL*) a)->coefsC;

@@ -124,6 +124,28 @@ void executeDirectTorus32(FFTProcessor proc[1], APTorus32 res[FFTProcessor::N], 
     }
 }
 
+/** termwise multiplication in Lagrange space */
+void lagrangeHalfCPolynomialMul(APCplx result[FFTProcessor::Ns2],
+								APCplx a[FFTProcessor::Ns2],
+								APCplx b[FFTProcessor::Ns2])
+{
+    constexpr int Ns2 = FFTProcessor::Ns2;
+    for (int i = 0; i < Ns2; i++)
+    {
+    	result[i] = a[i] * b[i];
+    }
+}
+
+// TorusPolynomial += TorusPolynomial
+void torusPolynomialAddTo(APTorus32 result[FFTProcessor::N], const APTorus32 b[FFTProcessor::N])
+{
+    constexpr int n = FFTProcessor::N;
+    for (int i = 0; i < n; ++i)
+    {
+        result[i] += b[i];
+    }
+}
+
 
 //thread_local FFT_Processor_nayuki fp1024_nayuki(1024);
 

@@ -11,15 +11,16 @@
 #include <ap_int.h>
 #include <ap_fixed.h>
 #include <ap_fixed_base.h>
+#include <fpga/Vitis-FFT.h>
 #include <algorithm>
 #include <sys/time.h>
 #include <cstdlib>
 #include <complex>
 #include <hls_stream.h>
 #include <stdio.h>
-#include "Vitis-FFT.h"
 #include "FFTTables.hpp"
-#include "fft.h"
+#include "fftw/fft.h"
+#include "tfhe/polynomials.h"
 
 inline int tvdiff(struct timeval* tv0, struct timeval* tv1)
 {
@@ -79,89 +80,141 @@ OCLFFT::OCLFFT(string xclbinPath)
 
 void OCLFFT::executeFFT()
 {
-	int n = FFTTables::FFTSize / 2;
-	tuple<vector<cplx>, vector<int32_t>, FFT_Processor_nayuki *> cpuLagrange = cpuFFT(n);
-	//pair<APCplx *, APInt32 *> fpgaLagrange = fpgaFFT(this, n);
-	tuple<vector<APCplx>, vector<APInt32>, FFTProcessor *> fpgaLagrange = kernelFFT(n);
-
 	int err = 0;
+	int n = FFTProcessor::N;
+	TorusPolynomial *result = new TorusPolynomial(n);
+	IntPolynomial *poly1 = new IntPolynomial(n);
+	TorusPolynomial *poly2 = new TorusPolynomial(n);
 
-	FFT_Processor_nayuki *nay = get<2>(cpuLagrange);
-	FftTables *tbd = (FftTables *)(nay->tables_direct);
-	FftTables *tbi = (FftTables *)(nay->tables_reverse);
-	FFTProcessor *fpg = get<2>(fpgaLagrange);
-	const double EPSILON = 1e-8;
+	APInt32 poly1T[FFTProcessor::N];
+	APTorus32 poly2T[FFTProcessor::N];
+	APTorus32 resultT[FFTProcessor::N];
 
 	for (int i = 0; i < n; i++)
 	{
-		cplx cpuFElem = get<0>(cpuLagrange)[i];
-		APCplx fpgaFElem = get<0>(fpgaLagrange)[i];
-		int32_t cpuSElem = get<1>(cpuLagrange)[i];
-		APInt32 fpgaSElem = get<1>(fpgaLagrange)[i];
+		result->coefsT[i] = 0;
+		resultT[i] = 0;
 
-		double rElem = real(cpuFElem);
-		double rFlem = fpgaFElem.real().to_double();
-//		double rFlem = fpgaFElem.real();
-		bool rEq = abs(rElem - rFlem) < EPSILON;
-		double cElem = imag(cpuFElem);
-		double cFlem = fpgaFElem.imag().to_double();
-//		double cFlem = fpgaFElem.imag();
-		bool cEq = abs(cElem - cFlem) < EPSILON;
-
-		if (rEq == false || cEq == false)
+		if (i % 5)
 		{
-			cout << "Complex diff: " << cpuFElem << " != " << fpgaFElem << endl;
-			err++;
+			poly1->coefs[i] = 1;
+			poly1T[i] = 1;
 		}
-
-		if (cpuSElem != fpgaSElem)
+		if (i % 7)
 		{
-			cout << "Int32 diff: " << cpuSElem << " != " << fpgaSElem << endl;
-			err++;
+			poly2->coefsT[i] = 1;
+			poly2T[i] = 1;
 		}
-
-		double rNay = nay->real_inout[i];
-		double rFpg = fpg->realInOut[i];
-		double cNay = nay->imag_inout[i];
-		double cFpg = fpg->imagInOut[i];
-		bool rEq1 = abs(rNay - rFpg) < EPSILON;
-		bool cEq1 = abs(rNay - rFpg) < EPSILON;
-
-
-		uint64_t bFNay = tbd->bit_reversed[i];
-		double tFNay = tbd->trig_tables[i];
-		APInt64 bFFpg = fpg->tablesForward.bitReversed[i];
-		double tFFpg = fpg->tablesForward.trigTables[i].to_double();
-//		double tFFpg = fpg->tablesForward.trigTables[i];
-		bool bFEq = bFNay == bFFpg;
-		bool tFEq = abs(tFNay - tFFpg) < EPSILON;
-
-		uint64_t bINay = tbi->bit_reversed[i];
-		double tINay = tbi->trig_tables[i];
-		APInt64 bIFpg = fpg->tablesInverse.bitReversed[i];
-		double tIFpg = fpg->tablesInverse.trigTables[i].to_double();
-//		double tIFpg = fpg->tablesInverse.trigTables[i];
-		bool bIEq = bINay == bIFpg;
-		bool tIEq = abs(tINay - tIFpg) < EPSILON;
-
-		if (rEq1 == false || cEq1 == false)
+		else
 		{
-			cout << "R&C: " << rNay << " != " << rFpg << " // " << cNay << " != " << cFpg << endl;
-			err++;
-		}
-
-		if (bFEq == false || tFEq == false || bIEq == false || tIEq == false)
-		{
-			cout << "Tab " << bFNay << " != " << bFFpg << endl;
-			cout << " \t " << tFNay << " != " << tFFpg << endl;
-			cout << " \t " << bINay << " != " << bIFpg << endl;
-			cout << " \t " << tINay << " != " << tIFpg << endl;
-			err++;
+			poly1->coefs[i] = 0;
+			poly2->coefsT[i] = 0;
+			poly1T[i] = 0;
+			poly2T[i] = 0;
 		}
 	}
 
-	cout << "Errors: " << err << endl;
+	torusPolynomialAddMulRFFT(result, poly1, poly2);
+
+	FFTL2Kernel(poly1T, poly2T, resultT);
+
+	for (int i = 0; i < n; i++)
+	{
+		Torus32 val0 = result->coefsT[i];
+		APTorus32 val1 = resultT[i];
+
+		if (val0 != val1)
+		{
+			cout << i << ",\t\t" << val0 << ",\t\t" << val1 << endl;
+		}
+	}
 }
+
+//void OCLFFT::executeFFT()
+//{
+//	int n = FFTTables::FFTSize / 2;
+//	tuple<vector<cplx>, vector<int32_t>, FFT_Processor_nayuki *> cpuLagrange = cpuFFT(n);
+//	//pair<APCplx *, APInt32 *> fpgaLagrange = fpgaFFT(this, n);
+//	tuple<vector<APCplx>, vector<APInt32>, FFTProcessor *> fpgaLagrange = kernelFFT(n);
+//
+//	int err = 0;
+//
+//	FFT_Processor_nayuki *nay = get<2>(cpuLagrange);
+//	FftTables *tbd = (FftTables *)(nay->tables_direct);
+//	FftTables *tbi = (FftTables *)(nay->tables_reverse);
+//	FFTProcessor *fpg = get<2>(fpgaLagrange);
+//	const double EPSILON = 1e-8;
+//
+//	for (int i = 0; i < n; i++)
+//	{
+//		cplx cpuFElem = get<0>(cpuLagrange)[i];
+//		APCplx fpgaFElem = get<0>(fpgaLagrange)[i];
+//		int32_t cpuSElem = get<1>(cpuLagrange)[i];
+//		APInt32 fpgaSElem = get<1>(fpgaLagrange)[i];
+//
+//		double rElem = real(cpuFElem);
+//		double rFlem = fpgaFElem.real().to_double();
+////		double rFlem = fpgaFElem.real();
+//		bool rEq = abs(rElem - rFlem) < EPSILON;
+//		double cElem = imag(cpuFElem);
+//		double cFlem = fpgaFElem.imag().to_double();
+////		double cFlem = fpgaFElem.imag();
+//		bool cEq = abs(cElem - cFlem) < EPSILON;
+//
+//		if (rEq == false || cEq == false)
+//		{
+//			cout << "Complex diff: " << cpuFElem << " != " << fpgaFElem << endl;
+//			err++;
+//		}
+//
+//		if (cpuSElem != fpgaSElem)
+//		{
+//			cout << "Int32 diff: " << cpuSElem << " != " << fpgaSElem << endl;
+//			err++;
+//		}
+//
+//		double rNay = nay->real_inout[i];
+//		double rFpg = fpg->realInOut[i];
+//		double cNay = nay->imag_inout[i];
+//		double cFpg = fpg->imagInOut[i];
+//		bool rEq1 = abs(rNay - rFpg) < EPSILON;
+//		bool cEq1 = abs(rNay - rFpg) < EPSILON;
+//
+//
+//		uint64_t bFNay = tbd->bit_reversed[i];
+//		double tFNay = tbd->trig_tables[i];
+//		APInt64 bFFpg = fpg->tablesForward.bitReversed[i];
+//		double tFFpg = fpg->tablesForward.trigTables[i].to_double();
+////		double tFFpg = fpg->tablesForward.trigTables[i];
+//		bool bFEq = bFNay == bFFpg;
+//		bool tFEq = abs(tFNay - tFFpg) < EPSILON;
+//
+//		uint64_t bINay = tbi->bit_reversed[i];
+//		double tINay = tbi->trig_tables[i];
+//		APInt64 bIFpg = fpg->tablesInverse.bitReversed[i];
+//		double tIFpg = fpg->tablesInverse.trigTables[i].to_double();
+////		double tIFpg = fpg->tablesInverse.trigTables[i];
+//		bool bIEq = bINay == bIFpg;
+//		bool tIEq = abs(tINay - tIFpg) < EPSILON;
+//
+//		if (rEq1 == false || cEq1 == false)
+//		{
+//			cout << "R&C: " << rNay << " != " << rFpg << " // " << cNay << " != " << cFpg << endl;
+//			err++;
+//		}
+//
+//		if (bFEq == false || tFEq == false || bIEq == false || tIEq == false)
+//		{
+//			cout << "Tab " << bFNay << " != " << bFFpg << endl;
+//			cout << " \t " << tFNay << " != " << tFFpg << endl;
+//			cout << " \t " << bINay << " != " << bIFpg << endl;
+//			cout << " \t " << tINay << " != " << tIFpg << endl;
+//			err++;
+//		}
+//	}
+//
+//	cout << "Errors: " << err << endl;
+//}
 
 tuple<vector<cplx>, vector<int32_t>, FFT_Processor_nayuki *> cpuFFT(const int &n)
 {

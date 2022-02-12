@@ -48,6 +48,10 @@ public:
 void executeReverseInt(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N]);
 void executeReverseTorus32(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const APTorus32 a[FFTProcessor::N]);
 void executeDirectTorus32(FFTProcessor proc[1], APTorus32 res[FFTProcessor::N], const APCplx a[FFTProcessor::N]);
+void lagrangeHalfCPolynomialMul(APCplx result[FFTProcessor::Ns2],
+								APCplx a[FFTProcessor::Ns2],
+								APCplx b[FFTProcessor::Ns2]);
+void torusPolynomialAddTo(APTorus32 result[FFTProcessor::N], const APTorus32 b[FFTProcessor::N]);
 
 ////extern thread_local FFT_Processor_nayuki fp1024_nayuki;
 //

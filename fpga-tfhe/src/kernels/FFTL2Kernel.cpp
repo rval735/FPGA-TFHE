@@ -16,15 +16,34 @@
 
 //static FFTProcessor processor;
 
-extern "C" void FFTL2Kernel(const APInt32 poly1[FFTTables::FFTSize],
-							//const APInt32 poly2[FFTTables::FFTSize],
-							FFTProcessor *processor,
-							APCplx lagrange1[FFTTables::FFTSize]
-							//APCplx lagrange2[FFTTables::FFTSize]
+extern "C" void FFTL2Kernel(const APInt32 poly1[FFTProcessor::N],
+							const APTorus32 poly2[FFTProcessor::N],
+							APTorus32 result[FFTProcessor::N]
 							)
 {
-	executeReverseInt(processor, lagrange1, poly1);
-//	FFTProcessor::executeReverseTorus32(processor, lagrange2, poly2);
+	FFTProcessor proc[1];
+	APCplx tmp0[FFTProcessor::N];
+	APCplx tmp1[FFTProcessor::N];
+	APCplx tmp2[FFTProcessor::N];
+	APTorus32 tmpT[FFTProcessor::N];
+
+	executeReverseInt(proc, tmp0, poly1);
+	executeReverseTorus32(proc, tmp1, poly2);
+	lagrangeHalfCPolynomialMul(tmp2, tmp0, tmp1);
+	executeDirectTorus32(proc, tmpT, tmp2);
+	torusPolynomialAddTo(result, tmpT);
+
+//	EXPORT void torusPolynomialAddMulRFFT(TorusPolynomial* result, const IntPolynomial* poly1, const TorusPolynomial* poly2)
+//	    const int32_t N = poly1->N;
+//	    LagrangeHalfCPolynomial* tmp = new_LagrangeHalfCPolynomial_array(3,N);
+//	    TorusPolynomial* tmpr = new_TorusPolynomial(N);
+//	    IntPolynomial_ifft(tmp+0,poly1);
+//	    TorusPolynomial_ifft(tmp+1,poly2);
+//	    LagrangeHalfCPolynomialMul(tmp+2,tmp+0,tmp+1);
+//	    TorusPolynomial_fft(tmpr, tmp+2);
+//	    torusPolynomialAddTo(result, tmpr);
+//	    delete_TorusPolynomial(tmpr);
+//	    delete_LagrangeHalfCPolynomial_array(3,tmp);
 
 
 //#pragma HLS interface m_axi port inData = gmem0 offset = slave
