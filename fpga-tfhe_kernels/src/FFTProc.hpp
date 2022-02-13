@@ -22,7 +22,7 @@
 
 // typedef double _Complex cplx;
 //typedef std::complex<double> cplx; // https://stackoverflow.com/a/31800404
-typedef APInt32 APTorus32; //avant uint32_t
+typedef APInt32 APTorus32;
 //#include "tfhe/tfhe.h"
 //#include "tfhe/polynomials.h"
 
@@ -41,13 +41,17 @@ public:
     APDouble realInOut[N2];
     APDouble imagInOut[N2];
 
-    FFTTables tablesForward = FFTTables(false);
-    FFTTables tablesInverse = FFTTables(true);
+    const FFTTables tablesForward = FFTTables(false);
+    const FFTTables tablesInverse = FFTTables(true);
 };
 
-void executeReverseInt(FFTProcessor *proc, APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N]);
-void executeReverseTorus32(FFTProcessor *proc, APCplx res[FFTProcessor::N], const APTorus32 a[FFTProcessor::N]);
-void executeDirectTorus32(FFTProcessor *proc, APTorus32 res[FFTProcessor::N], const APCplx a[FFTProcessor::N]);
+void executeReverseInt(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N]);
+void executeReverseTorus32(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const APTorus32 a[FFTProcessor::N]);
+void executeDirectTorus32(FFTProcessor proc[1], APTorus32 res[FFTProcessor::N], const APCplx a[FFTProcessor::N]);
+void lagrangeHalfCPolynomialMul(APCplx result[FFTProcessor::Ns2],
+								APCplx a[FFTProcessor::Ns2],
+								APCplx b[FFTProcessor::Ns2]);
+void torusPolynomialAddTo(APTorus32 result[FFTProcessor::N], const APTorus32 b[FFTProcessor::N]);
 
 ////extern thread_local FFT_Processor_nayuki fp1024_nayuki;
 //

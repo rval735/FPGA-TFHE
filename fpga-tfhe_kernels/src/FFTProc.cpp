@@ -14,47 +14,46 @@
 
 #include "FFTProc.hpp"
 
-void executeReverseInt(FFTProcessor *proc, APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N])
+void executeReverseInt(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N])
 {
 	constexpr int n = FFTProcessor::N;
 	constexpr int n2 = FFTProcessor::N2;
 	APDouble *res_dbl = (APDouble *)res;
 
-//    for (int i = 0; i < n; i++)
-//    {
-//    	proc->realInOut[i] = a[i]/2.;
-//    }
-//
-//    for (int i = 0; i < n; i++)
-//    {
-//    	proc->realInOut[n + i] =-proc->realInOut[i];
-//    }
-//
-//    for (int i = 0; i < n2; i++)
-//    {
-//    	proc->imagInOut[i] = 0;
-//    }
-//
-    fftInverse(proc->tablesInverse, proc->realInOut, proc->imagInOut);
-//
-//    for (int i = 0; i < n; i += 2)
-//    {
-//    	res_dbl[i] = proc->realInOut[i + 1];
-//    	res_dbl[i + 1] = proc->imagInOut[i + 1];
-//    }
-}
-
-void executeReverseTorus32(FFTProcessor *proc, APCplx res[FFTProcessor::N], const APTorus32 a[FFTProcessor::N])
-{
-	static const APInt64 pm33 = APInt64(1) << 33;
-    static const APDouble _2pm33 = 1. / pm33;
-    int n = FFTProcessor::N;
-    int n2 = FFTProcessor::N2;
-    APInt32 *aa = (APInt32 *)a;
+    for (int i = 0; i < n; i++)
+    {
+    	proc->realInOut[i] = a[i]/2.;
+    }
 
     for (int i = 0; i < n; i++)
     {
-    	proc->realInOut[i] = aa[i] * _2pm33;
+    	proc->realInOut[n + i] =-proc->realInOut[i];
+    }
+
+    for (int i = 0; i < n2; i++)
+    {
+    	proc->imagInOut[i] = 0;
+    }
+
+    fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
+
+    for (int i = 0; i < n; i += 2)
+    {
+    	res_dbl[i] = proc->realInOut[i + 1];
+    	res_dbl[i + 1] = proc->imagInOut[i + 1];
+    }
+}
+
+void executeReverseTorus32(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const APTorus32 a[FFTProcessor::N])
+{
+	static const APDouble pm33 = 1. / (APInt64(1) << 33);
+	//static const double pm33 = 1.1641532182693481e-10;
+    int n = FFTProcessor::N;
+    int n2 = FFTProcessor::N2;
+
+    for (int i = 0; i < n; i++)
+    {
+    	proc->realInOut[i] = a[i] * pm33;
     }
 
     for (int i = 0; i < n; i++)
@@ -67,7 +66,7 @@ void executeReverseTorus32(FFTProcessor *proc, APCplx res[FFTProcessor::N], cons
     	proc->imagInOut[i] = 0;
     }
 
-    fftInverse(proc->tablesInverse, proc->realInOut, proc->imagInOut);
+    fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
 
     for (int i = 0; i < FFTProcessor::Ns2; i++)
     {
@@ -75,13 +74,14 @@ void executeReverseTorus32(FFTProcessor *proc, APCplx res[FFTProcessor::N], cons
     }
 }
 
-void executeDirectTorus32(FFTProcessor *proc, APTorus32 res[FFTProcessor::N], const APCplx a[FFTProcessor::N])
+void executeDirectTorus32(FFTProcessor proc[1], APTorus32 res[FFTProcessor::N], const APCplx a[FFTProcessor::N])
 {
     int n = FFTProcessor::N;
     int n2 = FFTProcessor::N2;
     int ns2 = FFTProcessor::Ns2;
-    static const APDouble _1sN = APDouble(1) / APDouble(n);
-    static const APDouble _2p32 = APDouble(APInt64(1) << 32);
+//    static const double snD = 1.0 / n; // 0.0009765625;
+    static const APDouble sN1 = 1.0 / n; //APDouble(snD);
+    static const APDouble p32 = APDouble(APInt64(1) << 32);
 
     for (int i = 0; i < n; i++)
     {
@@ -113,11 +113,36 @@ void executeDirectTorus32(FFTProcessor *proc, APTorus32 res[FFTProcessor::N], co
     	proc->imagInOut[n2 - 1 - 2 * i] = -a[i].imag();
     }
 
-    fftForward(proc->tablesForward, proc->realInOut, proc->imagInOut);
+    fftForward(&proc->tablesForward, proc->realInOut, proc->imagInOut);
 
+//    std::cout <<"Rio\t\tpartial\n";
     for (int i = 0; i < n; i++)
     {
-    	res[i] = APTorus32(APInt64(proc->realInOut[i] * _1sN * _2p32));
+    	APDouble partial = proc->realInOut[i] * sN1 * p32;
+    	res[i] = partial.to_ap_int();
+//    	std::cout << std::setprecision (12) << res[i] << "\t\t" << partial << std::endl;
+    }
+}
+
+/** termwise multiplication in Lagrange space */
+void lagrangeHalfCPolynomialMul(APCplx result[FFTProcessor::Ns2],
+								APCplx a[FFTProcessor::Ns2],
+								APCplx b[FFTProcessor::Ns2])
+{
+    constexpr int Ns2 = FFTProcessor::Ns2;
+    for (int i = 0; i < Ns2; i++)
+    {
+    	result[i] = a[i] * b[i];
+    }
+}
+
+// TorusPolynomial += TorusPolynomial
+void torusPolynomialAddTo(APTorus32 result[FFTProcessor::N], const APTorus32 b[FFTProcessor::N])
+{
+    constexpr int n = FFTProcessor::N;
+    for (int i = 0; i < n; ++i)
+    {
+        result[i] += b[i];
     }
 }
 
