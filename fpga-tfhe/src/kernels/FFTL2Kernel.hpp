@@ -20,6 +20,7 @@
 extern "C" void FFTL2Kernel(const APInt32 poly1[FFTProcessor::N],
 							const APTorus32 poly2[FFTProcessor::N],
 							APTorus32 result[FFTProcessor::N]
+							//APCplx res[FFTProcessor::N]
 							);
 
 #endif // TORUSOPS

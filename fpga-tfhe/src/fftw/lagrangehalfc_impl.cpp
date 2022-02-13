@@ -25,7 +25,6 @@ LagrangeHalfCPolynomial_IMPL::LagrangeHalfCPolynomial_IMPL(const int32_t N)
     assert(N==1024);
     coefsC = new cplx[N/2];
     proc = &fp1024_nayuki;
-//    proc = &fp1024FPGA;
 }
 
 LagrangeHalfCPolynomial_IMPL::~LagrangeHalfCPolynomial_IMPL()

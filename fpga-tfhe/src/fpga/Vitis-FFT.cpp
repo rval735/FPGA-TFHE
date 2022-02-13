@@ -82,13 +82,21 @@ void OCLFFT::executeFFT()
 {
 	int err = 0;
 	int n = FFTProcessor::N;
+	const double EPSILON = 1e-8;
 	TorusPolynomial *result = new TorusPolynomial(n);
+	memset(result->coefsT, 0, n * sizeof(Torus32));
 	IntPolynomial *poly1 = new IntPolynomial(n);
+	memset(poly1->coefs, 0, n * sizeof(int32_t));
 	TorusPolynomial *poly2 = new TorusPolynomial(n);
+	memset(poly2->coefsT, 0, n * sizeof(Torus32));
+	LagrangeHalfCPolynomial_IMPL *resIm = new LagrangeHalfCPolynomial_IMPL(n);
+	memset(resIm->coefsC, 0, n * sizeof(cplx));
 
 	APInt32 poly1T[FFTProcessor::N];
 	APTorus32 poly2T[FFTProcessor::N];
 	APTorus32 resultT[FFTProcessor::N];
+	APCplx res[FFTProcessor::N];
+	memset(res, 0, n * sizeof(APCplx));
 
 	for (int i = 0; i < n; i++)
 	{
@@ -99,6 +107,8 @@ void OCLFFT::executeFFT()
 		{
 			poly1->coefs[i] = 1;
 			poly1T[i] = 1;
+			resIm->coefsC[i] = 1 + i;
+			res[i] = 1 + i;
 		}
 		if (i % 7)
 		{
@@ -111,12 +121,63 @@ void OCLFFT::executeFFT()
 			poly2->coefsT[i] = 0;
 			poly1T[i] = 0;
 			poly2T[i] = 0;
+			resIm->coefsC[i] = 0;
+			res[i] = 0;
 		}
 	}
 
+
+	for (int i = 0; i < n; i++)
+	{
+		if (poly1->coefs[i] != poly1T[i])
+		{
+			cout << "No poly1\t" << poly1->coefs[i] << "\t\t\t" << poly1T[i] << endl;
+		}
+
+		if (poly2->coefsT[i] != poly2T[i])
+		{
+			cout << "No poly2\t" << poly2->coefsT[i] << "\t\t\t" << poly2T[i] << endl;
+		}
+	}
+
+
+	for (int i = 0; i < n; i++)
+	{
+		cplx resI = resIm->coefsC[i];
+		double resIR = resI.real();
+		double resIC = resI.imag();
+
+		APCplx resC = res[i];
+		double resCR = resC.real().to_double();
+		double resCC = resC.imag().to_double();
+
+		bool sameResR = abs(resIR - resCR) < EPSILON;
+		bool sameResC = abs(resIC - resCC) < EPSILON;
+
+		if (sameResR == false || sameResC == false)
+		{
+			cout << "Err #"<< i << "\t\t" << resI << "\t!=\t" << resC << endl;
+			err++;
+		}
+	}
+
+
+	struct timeval start_time, end_time;
+		gettimeofday(&start_time, 0);
 	torusPolynomialAddMulRFFT(result, poly1, poly2);
 
+	gettimeofday(&end_time, 0);
+	std::cout << "Torus Total execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
+
+	LagrangeHalfCPolynomial *tmp = (LagrangeHalfCPolynomial *)resIm;
+//	torusPolynomialAddMulRFF(result, tmp, poly1, poly2);
+
+	gettimeofday(&start_time, 0);
 	FFTL2Kernel(poly1T, poly2T, resultT);
+	gettimeofday(&end_time, 0);
+	std::cout << "Kernel Total execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
+
+//	FFTL2Kernel(poly1T, poly2T, resultT, res);
 
 	for (int i = 0; i < n; i++)
 	{
@@ -125,9 +186,33 @@ void OCLFFT::executeFFT()
 
 		if (val0 != val1)
 		{
-			cout << i << ",\t\t" << val0 << ",\t\t" << val1 << endl;
+			cout << "TErr #"<< i << "\t\t" << val0 << "\t\t" << val1 << endl;
+			err++;
 		}
+//		else
+//		{
+//			cout << i << "\t\t" << val0 << endl;
+//		}
+
+//		cplx resI = resIm->coefsC[i];
+//		double resIR = resI.real();
+//		double resIC = resI.imag();
+//
+//		APCplx resC = res[i];
+//		double resCR = resC.real().to_double();
+//		double resCC = resC.imag().to_double();
+//
+//		bool sameResR = abs(resIR - resCR) < EPSILON;
+//		bool sameResC = abs(resIC - resCC) < EPSILON;
+//
+//		if (sameResR == false || sameResC == false)
+//		{
+//			cout << "Err #"<< i << "\t\t" << resI << "\t!=\t" << resC << endl;
+//			err++;
+//		}
 	}
+
+	cout << "Errors: " << err << endl;
 }
 
 //void OCLFFT::executeFFT()

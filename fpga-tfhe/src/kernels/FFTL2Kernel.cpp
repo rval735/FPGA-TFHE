@@ -14,11 +14,11 @@
 #include "FFTL2Kernel.hpp"
 #include <stdio.h>
 
-//static FFTProcessor processor;
 
 extern "C" void FFTL2Kernel(const APInt32 poly1[FFTProcessor::N],
 							const APTorus32 poly2[FFTProcessor::N],
 							APTorus32 result[FFTProcessor::N]
+							//APCplx res[FFTProcessor::N]
 							)
 {
 	FFTProcessor proc[1];
@@ -28,6 +28,7 @@ extern "C" void FFTL2Kernel(const APInt32 poly1[FFTProcessor::N],
 	APTorus32 tmpT[FFTProcessor::N];
 
 	executeReverseInt(proc, tmp0, poly1);
+//	executeReverseInt(proc, res, poly1);
 	executeReverseTorus32(proc, tmp1, poly2);
 	lagrangeHalfCPolynomialMul(tmp2, tmp0, tmp1);
 	executeDirectTorus32(proc, tmpT, tmp2);

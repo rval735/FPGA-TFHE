@@ -251,6 +251,7 @@ EXPORT void tGswSymDecrypt(IntPolynomial *result, const TGswSample *sample, cons
         tLwePhase(tmp, &sample->bloc_sample[k][i], &key->tlwe_key);
         torusPolynomialAddMulR(testvec, decomp + i, tmp);
     }
+
     for (int32_t i = 0; i < N; i++)
         result->coefs[i] = modSwitchFromTorus32(testvec->coefsT[i], Msize);
 

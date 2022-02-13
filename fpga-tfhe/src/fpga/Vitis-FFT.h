@@ -53,7 +53,6 @@ tuple<vector<cplx>, vector<int32_t>, FFT_Processor_nayuki *> cpuFFT(const int &n
 tuple<vector<APCplx>, vector<APInt32>, FFTProcessor *> kernelFFT(const int &n);
 pair<APCplx *, APInt32 *> fpgaFFT(OCLFFT *oclFFT, const int &n);
 
-
 /**
  * FFT functions
 // */
