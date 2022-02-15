@@ -40,9 +40,6 @@ public:
 
     APDouble realInOut[N2];
     APDouble imagInOut[N2];
-
-    const FFTTables tablesForward = FFTTables(false);
-    const FFTTables tablesInverse = FFTTables(true);
 };
 
 void executeReverseInt(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N]);

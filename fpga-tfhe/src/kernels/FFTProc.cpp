@@ -35,7 +35,7 @@ void executeReverseInt(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const 
     	proc->imagInOut[i] = 0;
     }
 
-    fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
+    fftInverse(proc->realInOut, proc->imagInOut);
 
     for (int i = 0; i < n; i += 2)
     {
@@ -67,7 +67,7 @@ void executeReverseTorus32(FFTProcessor proc[1], APCplx res[FFTProcessor::N], co
     	proc->imagInOut[i] = 0;
     }
 
-    fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
+    fftInverse(proc->realInOut, proc->imagInOut);
 
     for (int i = 0; i < FFTProcessor::Ns2; i++)
     {
@@ -114,7 +114,7 @@ void executeDirectTorus32(FFTProcessor proc[1], APTorus32 res[FFTProcessor::N], 
     	proc->imagInOut[n2 - 1 - 2 * i] = -a[i].imag();
     }
 
-    fftForward(&proc->tablesForward, proc->realInOut, proc->imagInOut);
+    fftForward(proc->realInOut, proc->imagInOut);
 
 //    std::cout <<"Rio\t\tpartial\n";
     for (int i = 0; i < n; i++)

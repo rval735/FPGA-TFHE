@@ -16,6 +16,9 @@
 
 using namespace std;
 
+static const FFTTables tablesForward = FFTTables(false);
+static const FFTTables tablesInverse = FFTTables(true);
+
 // Returns a pointer to an opaque structure of FFT tables. n must be a power of 2 and n >= 4.
 FFTTables::FFTTables(bool isInverse)
 {
@@ -130,7 +133,7 @@ APUInt64 reverseBits(APUInt64 x, APUInt32 n)
 }
 
 // Real and Imag sizes are expected to be FFTSize
-void fftForward(const FFTTables tbl[1], APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize])
+void fftForward(APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize])
 {
 	int n = FFTTables::FFTSize;
 
@@ -139,7 +142,7 @@ void fftForward(const FFTTables tbl[1], APDouble real[FFTTables::FFTSize], APDou
 
 	for (i = 0; i < n; i++)
 	{
-		int j = tbl->bitReversed[i];
+		int j = tablesForward.bitReversed[i];
 
 		if (i < j)
 		{
@@ -216,8 +219,8 @@ void fftForward(const FFTTables tbl[1], APDouble real[FFTTables::FFTSize], APDou
 					APUInt64 ti = off + k;    // Table index
 					APDouble re = real[vi + halfsize];
 					APDouble im = imag[vi + halfsize];
-					APDouble tpre = re * tbl->trigTables[tblOffset + ti] + im * tbl->trigTables[tblOffset + ti + 4];
-					APDouble tpim = im * tbl->trigTables[tblOffset + ti] - re * tbl->trigTables[tblOffset + ti + 4];
+					APDouble tpre = re * tablesForward.trigTables[tblOffset + ti] + im * tablesForward.trigTables[tblOffset + ti + 4];
+					APDouble tpim = im * tablesForward.trigTables[tblOffset + ti] - re * tablesForward.trigTables[tblOffset + ti + 4];
 					real[vi + halfsize] = real[vi] - tpre;
 					imag[vi + halfsize] = imag[vi] - tpim;
 					real[vi] += tpre;
@@ -236,7 +239,7 @@ void fftForward(const FFTTables tbl[1], APDouble real[FFTTables::FFTSize], APDou
 }
 
 // Real and Imag sizes are expected to be FFTSize
-void fftInverse(const FFTTables tbl[1], APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize])
+void fftInverse(APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize])
 {
 	APUInt64 n = FFTTables::FFTSize;
 
@@ -245,7 +248,7 @@ void fftInverse(const FFTTables tbl[1], APDouble real[FFTTables::FFTSize], APDou
 
 	for (i = 0; i < n; i++)
 	{
-		APUInt64 j = tbl->bitReversed[i];
+		APUInt64 j = tablesInverse.bitReversed[i];
 		if (i < j)
 		{
 			APDouble tp0re = real[i];
@@ -322,8 +325,8 @@ void fftInverse(const FFTTables tbl[1], APDouble real[FFTTables::FFTSize], APDou
 					APUInt64 ti = off + k;    // Table index
 					APDouble re = real[vi + halfsize];
 					APDouble im = imag[vi + halfsize];
-					APDouble tpre = re * tbl->trigTables[tblOffset + ti] + im * tbl->trigTables[tblOffset + ti + 4];
-					APDouble tpim = im * tbl->trigTables[tblOffset + ti] - re * tbl->trigTables[tblOffset + ti + 4];
+					APDouble tpre = re * tablesInverse.trigTables[tblOffset + ti] + im * tablesInverse.trigTables[tblOffset + ti + 4];
+					APDouble tpim = im * tablesInverse.trigTables[tblOffset + ti] - re * tablesInverse.trigTables[tblOffset + ti + 4];
 					real[vi + halfsize] = real[vi] - tpre;
 					imag[vi + halfsize] = imag[vi] - tpim;
 					real[vi] += tpre;

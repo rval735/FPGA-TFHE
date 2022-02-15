@@ -96,46 +96,122 @@ OCLFFT::OCLFFT(string xclbinPath)
 
 void OCLFFT::torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolynomial *poly1, const TorusPolynomial *poly2)
 {
-	for (int i = 0; i < FFTProcessor::N; i++)
-	{
-		poly1T[i] = poly1->coefs[i];
-		poly2T[i] = poly2->coefsT[i];
-	}
-
 	struct timeval start_time, end_time;
 	gettimeofday(&start_time, 0);
 
-	vector<std::vector<cl::Event> > write_events(1);
-	write_events[0].resize(1);
-	vector<std::vector<cl::Event> > kernel_events(1);
-	kernel_events[0].resize(1);
-	vector<std::vector<cl::Event> > read_events(1);
-	read_events[0].resize(1);
-
-	// write data to DDR
-	vector<cl::Memory> ib = {poly1TBuff, poly2TBuff};
-	cmdQ.enqueueMigrateMemObjects(ib, 0, nullptr, &write_events[0][0]);
-
-//	// set args and enqueue kernel
-//	int j = 0;
-//	kernel.setArg(j++, in_buff);
-//	kernel.setArg(j++, out_buff);
-//	kernel.setArg(j++, nffts);
-	cmdQ.enqueueTask(kernel, &write_events[0], &kernel_events[0][0]);
-
-	// read data from DDR
-	std::vector<cl::Memory> ob = {resultBuff};
-	cmdQ.enqueueMigrateMemObjects(ob, CL_MIGRATE_MEM_OBJECT_HOST, &kernel_events[0], &read_events[0][0]);
-
-	// wait all to finish
-	//cmdQ.flush();
-	cmdQ.finish();
-
-	for (int i = 0; i < FFTProcessor::N; i++)
 	{
-		result->coefsT[i] = resultT[i];
+		for (int i = 0; i < FFTProcessor::N; i++)
+		{
+			poly1T[i] = poly1->coefs[i];
+			poly2T[i] = poly2->coefsT[i];
+		}
+
+		// write data to DDR
+		vector<cl::Memory> ib = {poly1TBuff, poly2TBuff};
+		cmdQ.enqueueMigrateMemObjects(ib, 0);
+
+		cmdQ.enqueueTask(kernel);
+
+		// read data from DDR
+		std::vector<cl::Memory> ob = {resultBuff};
+		cmdQ.enqueueMigrateMemObjects(ob, CL_MIGRATE_MEM_OBJECT_HOST);
+
+		// wait all to finish
+		//cmdQ.flush();
+		cmdQ.finish();
+
+		for (int i = 0; i < FFTProcessor::N; i++)
+		{
+			result->coefsT[i] = resultT[i];
+		}
 	}
+
+	gettimeofday(&end_time, 0);
+	std::cout << "OCL execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
+
+	gettimeofday(&start_time, 0);
+
+	{
+		const int32_t N = poly1->N;
+		LagrangeHalfCPolynomial* tmp = new_LagrangeHalfCPolynomial_array(3,N);
+		TorusPolynomial* tmpr = new_TorusPolynomial(N);
+		IntPolynomial_ifft(tmp+0,poly1);
+		TorusPolynomial_ifft(tmp+1,poly2);
+		LagrangeHalfCPolynomialMul(tmp+2,tmp+0,tmp+1);
+		TorusPolynomial_fft(tmpr, tmp+2);
+		torusPolynomialAddTo(result, tmpr);
+		delete_TorusPolynomial(tmpr);
+		delete_LagrangeHalfCPolynomial_array(3,tmp);
+	}
+
+	gettimeofday(&end_time, 0);
+	std::cout << "CPU execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
+
+
+	int err = 0;
+	int n = FFTProcessor::N;
+
+	for (int i = 0; i < n; i++)
+	{
+		cout << i << "\t\t" << poly1->coefs[i] << "\t\t" << poly2->coefsT[i] << std::endl;
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		Torus32 val0 = result->coefsT[i];
+		APTorus32 val1 = resultT[i];
+
+//		if (val0 != val1)
+//		{
+//			cout << "TErr #"<< i << "\t\t" << val0 << "\t\t" << val1 << endl;
+//			err++;
+//		}
+
+		std::cout << i << "\t\t" << val0 << "\t\t" << val1 << std::endl;
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		Torus32 val0 = result->coefsT[i];
+		APTorus32 val1 = resultT[i];
+
+		if (val0 != val1)
+		{
+			cout << "TErr #"<< i << "\t\t" << val0 << "\t\t" << val1 << endl;
+			err++;
+		}
+	}
+
+	cout << "Errors: " << err << endl;
+	cout << "-_- " << endl;
 }
+
+//{
+//	for (int i = 0; i < FFTProcessor::N; i++)
+//	{
+//		poly1T[i] = poly1->coefs[i];
+//		poly2T[i] = poly2->coefsT[i];
+//	}
+//
+//	// write data to DDR
+//	vector<cl::Memory> ib = {poly1TBuff, poly2TBuff};
+//	cmdQ.enqueueMigrateMemObjects(ib, 0);
+//
+//	cmdQ.enqueueTask(kernel);
+//
+//	// read data from DDR
+//	std::vector<cl::Memory> ob = {resultBuff};
+//	cmdQ.enqueueMigrateMemObjects(ob, CL_MIGRATE_MEM_OBJECT_HOST);
+//
+//	// wait all to finish
+//	//cmdQ.flush();
+//	cmdQ.finish();
+//
+//	for (int i = 0; i < FFTProcessor::N; i++)
+//	{
+//		result->coefsT[i] = resultT[i];
+//	}
+//}
 
 void OCLFFT::executeFFT()
 {

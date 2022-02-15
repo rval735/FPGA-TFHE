@@ -49,7 +49,7 @@ APDouble accurateSin(APUInt64 i, APUInt64 n);
 APInt32 floorLog2(APUInt64 n);
 APUInt64 reverseBits(APUInt64 x, APUInt32 n);
 
-void fftForward(const FFTTables tbl[1], APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize]);
-void fftInverse(const FFTTables tbl[1], APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize]);
+void fftForward(APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize]);
+void fftInverse(APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize]);
 
 #endif // FFTTABLES_HPP

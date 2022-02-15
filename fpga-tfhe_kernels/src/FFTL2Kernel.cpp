@@ -12,8 +12,9 @@
 // of this license document, but changing it is not allowed.
 
 #include "FFTL2Kernel.hpp"
-//#include <stdio.h>
+#include <iostream>
 
+static FFTProcessor proc[1];
 
 extern "C" void FFTL2Kernel(const APInt32 poly1[FFTProcessor::N],
 							const APTorus32 poly2[FFTProcessor::N],
@@ -21,7 +22,15 @@ extern "C" void FFTL2Kernel(const APInt32 poly1[FFTProcessor::N],
 							//APCplx res[FFTProcessor::N]
 							)
 {
-	FFTProcessor proc[1];
+
+
+	for (int i = 0; i < FFTProcessor::N; i++)
+	{
+		std::cout << i << "\t\t" << poly1[i] << "\t\t" << poly2[i] << std::endl;
+	}
+
+	std::cout << "/////////////////////////" << std::endl;
+
 	APCplx tmp0[FFTProcessor::N];
 	APCplx tmp1[FFTProcessor::N];
 	APCplx tmp2[FFTProcessor::N];
@@ -33,6 +42,11 @@ extern "C" void FFTL2Kernel(const APInt32 poly1[FFTProcessor::N],
 	lagrangeHalfCPolynomialMul(tmp2, tmp0, tmp1);
 	executeDirectTorus32(proc, tmpT, tmp2);
 	torusPolynomialAddTo(result, tmpT);
+
+	for (int i = 0; i < FFTProcessor::N; i++)
+	{
+		std::cout << i << "\t\t" << result[i] << std::endl;
+	}
 
 //	EXPORT void torusPolynomialAddMulRFFT(TorusPolynomial* result, const IntPolynomial* poly1, const TorusPolynomial* poly2)
 //	    const int32_t N = poly1->N;
