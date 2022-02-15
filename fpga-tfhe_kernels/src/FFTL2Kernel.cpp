@@ -12,7 +12,7 @@
 // of this license document, but changing it is not allowed.
 
 #include "FFTL2Kernel.hpp"
-#include <stdio.h>
+//#include <stdio.h>
 
 
 extern "C" void FFTL2Kernel(const APInt32 poly1[FFTProcessor::N],

@@ -22,6 +22,8 @@
 #include "fftw/fft.h"
 #include "tfhe/polynomials.h"
 
+thread_local OCLFFT *oclKernel;
+
 inline int tvdiff(struct timeval* tv0, struct timeval* tv1)
 {
     return (tv1->tv_sec - tv0->tv_sec) * 1000000 + (tv1->tv_usec - tv0->tv_usec);
@@ -76,6 +78,63 @@ OCLFFT::OCLFFT(string xclbinPath)
 	kernel = cl::Kernel(program, "FFTL2Kernel", &err);
 	logger.logCreateKernel(err);
 	std::cout << "Kernel has been created.\n";
+
+	poly1T = alignedAlloc<APInt32>(FFTProcessor::N);
+	poly2T = alignedAlloc<APTorus32>(FFTProcessor::N);
+	resultT = alignedAlloc<APTorus32>(FFTProcessor::N);
+
+	poly1TBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, (size_t)(sizeof(APInt32) * FFTProcessor::N), poly1T);
+	poly2TBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, (size_t)(sizeof(APTorus32) * FFTProcessor::N), poly2T);
+	resultBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, (size_t)(sizeof(APTorus32) * FFTProcessor::N), resultT);
+
+	// set args and enqueue kernel
+	int j = 0;
+	kernel.setArg(j++, poly1TBuff);
+	kernel.setArg(j++, poly2TBuff);
+	kernel.setArg(j++, resultBuff);
+}
+
+void OCLFFT::torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolynomial *poly1, const TorusPolynomial *poly2)
+{
+	for (int i = 0; i < FFTProcessor::N; i++)
+	{
+		poly1T[i] = poly1->coefs[i];
+		poly2T[i] = poly2->coefsT[i];
+	}
+
+	struct timeval start_time, end_time;
+	gettimeofday(&start_time, 0);
+
+	vector<std::vector<cl::Event> > write_events(1);
+	write_events[0].resize(1);
+	vector<std::vector<cl::Event> > kernel_events(1);
+	kernel_events[0].resize(1);
+	vector<std::vector<cl::Event> > read_events(1);
+	read_events[0].resize(1);
+
+	// write data to DDR
+	vector<cl::Memory> ib = {poly1TBuff, poly2TBuff};
+	cmdQ.enqueueMigrateMemObjects(ib, 0, nullptr, &write_events[0][0]);
+
+//	// set args and enqueue kernel
+//	int j = 0;
+//	kernel.setArg(j++, in_buff);
+//	kernel.setArg(j++, out_buff);
+//	kernel.setArg(j++, nffts);
+	cmdQ.enqueueTask(kernel, &write_events[0], &kernel_events[0][0]);
+
+	// read data from DDR
+	std::vector<cl::Memory> ob = {resultBuff};
+	cmdQ.enqueueMigrateMemObjects(ob, CL_MIGRATE_MEM_OBJECT_HOST, &kernel_events[0], &read_events[0][0]);
+
+	// wait all to finish
+	//cmdQ.flush();
+	cmdQ.finish();
+
+	for (int i = 0; i < FFTProcessor::N; i++)
+	{
+		result->coefsT[i] = resultT[i];
+	}
 }
 
 void OCLFFT::executeFFT()
@@ -164,16 +223,16 @@ void OCLFFT::executeFFT()
 
 	struct timeval start_time, end_time;
 		gettimeofday(&start_time, 0);
-	torusPolynomialAddMulRFFT(result, poly1, poly2);
+//	torusPolynomialAddMulRFFT(result, poly1, poly2);
 
 	gettimeofday(&end_time, 0);
 	std::cout << "Torus Total execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
 
-	LagrangeHalfCPolynomial *tmp = (LagrangeHalfCPolynomial *)resIm;
+//	LagrangeHalfCPolynomial *tmp = (LagrangeHalfCPolynomial *)resIm;
 //	torusPolynomialAddMulRFF(result, tmp, poly1, poly2);
 
 	gettimeofday(&start_time, 0);
-	FFTL2Kernel(poly1T, poly2T, resultT);
+//	FFTL2Kernel(poly1T, poly2T, resultT);
 	gettimeofday(&end_time, 0);
 	std::cout << "Kernel Total execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
 
@@ -342,47 +401,47 @@ tuple<vector<cplx>, vector<int32_t>, FFT_Processor_nayuki *> cpuFFT(const int &n
 	return {res, reals, cpuFFT};
 }
 
-tuple<vector<APCplx>, vector<APInt32>, FFTProcessor *> kernelFFT(const int &n)
-{
-	cl_int err;
-	vector<APCplx> res(n, APCplx(0));
-	vector<APInt32> reals(n, 0);
-	FFTProcessor *proc = new FFTProcessor;
-
-	for (int i = 0; i < n; i++)
-	{
-		if (i % 5)
-		{
-			res[i] = 1 + i;
-		}
-
-		if (i % 7)
-		{
-			reals[i] = 1;
-		}
-	}
-
-	for (int i = 0; i < FFTTables::FFTSize; i++)
-	{
-		if (i % 5)
-		{
-			proc->realInOut[i] = 0.5;
-		}
-
-		if (i % 7)
-		{
-			proc->imagInOut[i] = -0.5;
-		}
-	}
-
-	executeReverseInt(proc, res.data(), reals.data());
-	executeReverseTorus32(proc, res.data(), reals.data());
-	executeDirectTorus32(proc, reals.data(), res.data());
-//	fftForward(&proc->tablesForward, proc->realInOut, proc->imagInOut);
-//	fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
-
-	return {res, reals, proc};
-}
+//tuple<vector<APCplx>, vector<APInt32>, FFTProcessor *> kernelFFT(const int &n)
+//{
+//	cl_int err;
+//	vector<APCplx> res(n, APCplx(0));
+//	vector<APInt32> reals(n, 0);
+//	FFTProcessor *proc = new FFTProcessor;
+//
+//	for (int i = 0; i < n; i++)
+//	{
+//		if (i % 5)
+//		{
+//			res[i] = 1 + i;
+//		}
+//
+//		if (i % 7)
+//		{
+//			reals[i] = 1;
+//		}
+//	}
+//
+//	for (int i = 0; i < FFTTables::FFTSize; i++)
+//	{
+//		if (i % 5)
+//		{
+//			proc->realInOut[i] = 0.5;
+//		}
+//
+//		if (i % 7)
+//		{
+//			proc->imagInOut[i] = -0.5;
+//		}
+//	}
+//
+//	executeReverseInt(proc, res.data(), reals.data());
+//	executeReverseTorus32(proc, res.data(), reals.data());
+//	executeDirectTorus32(proc, reals.data(), res.data());
+////	fftForward(&proc->tablesForward, proc->realInOut, proc->imagInOut);
+////	fftInverse(&proc->tablesInverse, proc->realInOut, proc->imagInOut);
+//
+//	return {res, reals, proc};
+//}
 
 pair<APCplx *, APInt32 *> fpgaFFT(OCLFFT *oclFFT, const int &n)
 {

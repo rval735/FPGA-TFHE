@@ -18,7 +18,7 @@ void executeReverseInt(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const 
 {
 	constexpr int n = FFTProcessor::N;
 	constexpr int n2 = FFTProcessor::N2;
-	APDouble *res_dbl = (APDouble *)res;
+//	APDouble *res_dbl = (APDouble *)res;
 
     for (int i = 0; i < n; i++)
     {
@@ -39,8 +39,9 @@ void executeReverseInt(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const 
 
     for (int i = 0; i < n; i += 2)
     {
-    	res_dbl[i] = proc->realInOut[i + 1];
-    	res_dbl[i + 1] = proc->imagInOut[i + 1];
+    	res[i] = APCplx(proc->realInOut[i], proc->imagInOut[i]);
+//    	res_dbl[i] = proc->realInOut[i + 1];
+//    	res_dbl[i + 1] = proc->imagInOut[i + 1];
     }
 }
 

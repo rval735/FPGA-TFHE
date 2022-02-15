@@ -23,9 +23,11 @@
 #include "tfhe_core.h"
 #include "polynomials_arithmetic.h"
 #include "lagrangehalfc_arithmetic.h"
-#include "kernels/FFTL2Kernel.hpp"
+#include "fpga/Vitis-FFT.h"
 
 using namespace std;
+
+extern thread_local OCLFFT *oclKernel;
 
 //allocate memory space for a LagrangeHalfCPolynomial
 EXPORT LagrangeHalfCPolynomial* alloc_LagrangeHalfCPolynomial() {
@@ -78,8 +80,9 @@ EXPORT void torusPolynomialMultFFT(TorusPolynomial* result, const IntPolynomial*
     delete_LagrangeHalfCPolynomial_array(3,tmp);
 }
 
-//EXPORT void torusPolynomialAddMulRFFT(TorusPolynomial* result, const IntPolynomial* poly1, const TorusPolynomial* poly2)
-//{
+EXPORT void torusPolynomialAddMulRFFT(TorusPolynomial* result, const IntPolynomial* poly1, const TorusPolynomial* poly2)
+{
+	oclKernel->torusPolynomialAddMulRFFT(result, poly1, poly2);
 //	APInt32 poly1T[FFTProcessor::N];
 //	APTorus32 poly2T[FFTProcessor::N];
 //	APTorus32 resultT[FFTProcessor::N];
@@ -96,21 +99,21 @@ EXPORT void torusPolynomialMultFFT(TorusPolynomial* result, const IntPolynomial*
 //	{
 //		result->coefsT[i] = resultT[i];
 //	}
-//}
-
-EXPORT void torusPolynomialAddMulRFFT(TorusPolynomial* result, const IntPolynomial* poly1, const TorusPolynomial* poly2)
-{
-    const int32_t N = poly1->N;
-    LagrangeHalfCPolynomial* tmp = new_LagrangeHalfCPolynomial_array(3,N);
-    TorusPolynomial* tmpr = new_TorusPolynomial(N);
-    IntPolynomial_ifft(tmp+0,poly1);
-    TorusPolynomial_ifft(tmp+1,poly2);
-    LagrangeHalfCPolynomialMul(tmp+2,tmp+0,tmp+1);
-    TorusPolynomial_fft(tmpr, tmp+2);
-    torusPolynomialAddTo(result, tmpr);
-    delete_TorusPolynomial(tmpr);
-    delete_LagrangeHalfCPolynomial_array(3,tmp);
 }
+
+//EXPORT void torusPolynomialAddMulRFFT(TorusPolynomial* result, const IntPolynomial* poly1, const TorusPolynomial* poly2)
+//{
+//    const int32_t N = poly1->N;
+//    LagrangeHalfCPolynomial* tmp = new_LagrangeHalfCPolynomial_array(3,N);
+//    TorusPolynomial* tmpr = new_TorusPolynomial(N);
+//    IntPolynomial_ifft(tmp+0,poly1);
+//    TorusPolynomial_ifft(tmp+1,poly2);
+//    LagrangeHalfCPolynomialMul(tmp+2,tmp+0,tmp+1);
+//    TorusPolynomial_fft(tmpr, tmp+2);
+//    torusPolynomialAddTo(result, tmpr);
+//    delete_TorusPolynomial(tmpr);
+//    delete_LagrangeHalfCPolynomial_array(3,tmp);
+//}
 
 EXPORT void torusPolynomialSubMulRFFT(TorusPolynomial* result, const IntPolynomial* poly1, const TorusPolynomial* poly2) {
     const int32_t N = poly1->N;

@@ -49,7 +49,7 @@
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/utils/L1/include&quot;"/>
                                     									
-                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/kernels}&quot;"/>
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-tfhe_kernels/src}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -129,9 +129,9 @@
                                     									
                                     <listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/src}"/>
                                     									
-                                    <listOptionValue builtIn="false" value="${workspace_loc:/fpga-tfhe_kernels/src}"/>
-                                    									
                                     <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/utils/L1/include&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-tfhe_kernels/src}&quot;"/>
                                     								
                                 </option>
                                 								
@@ -209,9 +209,9 @@
                                     									
                                     <listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/src}"/>
                                     									
-                                    <listOptionValue builtIn="false" value="${workspace_loc:/fpga-tfhe_kernels/src}"/>
-                                    									
                                     <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/utils/L1/include&quot;"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/fpga-tfhe_kernels/src}&quot;"/>
                                     								
                                 </option>
                                 								

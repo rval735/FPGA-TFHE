@@ -38,6 +38,7 @@ struct OCLFFT
 	OCLFFT(std::string xclbinPath);
 	void executeFFT();
 	void executeFFTAlt();
+	void torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolynomial *poly1, const TorusPolynomial *poly2);
 
 	static void ocl_check(const cl_int &err);
 
@@ -47,6 +48,14 @@ struct OCLFFT
 	cl::Program program;
 	cl::Kernel kernel;
 	xf::common::utils_sw::Logger logger = xf::common::utils_sw::Logger(std::cout, std::cerr);
+
+	APInt32 *poly1T;
+	APTorus32 *poly2T;
+	APTorus32 *resultT;
+
+	cl::Buffer poly1TBuff;
+	cl::Buffer poly2TBuff;
+	cl::Buffer resultBuff;
 };
 
 tuple<vector<cplx>, vector<int32_t>, FFT_Processor_nayuki *> cpuFFT(const int &n);
