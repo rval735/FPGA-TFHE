@@ -32,8 +32,8 @@ extern OCLFFT *oclKernel;
 int32_t main(int32_t argc, char **argv)
 {
 	oclKernel = new OCLFFT(std::string(argv[1]));
-	oclKernel->executeFFT();
-	return 0;
+//	oclKernel->executeFFT();
+//	return 0;
 
     if (argc == 2)
     {

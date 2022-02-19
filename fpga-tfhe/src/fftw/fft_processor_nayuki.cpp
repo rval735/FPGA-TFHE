@@ -25,20 +25,23 @@
 #include "lagrangehalfc_impl.h"
 #include "fft.h"
 
+#include <iostream>
+
+using namespace std;
 
 FFT_Processor_nayuki::FFT_Processor_nayuki(const int32_t N): _2N(2*N),N(N),Ns2(N/2)
 {
     real_inout = (double*) malloc(sizeof(double) * _2N);
     imag_inout = (double*) malloc(sizeof(double) * _2N);
 
-//    for (int i = 0; i < _2N; i++)
-//    {
-//    	real_inout[i] = 0;
-//    	imag_inout[i] = 0;
-//    }
+    for (int i = 0; i < _2N; i++)
+    {
+    	real_inout[i] = 0;
+    	imag_inout[i] = 0;
+    }
 
-    memset(real_inout, 0, sizeof(double) * _2N);
-    memset(imag_inout, 0, sizeof(double) * _2N);
+//    memset(real_inout, 0, sizeof(double) * _2N);
+//    memset(imag_inout, 0, sizeof(double) * _2N);
 
     tables_direct = fft_init(_2N);
     tables_reverse = fft_init_reverse(_2N);
@@ -119,7 +122,7 @@ FFT_Processor_nayuki::~FFT_Processor_nayuki() {
     free(imag_inout);
 }
 
-thread_local FFT_Processor_nayuki fp1024_nayuki(1024);
+FFT_Processor_nayuki fp1024_nayuki(1024);
 
 /**
  * FFT functions

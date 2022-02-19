@@ -27,7 +27,9 @@ FFTProcessor::FFTProcessor()
 	}
 }
 
-void executeReverseInt(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N])
+void executeReverseInt(FFTProcessor proc[1],
+					   APCplx res[FFTProcessor::N],
+					   const APInt32 a[FFTProcessor::N])
 {
 	constexpr int n = FFTProcessor::N;
 	constexpr int n2 = FFTProcessor::N2;
@@ -58,7 +60,9 @@ void executeReverseInt(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const 
     }
 }
 
-void executeReverseTorus32(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const APTorus32 a[FFTProcessor::N])
+void executeReverseTorus32(FFTProcessor proc[1],
+						   APCplx res[FFTProcessor::N],
+						   const APTorus32 a[FFTProcessor::N])
 {
 	static const APDouble pm33 = 1. / (APInt64(1) << 33);
 	//static const double pm33 = 1.1641532182693481e-10;
@@ -88,7 +92,9 @@ void executeReverseTorus32(FFTProcessor proc[1], APCplx res[FFTProcessor::N], co
     }
 }
 
-void executeDirectTorus32(FFTProcessor proc[1], APTorus32 res[FFTProcessor::N], const APCplx a[FFTProcessor::N])
+void executeDirectTorus32(FFTProcessor proc[1],
+						  APTorus32 res[FFTProcessor::N],
+						  const APCplx a[FFTProcessor::N])
 {
     int n = FFTProcessor::N;
     int n2 = FFTProcessor::N2;
@@ -152,7 +158,8 @@ void lagrangeHalfCPolynomialMul(APCplx result[FFTProcessor::Ns2],
 }
 
 // TorusPolynomial += TorusPolynomial
-void torusPolynomialAddTo(APTorus32 result[FFTProcessor::N], const APTorus32 b[FFTProcessor::N])
+void torusPolynomialAddTo(APTorus32 result[FFTProcessor::N],
+						  const APTorus32 b[FFTProcessor::N])
 {
     constexpr int n = FFTProcessor::N;
     for (int i = 0; i < n; ++i)
