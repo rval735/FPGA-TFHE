@@ -132,203 +132,202 @@ int compareElems(T1 *elems, T2 *elems2, bool (*cmp)(T1,T2), bool errs = false, b
 
 void OCLFFT::torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolynomial *poly1, const TorusPolynomial *poly2)
 {
-//	struct timeval start_time, end_time;
-//	gettimeofday(&start_time, 0);
-//	gettimeofday(&end_time, 0);
-//	std::cout << "OCL execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
-
-	int err = 0;
-	int n = FFTProcessor::N;
-
-//	{
-		FFTProcessor proc;
-		APCplx tmp0[FFTProcessor::N];
-		APCplx tmp1[FFTProcessor::N];
-		APCplx tmp2[FFTProcessor::N];
-		APTorus32 resF[FFTProcessor::N];
-
-		LagrangeHalfCPolynomial* tmpS = new_LagrangeHalfCPolynomial_array(3,n);
-		cplx tmpC0[FFTProcessor::N];
-		cplx tmpC1[FFTProcessor::N];
-		cplx tmpC2[FFTProcessor::N];
-		Torus32 resT[FFTProcessor::N];
-		Torus32 resFinal[FFTProcessor::N];
-		TorusPolynomial* tmpr = new_TorusPolynomial(n);
-
-		for (int i = 0; i < FFTProcessor::N; i++)
-		{
-			poly1T[i] = poly1->coefs[i];
-			poly2T[i] = poly2->coefsT[i];
-			tmp0[i] = 0;
-			tmp1[i] = 0;
-			tmp2[i] = 0;
-			result->coefsT[i] = 0;
-			tmpr->coefsT[i] = 0;
-			resF[i] = 0;
-			resFinal[i] = 0;
-			resT[i] = 0;
-			((cplx *)tmpS[0].data)[i] = 0;
-			((cplx *)tmpS[1].data)[i] = 0;
-			((cplx *)tmpS[2].data)[i] = 0;
-			tmpC0[i] = 0;
-			tmpC1[i] = 0;
-			tmpC2[i] = 0;
-
-			if (i % 3)
-			{
-				fp1024_nayuki.real_inout[i] = i * 1.3;
-				proc.realInOut[i] = i * 1.3;
-			}
-
-			if (i % 5)
-			{
-				fp1024_nayuki.imag_inout[i] = i * -1.5;
-				proc.imagInOut[i] = i * -1.5;
-			}
-		}
-
-
-
-		executeReverseInt(&proc, tmp0, poly1T);
-		executeReverseTorus32(&proc, tmp1, poly2T);
-		lagrangeHalfCPolynomialMul(tmp2, tmp0, tmp1);
-		executeDirectTorus32(&proc, resF, tmp2);
-		torusPolynomialAddTo(resFinal, resF);
-////		fftForward(proc.realInOut, proc.imagInOut);
-//		fftInverse(proc.realInOut, proc.imagInOut);
-
-//		fft_transform(fp1024_nayuki.tables_direct, fp1024_nayuki.real_inout, fp1024_nayuki.imag_inout);
-//		fft_transform_reverse(fp1024_nayuki.tables_reverse, fp1024_nayuki.real_inout, fp1024_nayuki.imag_inout);
-//	}
-
-
-
-//	{
-//		const int32_t N = poly1->N;
-//		LagrangeHalfCPolynomial* tmp = new_LagrangeHalfCPolynomial_array(3,N);
-//		TorusPolynomial* tmpr = new_TorusPolynomial(N);
-		IntPolynomial_ifft(tmpS + 0, poly1);
-//		fp1024_nayuki.execute_reverse_int(tmpC0, poly1->coefs);
-		TorusPolynomial_ifft(tmpS + 1, poly2);
-//		fp1024_nayuki.execute_reverse_torus32(tmpC1, poly2->coefsT);
-		LagrangeHalfCPolynomialMul(tmpS + 2,tmpS + 0,tmpS + 1);
-		TorusPolynomial_fft(tmpr, tmpS + 2);
-//		fp1024_nayuki.execute_direct_torus32(resT, tmpC0);
-		torusPolynomialAddTo(result, tmpr);
-//		delete_TorusPolynomial(tmpr);
-//		delete_LagrangeHalfCPolynomial_array(3,tmp);
-//	}
-
-	auto cmpr = [](cplx c1, APCplx c2)
+	for (int i = 0; i < FFTProcessor::N; i++)
 	{
-		const double EPSILON = 1e-8;
-		double c1r = c1.real();
-		double c1i = c1.imag();
-//		double c2r = c2.real().to_double();
-//		double c2i = c2.imag().to_double();
-		double c2r = c2.real();
-		double c2i = c2.imag();
+		poly1T[i] = poly1->coefs[i];
+		poly2T[i] = poly2->coefsT[i];
+	}
 
-		bool sameResR = abs(c1r - c2r) < EPSILON;
-		bool sameResC = abs(c1i - c2i) < EPSILON;
-		return sameResR && sameResC;
-	};
+	// write data to DDR
+	vector<cl::Memory> ib = {poly1TBuff, poly2TBuff};
+	cmdQ.enqueueMigrateMemObjects(ib, 0);
 
-	auto cmprDbl = [](double c1, APDouble c2)
+	cmdQ.enqueueTask(kernel);
+
+	// read data from DDR
+	std::vector<cl::Memory> ob = {resultBuff};
+	cmdQ.enqueueMigrateMemObjects(ob, CL_MIGRATE_MEM_OBJECT_HOST);
+
+	// wait all to finish
+	//cmdQ.flush();
+	cmdQ.finish();
+
+	for (int i = 0; i < FFTProcessor::N; i++)
 	{
-		const double EPSILON = 1e-8;
-//		return abs(c1 - c2.to_double()) < EPSILON;
-		return abs(c1 - c2) < EPSILON;
-	};
-
-	auto cmprUInt64 = [](uint64_t c1, APUInt64 c2)
-	{
-		return c1 == c2;
-	};
-
-	auto cmprTorus = [](Torus32 c1, APTorus32 c2)
-	{
-		return c1 == c2;
-	};
-
-//	err = compareElems<cplx, APCplx>((cplx *)tmpS[0].data, tmp0, cmpr, true, false);
-//	err += compareElems<cplx, APCplx>((cplx *)tmpS[1].data, tmp1, cmpr, true, false);
-//	err += compareElems<cplx, APCplx>((cplx *)tmpS[2].data, tmp2, cmpr, true, false);
-//	err = compareElems<cplx, APCplx>(tmpC0, tmp0, cmpr, true, false);
-//	err += compareElems<cplx, APCplx>(tmpC1, tmp1, cmpr, true, false);
-//	err += compareElems<cplx, APCplx>(tmpC2, tmp2, cmpr, true, false);
-//	err += compareElems<Torus32, APTorus32>(resT, resF, cmprTorus, true, false);
-//	err += compareElems<Torus32, APTorus32>(tmpr->coefsT, resF, cmprTorus, true, false);
-	err += compareElems<Torus32, APTorus32>(result->coefsT, resFinal, cmprTorus, true, false);
-	err += compareElems<double, APDouble>(fp1024_nayuki.real_inout, proc.realInOut, cmprDbl, true, false, FFTProcessor::N2);
-	err += compareElems<double, APDouble>(fp1024_nayuki.imag_inout, proc.imagInOut, cmprDbl, true, false, FFTProcessor::N2);
-//	err += compareElems<double, const APDouble>(((FftTables *)fp1024_nayuki.tables_direct)->trig_tables, tablesForward.trigTables, cmprDbl, true, false, FFTProcessor::N2);
-//	err += compareElems<uint64_t, const APUInt64>(((FftTables *)fp1024_nayuki.tables_direct)->bit_reversed, tablesForward.bitReversed, cmprUInt64, true, false, FFTProcessor::N2);
-//	err += compareElems<double, const APDouble>(((FftTables *)fp1024_nayuki.tables_reverse)->trig_tables, tablesInverse.trigTables, cmprDbl, true, false, FFTProcessor::N2);
-//	err += compareElems<uint64_t, const APUInt64>(((FftTables *)fp1024_nayuki.tables_reverse)->bit_reversed, tablesInverse.bitReversed, cmprUInt64, true, false, FFTProcessor::N2);
-
-
-
-//	for (int i = 0; i < n; i++)
-//	{
-//		cout << i << "\t\t" << poly1->coefs[i] << "\t\t" << poly2->coefsT[i] << std::endl;
-//	}
+		result->coefsT[i] = resultT[i];
+	}
+}
+//{
+////	struct timeval start_time, end_time;
+////	gettimeofday(&start_time, 0);
+////	gettimeofday(&end_time, 0);
+////	std::cout << "OCL execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
 //
-//	for (int i = 0; i < n; i++)
-//	{
-//		Torus32 val0 = result->coefsT[i];
-//		APTorus32 val1 = resultT[i];
+//	int err = 0;
+//	int n = FFTProcessor::N;
 //
+////	{
+//		FFTProcessor proc;
+//		APCplx tmp0[FFTProcessor::N];
+//		APCplx tmp1[FFTProcessor::N];
+//		APCplx tmp2[FFTProcessor::N];
+//		APTorus32 resF[FFTProcessor::N];
+//
+//		LagrangeHalfCPolynomial* tmpS = new_LagrangeHalfCPolynomial_array(3,n);
+//		cplx tmpC0[FFTProcessor::N];
+//		cplx tmpC1[FFTProcessor::N];
+//		cplx tmpC2[FFTProcessor::N];
+//		Torus32 resT[FFTProcessor::N];
+//		Torus32 resFinal[FFTProcessor::N];
+//		TorusPolynomial* tmpr = new_TorusPolynomial(n);
+//
+//		for (int i = 0; i < FFTProcessor::N; i++)
+//		{
+//			poly1T[i] = poly1->coefs[i];
+//			poly2T[i] = poly2->coefsT[i];
+//			tmp0[i] = 0;
+//			tmp1[i] = 0;
+//			tmp2[i] = 0;
+//			result->coefsT[i] = 0;
+//			tmpr->coefsT[i] = 0;
+//			resF[i] = 0;
+//			resFinal[i] = 0;
+//			resT[i] = 0;
+//			((cplx *)tmpS[0].data)[i] = 0;
+//			((cplx *)tmpS[1].data)[i] = 0;
+//			((cplx *)tmpS[2].data)[i] = 0;
+//			tmpC0[i] = 0;
+//			tmpC1[i] = 0;
+//			tmpC2[i] = 0;
+//
+//			if (i % 3)
+//			{
+//				fp1024_nayuki.real_inout[i] = i * 1.3;
+//				proc.realInOut[i] = i * 1.3;
+//			}
+//
+//			if (i % 5)
+//			{
+//				fp1024_nayuki.imag_inout[i] = i * -1.5;
+//				proc.imagInOut[i] = i * -1.5;
+//			}
+//		}
+//
+//
+//
+//		executeReverseInt(&proc, tmp0, poly1T);
+//		executeReverseTorus32(&proc, tmp1, poly2T);
+//		lagrangeHalfCPolynomialMul(tmp2, tmp0, tmp1);
+//		executeDirectTorus32(&proc, resF, tmp2);
+//		torusPolynomialAddTo(resFinal, resF);
+//////		fftForward(proc.realInOut, proc.imagInOut);
+////		fftInverse(proc.realInOut, proc.imagInOut);
+//
+////		fft_transform(fp1024_nayuki.tables_direct, fp1024_nayuki.real_inout, fp1024_nayuki.imag_inout);
+////		fft_transform_reverse(fp1024_nayuki.tables_reverse, fp1024_nayuki.real_inout, fp1024_nayuki.imag_inout);
+////	}
+//
+//
+//
+////	{
+////		const int32_t N = poly1->N;
+////		LagrangeHalfCPolynomial* tmp = new_LagrangeHalfCPolynomial_array(3,N);
+////		TorusPolynomial* tmpr = new_TorusPolynomial(N);
+//		IntPolynomial_ifft(tmpS + 0, poly1);
+////		fp1024_nayuki.execute_reverse_int(tmpC0, poly1->coefs);
+//		TorusPolynomial_ifft(tmpS + 1, poly2);
+////		fp1024_nayuki.execute_reverse_torus32(tmpC1, poly2->coefsT);
+//		LagrangeHalfCPolynomialMul(tmpS + 2,tmpS + 0,tmpS + 1);
+//		TorusPolynomial_fft(tmpr, tmpS + 2);
+////		fp1024_nayuki.execute_direct_torus32(resT, tmpC0);
+//		torusPolynomialAddTo(result, tmpr);
+////		delete_TorusPolynomial(tmpr);
+////		delete_LagrangeHalfCPolynomial_array(3,tmp);
+////	}
+//
+//	auto cmpr = [](cplx c1, APCplx c2)
+//	{
+//		const double EPSILON = 1e-8;
+//		double c1r = c1.real();
+//		double c1i = c1.imag();
+////		double c2r = c2.real().to_double();
+////		double c2i = c2.imag().to_double();
+//		double c2r = c2.real();
+//		double c2i = c2.imag();
+//
+//		bool sameResR = abs(c1r - c2r) < EPSILON;
+//		bool sameResC = abs(c1i - c2i) < EPSILON;
+//		return sameResR && sameResC;
+//	};
+//
+//	auto cmprDbl = [](double c1, APDouble c2)
+//	{
+//		const double EPSILON = 1e-8;
+////		return abs(c1 - c2.to_double()) < EPSILON;
+//		return abs(c1 - c2) < EPSILON;
+//	};
+//
+//	auto cmprUInt64 = [](uint64_t c1, APUInt64 c2)
+//	{
+//		return c1 == c2;
+//	};
+//
+//	auto cmprTorus = [](Torus32 c1, APTorus32 c2)
+//	{
+//		return c1 == c2;
+//	};
+//
+////	err = compareElems<cplx, APCplx>((cplx *)tmpS[0].data, tmp0, cmpr, true, false);
+////	err += compareElems<cplx, APCplx>((cplx *)tmpS[1].data, tmp1, cmpr, true, false);
+////	err += compareElems<cplx, APCplx>((cplx *)tmpS[2].data, tmp2, cmpr, true, false);
+////	err = compareElems<cplx, APCplx>(tmpC0, tmp0, cmpr, true, false);
+////	err += compareElems<cplx, APCplx>(tmpC1, tmp1, cmpr, true, false);
+////	err += compareElems<cplx, APCplx>(tmpC2, tmp2, cmpr, true, false);
+////	err += compareElems<Torus32, APTorus32>(resT, resF, cmprTorus, true, false);
+////	err += compareElems<Torus32, APTorus32>(tmpr->coefsT, resF, cmprTorus, true, false);
+//	err += compareElems<Torus32, APTorus32>(result->coefsT, resFinal, cmprTorus, true, false);
+//	err += compareElems<double, APDouble>(fp1024_nayuki.real_inout, proc.realInOut, cmprDbl, true, false, FFTProcessor::N2);
+//	err += compareElems<double, APDouble>(fp1024_nayuki.imag_inout, proc.imagInOut, cmprDbl, true, false, FFTProcessor::N2);
+////	err += compareElems<double, const APDouble>(((FftTables *)fp1024_nayuki.tables_direct)->trig_tables, tablesForward.trigTables, cmprDbl, true, false, FFTProcessor::N2);
+////	err += compareElems<uint64_t, const APUInt64>(((FftTables *)fp1024_nayuki.tables_direct)->bit_reversed, tablesForward.bitReversed, cmprUInt64, true, false, FFTProcessor::N2);
+////	err += compareElems<double, const APDouble>(((FftTables *)fp1024_nayuki.tables_reverse)->trig_tables, tablesInverse.trigTables, cmprDbl, true, false, FFTProcessor::N2);
+////	err += compareElems<uint64_t, const APUInt64>(((FftTables *)fp1024_nayuki.tables_reverse)->bit_reversed, tablesInverse.bitReversed, cmprUInt64, true, false, FFTProcessor::N2);
+//
+//
+//
+////	for (int i = 0; i < n; i++)
+////	{
+////		cout << i << "\t\t" << poly1->coefs[i] << "\t\t" << poly2->coefsT[i] << std::endl;
+////	}
+////
+////	for (int i = 0; i < n; i++)
+////	{
+////		Torus32 val0 = result->coefsT[i];
+////		APTorus32 val1 = resultT[i];
+////
+//////		if (val0 != val1)
+//////		{
+//////			cout << "TErr #"<< i << "\t\t" << val0 << "\t\t" << val1 << endl;
+//////			err++;
+//////		}
+////
+////		std::cout << i << "\t\t" << val0 << "\t\t" << val1 << std::endl;
+////	}
+//
+////	for (int i = 0; i < n; i++)
+////	{
+////		Torus32 val0 = result->coefsT[i];
+////		APTorus32 val1 = resultT[i];
+////
 ////		if (val0 != val1)
 ////		{
 ////			cout << "TErr #"<< i << "\t\t" << val0 << "\t\t" << val1 << endl;
 ////			err++;
 ////		}
+////	}
 //
-//		std::cout << i << "\t\t" << val0 << "\t\t" << val1 << std::endl;
-//	}
-
-//	for (int i = 0; i < n; i++)
-//	{
-//		Torus32 val0 = result->coefsT[i];
-//		APTorus32 val1 = resultT[i];
-//
-//		if (val0 != val1)
-//		{
-//			cout << "TErr #"<< i << "\t\t" << val0 << "\t\t" << val1 << endl;
-//			err++;
-//		}
-//	}
-
-	cout << "Errors: " << err << endl;
-	cout << "-_- " << endl;
-}
-
-//{
-//	for (int i = 0; i < FFTProcessor::N; i++)
-//	{
-//		poly1T[i] = poly1->coefs[i];
-//		poly2T[i] = poly2->coefsT[i];
-//	}
-//
-//	// write data to DDR
-//	vector<cl::Memory> ib = {poly1TBuff, poly2TBuff};
-//	cmdQ.enqueueMigrateMemObjects(ib, 0);
-//
-//	cmdQ.enqueueTask(kernel);
-//
-//	// read data from DDR
-//	std::vector<cl::Memory> ob = {resultBuff};
-//	cmdQ.enqueueMigrateMemObjects(ob, CL_MIGRATE_MEM_OBJECT_HOST);
-//
-//	// wait all to finish
-//	//cmdQ.flush();
-//	cmdQ.finish();
-//
-//	for (int i = 0; i < FFTProcessor::N; i++)
-//	{
-//		result->coefsT[i] = resultT[i];
-//	}
+//	cout << "Errors: " << err << endl;
+//	cout << "-_- " << endl;
 //}
 
 void OCLFFT::executeFFT()

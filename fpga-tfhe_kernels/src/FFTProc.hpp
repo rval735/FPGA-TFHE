@@ -22,7 +22,7 @@
 
 // typedef double _Complex cplx;
 //typedef std::complex<double> cplx; // https://stackoverflow.com/a/31800404
-typedef APInt32 APTorus32;
+
 //#include "tfhe/tfhe.h"
 //#include "tfhe/polynomials.h"
 
@@ -40,6 +40,8 @@ public:
 
     APDouble realInOut[N2];
     APDouble imagInOut[N2];
+
+    FFTProcessor();
 };
 
 void executeReverseInt(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N]);
