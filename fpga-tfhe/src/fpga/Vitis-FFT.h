@@ -18,9 +18,9 @@
 #include <utility> // std::pair
 #include <complex>
 
-#include "FFTTables.hpp"
-#include "FFTProc.hpp"
-#include "FFTL2Kernel.hpp"
+#include "kernels/FFTTables.hpp"
+#include "kernels/FFTProc.hpp"
+#include "kernels/FFTL2Kernel.hpp"
 #include "fftw/lagrangehalfc_impl.h"
 
 // typedef double _Complex cplx;

@@ -14,20 +14,33 @@
 
 #include "FFTProc.hpp"
 
+#include <iostream>
+
+using namespace std;
+
+FFTProcessor::FFTProcessor()
+{
+	for (int i = 0; i < N2; i++)
+	{
+		realInOut[i] = 0;
+	    imagInOut[i] = 0;
+	}
+}
+
 void executeReverseInt(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const APInt32 a[FFTProcessor::N])
 {
 	constexpr int n = FFTProcessor::N;
 	constexpr int n2 = FFTProcessor::N2;
-//	APDouble *res_dbl = (APDouble *)res;
+	constexpr int ns2 = FFTProcessor::Ns2;
 
     for (int i = 0; i < n; i++)
     {
-    	proc->realInOut[i] = a[i]/2.;
+    	proc->realInOut[i] = a[i] / 2.;
     }
 
     for (int i = 0; i < n; i++)
     {
-    	proc->realInOut[n + i] =-proc->realInOut[i];
+    	proc->realInOut[n + i] = -proc->realInOut[i];
     }
 
     for (int i = 0; i < n2; i++)
@@ -37,11 +50,11 @@ void executeReverseInt(FFTProcessor proc[1], APCplx res[FFTProcessor::N], const 
 
     fftInverse(proc->realInOut, proc->imagInOut);
 
-    for (int i = 0; i < n; i += 2)
+    for (int i = 0; i < ns2; i++)
     {
-    	res[i] = APCplx(proc->realInOut[i], proc->imagInOut[i]);
-//    	res_dbl[i] = proc->realInOut[i + 1];
-//    	res_dbl[i + 1] = proc->imagInOut[i + 1];
+    	int index = 2 * i + 1;
+    	res[i].real(proc->realInOut[index]);
+    	res[i].imag(proc->imagInOut[index]);
     }
 }
 
@@ -120,7 +133,8 @@ void executeDirectTorus32(FFTProcessor proc[1], APTorus32 res[FFTProcessor::N], 
     for (int i = 0; i < n; i++)
     {
     	APDouble partial = proc->realInOut[i] * sN1 * p32;
-    	res[i] = partial.to_ap_int();
+//    	res[i] = partial.to_ap_int();
+    	res[i]=APTorus32(APInt64(partial));
 //    	std::cout << std::setprecision (12) << res[i] << "\t\t" << partial << std::endl;
     }
 }

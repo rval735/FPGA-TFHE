@@ -27,7 +27,7 @@ using namespace std;
 // ********************************* MAIN *******************************************
 // **********************************************************************************
 
-extern thread_local OCLFFT *oclKernel;
+extern OCLFFT *oclKernel;
 
 int32_t main(int32_t argc, char **argv)
 {

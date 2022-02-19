@@ -135,14 +135,14 @@ APUInt64 reverseBits(APUInt64 x, APUInt32 n)
 // Real and Imag sizes are expected to be FFTSize
 void fftForward(APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize])
 {
-	int n = FFTTables::FFTSize;
+	APUInt64 n = FFTTables::FFTSize;
 
 	// Bit-reversed addressing permutation
-	int i;
+	APUInt64 i;
 
 	for (i = 0; i < n; i++)
 	{
-		int j = tablesForward.bitReversed[i];
+		APUInt64 j = tablesForward.bitReversed[i];
 
 		if (i < j)
 		{

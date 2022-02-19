@@ -27,13 +27,20 @@
 #define AP_TOTAL 16
 #define AP_DECIMAL 2
 
-typedef ap_fixed<128, 40, AP_RND_ZERO, AP_SAT_ZERO> APDouble;
+//typedef ap_fixed<128, 40, AP_RND_ZERO, AP_SAT_ZERO> APDouble;
 //typedef ap_fixed<64, 53, AP_RND_ZERO, AP_SAT_ZERO> APDouble; // like the std::double
-//typedef double APDouble;
-typedef ap_uint<64> APUInt64;
-typedef ap_int<64> APInt64;
-typedef ap_uint<32> APUInt32;
-typedef ap_int<32> APInt32;
+//typedef ap_uint<64> APUInt64;
+//typedef ap_int<64> APInt64;
+//typedef ap_uint<32> APUInt32;
+//typedef ap_int<32> APInt32;
+//typedef APInt32 APTorus32;
+
+typedef double APDouble;
+typedef uint64_t APUInt64;
+typedef int64_t APInt64;
+typedef uint32_t APUInt32;
+typedef int32_t APInt32;
+typedef APInt32 APTorus32;
 
 // Private data structure
 struct FFTTables

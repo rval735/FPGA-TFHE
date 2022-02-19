@@ -38,6 +38,7 @@ void fft_transform(const void *tables, double *real, double *imag)
 	uint64_t i;
 	uint64_t *bitreversed = tbl->bit_reversed;
 	for (i = 0; i < n; i++) {
+//		cout << "Pre: " << i << ", " << real[i] << ", " << imag[i]<< endl;
 		uint64_t j = bitreversed[i];
 		if (i < j) {
 			double tp0re = real[i];
@@ -49,6 +50,8 @@ void fft_transform(const void *tables, double *real, double *imag)
 			real[j] = tp0re;
 			imag[j] = tp0im;
 		}
+
+//		cout << "Elems: \t" << real[i] << ", " << imag[i]<< endl;
 	}
 	
 	// Size 2 merge (special)

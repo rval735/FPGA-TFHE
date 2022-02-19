@@ -27,7 +27,7 @@
 
 using namespace std;
 
-extern thread_local OCLFFT *oclKernel;
+extern OCLFFT *oclKernel;
 
 //allocate memory space for a LagrangeHalfCPolynomial
 EXPORT LagrangeHalfCPolynomial* alloc_LagrangeHalfCPolynomial() {
@@ -83,6 +83,7 @@ EXPORT void torusPolynomialMultFFT(TorusPolynomial* result, const IntPolynomial*
 EXPORT void torusPolynomialAddMulRFFT(TorusPolynomial* result, const IntPolynomial* poly1, const TorusPolynomial* poly2)
 {
 	oclKernel->torusPolynomialAddMulRFFT(result, poly1, poly2);
+	exit(1);
 //	APInt32 poly1T[FFTProcessor::N];
 //	APTorus32 poly2T[FFTProcessor::N];
 //	APTorus32 resultT[FFTProcessor::N];
