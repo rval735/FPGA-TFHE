@@ -42,9 +42,7 @@
           <computeUnits name="FFTL2Kernel_1" slr="">
             <args name="poly1" master="true" memory=""/>
             <args name="poly2" master="true" memory=""/>
-            <args name="processor" master="true" memory=""/>
-            <args name="lagrange1" master="true" memory=""/>
-            <args name="lagrange2" master="true" memory=""/>
+            <args name="result" master="true" memory=""/>
           </computeUnits>
         </kernels>
       </binaryContainers>

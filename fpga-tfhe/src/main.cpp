@@ -31,9 +31,17 @@ extern OCLFFT *oclKernel;
 
 int32_t main(int32_t argc, char **argv)
 {
+	struct timeval start_time, end_time;
+	gettimeofday(&start_time, 0);
+
 	oclKernel = new OCLFFT(std::string(argv[1]));
+
+	gettimeofday(&end_time, 0);
+	std::cout << "OCL setup time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
 //	oclKernel->executeFFT();
 //	return 0;
+
+	gettimeofday(&start_time, 0);
 
     if (argc == 2)
     {
@@ -54,7 +62,8 @@ int32_t main(int32_t argc, char **argv)
     static const int32_t ORYN_GATE = 9;
     // static const int32_t MUX_GATE = 10;
     //TODO: parallelization
-    static const int32_t nb_test_gates = 10000000; // number of gates to be tested
+//    static const int32_t nb_test_gates = 100000; // number of gates to be tested
+    static const int32_t nb_test_gates = 500; // number of gates to be tested
     static const int32_t nb_samples = 50; // number of samples to be tested
     static const Torus32 MU = modSwitchToTorus32(1, 8);
 
@@ -72,6 +81,12 @@ int32_t main(int32_t argc, char **argv)
         bootsSymEncrypt(test + i, 0, keyset);
     }
 
+    gettimeofday(&end_time, 0);
+    std::cout << "TFHE setup time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
+    //	oclKernel->executeFFT();
+    //	return 0;
+
+    gettimeofday(&start_time, 0);
 
     for (int32_t i = 0; i < nb_test_gates; ++i) {
         int32_t gate = rand() % 11; // randomly chose a gate between the 10 binary gates and the MUX
@@ -205,5 +220,7 @@ int32_t main(int32_t argc, char **argv)
     delete_gate_bootstrapping_parameters(params);
 
 
+    gettimeofday(&end_time, 0);
+	std::cout << "TFHE with FPGA time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
     return 0;
 }

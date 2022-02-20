@@ -143,11 +143,13 @@
                             							
                             <tool errorParsers="" id="com.xilinx.ide.accel.tool.hwKernelCompiler.513939375" name="V++ Kernel Compiler" superClass="com.xilinx.ide.accel.tool.hwKernelCompiler">
                                 								
-                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.include_paths.1939598041" name="Include paths (-I)" superClass="com.xilinx.accelerated.toolchain.hw_compiler.include_paths" valueType="includePath">
+                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.include_paths.1939598041" name="Include paths (-I)" superClass="com.xilinx.accelerated.toolchain.hw_compiler.include_paths" useByScannerDiscovery="false" valueType="includePath">
                                     									
                                     <listOptionValue builtIn="false" value="/opt/Xilinx/Vitis_HLS/2021.2/include"/>
                                     								
                                 </option>
+                                								
+                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.other_flags.1988864992" name="Other flags" superClass="com.xilinx.accelerated.toolchain.hw_compiler.other_flags" useByScannerDiscovery="false" valueType="stringList"/>
                                 								
                                 <inputType id="com.xilinx.accelerated.toolchain.hw_compiler.input.cl.2047301440" name="OpenCL files" superClass="com.xilinx.accelerated.toolchain.hw_compiler.input.cl"/>
                                 							

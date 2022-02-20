@@ -26,7 +26,7 @@ extern FFT_Processor_nayuki fp1024_nayuki;
 //extern const FFTTables tablesForward;
 //extern const FFTTables tablesInverse;
 
-inline int tvdiff(struct timeval* tv0, struct timeval* tv1)
+int tvdiff(struct timeval* tv0, struct timeval* tv1)
 {
     return (tv1->tv_sec - tv0->tv_sec) * 1000000 + (tv1->tv_usec - tv0->tv_usec);
 }
