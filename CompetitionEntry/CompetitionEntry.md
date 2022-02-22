@@ -12,15 +12,15 @@ Remember, it is not just about the destination, but about enjoying the journey t
 
 ### Background
 
-On an every day basis everyone employs cryptography seamlessly, by surfing the web using HTTPS, buying merchandise at an store using a credit card or by sending messages in (Signal)[https://signal.org/en/]. At the core, these examples take advante of the [Public Key Cryptography scheme (PKC)](https://en.wikipedia.org/wiki/Public-key_cryptography). PKC is also known as "Asymmetric Cryptography", because it employs a set of two (or more) keys to encrypt and decrypt data using a public and private key respectively. The image below shows an example of how PKC is used to transfer a message across a "unsecure" channel, which in this case is the internet.
+On an every day basis everyone employs cryptography seamlessly: surfing the web using HTTPS, buying merchandise at an store using a credit card or by sending messages in (Signal)[https://signal.org/en/]. At the core, these examples take advante of the [Public Key Cryptography scheme (PKC)](https://en.wikipedia.org/wiki/Public-key_cryptography). PKC is also known as "Asymmetric Cryptography", because it employs a set of two (or more) keys to encrypt and decrypt data using a public and private key respectively. The image below shows an example of how PKC is used to transfer a message across a "unsecure" channel, which in this case is the internet.
 
-[Image PKC]
+![Public Key Cryptography scheme (PKC)](Images/PKC.png)
 
-Blockchain implementations like Bitcoin, Ethereum or Cardano employs the PCK principle extensively in its wallet functionality, where a user creates a public address (were funds are deposited) and the private key serves to sign transactions. Something most people do not realize is all transactions in those blockchains are public, in other words, the movement of funds between public addresses is visible to all participants in the network, which makes every move traceable and possibly identifiable to individuals.
+Blockchain implementations like Bitcoin, Ethereum or Cardano employs the PCK principle extensively in its wallet functionality, where a user creates a public address (were funds are deposited) and the private key serves to sign transactions. Something most people do not realize is all transactions in those blockchains are public. In other words, the movement of funds between public addresses is visible to all participants in the network, which makes every move traceable and possibly identifiable to individuals. That applies as well to "smart contracts" on Ethereum, Cardano or Solana, where all the transactions performed require "plain data" to operate.
 
-A similar case occurs with public cloud services. Whenever a company uses their services, for example AWS Lambda, the information transformation happens with clear data. For example, a user access a corporate site hosted on AWS, the communication happens over encrypted channels; however the user's information needs to be decrypted to have it visible to the company as well as AWS, unless everything within the AWS servers is encrypted by the business, which in most cases is not true.
+A similar case occurs with public cloud services. Whenever a company uses their services (like AWS Lambda) the information transformation happens with clear data. For example, a user access a corporate site hosted on AWS, the communication happens over encrypted channels. However the user's information needs to be decrypted to have it visible to the company as well as AWS. Unless everything within the AWS servers is encrypted at every operation by the business, which in most cases is not true.
 
-[Image Blockchain & AWS]
+![Smart Contract Over Plain Data](Images/SmartContractOverPlainData.png)
 
 Therefore, in order to preserve the privacy of the transactions, data transformation and verifiable results with high confidence of no leakage of information, Fully Homomorphic Encryption is the next step.
 

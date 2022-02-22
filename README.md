@@ -2,13 +2,13 @@
 
 This project employs the [Xilinx Varium C1100](https://www.xilinx.com/products/accelerators/varium/c1100.html) reconfigurable FPGA to execute the Fully Homomorphic Encryption operations over the Torus (TFHE), in particular the Fast Furrier Transform and Lagrange Multiplication.
 
-This development is part of the [Adaptive Computing Developer Contest 2021 by Xilinx](https://www.hackster.io/contests/xilinxadaptivecomputing2021/). The entry is explained in this [link.](https://www.hackster.io/rval735/acceleration-of-homomorphic-encryption-with-xilinx-fpga-24d550) as well as the file [CompetitionEntry.md](CompetitionEntry/CompetitionEntry.md) within this repository
+This development is part of the [Adaptive Computing Developer Contest 2021 by Xilinx](https://www.hackster.io/contests/xilinxadaptivecomputing2021/). The entry is explained in this [link.](https://www.hackster.io/rval735/acceleration-of-homomorphic-encryption-with-xilinx-fpga-24d550) as well as the file [Competition Entry](CompetitionEntry/CompetitionEntry.md) within this repository
 
 ### Overview
 
 The image below provides a high-level overview of the system architecture.
 
-![TFHE overview](CompetitionEntry/Images/TFHE-Xilinx.png)
+![TFHE overview](CompetitionEntry/Images/TFHE-Overview.png)
 
 ### Code structure
 
