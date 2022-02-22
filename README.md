@@ -1,8 +1,8 @@
-# Acceleration of homomorphic encryption with Xilinx FPGA
+# Homomorphic encryption execution on the Varium FPGA
 
 This project takes advantage of Xilinx reconfigurable FPGAs to accelerate calculations of the Fully Homomorphic Encryption over the Torus (TFHE), in particular the Fast Furrier Transform (FFT).
 
-This development is part of the [Adaptive Computing Developer Contest 2021 by Xilinx](https://www.hackster.io/contests/xilinxadaptivecomputing2021/). The entry is explained in this [link.](https://www.hackster.io/rval735/acceleration-of-homomorphic-encryption-with-xilinx-fpga-24d550) as well as the file "CompetitionEntry.md" within this repository
+This development is part of the [Adaptive Computing Developer Contest 2021 by Xilinx](https://www.hackster.io/contests/xilinxadaptivecomputing2021/). The entry is explained in this [link.](https://www.hackster.io/rval735/acceleration-of-homomorphic-encryption-with-xilinx-fpga-24d550) as well as the file [CompetitionEntry.md](CompetitionEntry.md) within this repository
 
 ### TL;DR
 
