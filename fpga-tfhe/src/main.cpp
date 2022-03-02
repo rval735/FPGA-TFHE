@@ -38,8 +38,6 @@ int32_t main(int32_t argc, char **argv)
 
 	gettimeofday(&end_time, 0);
 	std::cout << "OCL setup time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
-//	oclKernel->executeFFT();
-//	return 0;
 
 	gettimeofday(&start_time, 0);
 
@@ -49,7 +47,7 @@ int32_t main(int32_t argc, char **argv)
         srand(seed);
         tfhe_random_generator_setSeed(&seed, 1);
     }
-//TODO: parallelization
+
     static const int32_t NAND_GATE = 0;
     static const int32_t OR_GATE = 1;
     static const int32_t AND_GATE = 2;
@@ -61,9 +59,9 @@ int32_t main(int32_t argc, char **argv)
     static const int32_t ORNY_GATE = 8;
     static const int32_t ORYN_GATE = 9;
     // static const int32_t MUX_GATE = 10;
-    //TODO: parallelization
+
 //    static const int32_t nb_test_gates = 100000; // number of gates to be tested
-    static const int32_t nb_test_gates = 500; // number of gates to be tested
+    static const int32_t nb_test_gates = 100; // number of gates to be tested
     static const int32_t nb_samples = 50; // number of samples to be tested
     static const Torus32 MU = modSwitchToTorus32(1, 8);
 
@@ -83,12 +81,11 @@ int32_t main(int32_t argc, char **argv)
 
     gettimeofday(&end_time, 0);
     std::cout << "TFHE setup time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
-    //	oclKernel->executeFFT();
-    //	return 0;
 
     gettimeofday(&start_time, 0);
 
-    for (int32_t i = 0; i < nb_test_gates; ++i) {
+    for (int32_t i = 0; i < nb_test_gates; ++i)
+    {
         int32_t gate = rand() % 11; // randomly chose a gate between the 10 binary gates and the MUX
 
         // randomply chose 2/3 inputs and the output between the samples
@@ -106,7 +103,8 @@ int32_t main(int32_t argc, char **argv)
         bool mess3 = bootsSymDecrypt(test + in3, keyset);
         bool mess;
 
-        switch (gate) {
+        switch (gate)
+        {
             /** bootstrapped Nand Gate */
             // bootsNAND(LweSample* result, const LweSample* ca, const LweSample* cb, const TFheGateBootstrappingCloudKeySet* bk);
             case (NAND_GATE):
@@ -206,12 +204,13 @@ int32_t main(int32_t argc, char **argv)
         }
 
         // verification
-        if (bootsSymDecrypt(test + out, keyset) != mess) {
+        if (bootsSymDecrypt(test + out, keyset) != mess)
+        {
             cerr << "ERROR!!!" << i << " " << gate << " "
                  << t32tod(lwePhase(test + out, keyset->lwe_key) - (mess ? MU : (-MU))) << endl;
         }
-        cout << i << " " << gate << " " << t32tod(lwePhase(test + out, keyset->lwe_key) - (mess ? MU : (-MU))) << endl;
 
+        cout << i << " " << gate << " " << t32tod(lwePhase(test + out, keyset->lwe_key) - (mess ? MU : (-MU))) << endl;
     }
 
 
@@ -221,6 +220,6 @@ int32_t main(int32_t argc, char **argv)
 
 
     gettimeofday(&end_time, 0);
-	std::cout << "TFHE with FPGA time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
+	std::cout << "TFHE " << nb_test_gates << " operations time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
     return 0;
 }

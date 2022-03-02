@@ -18,10 +18,12 @@
 #include <utility> // std::pair
 #include <complex>
 
-#include "kernels/FFTTables.hpp"
-#include "kernels/FFTProc.hpp"
-#include "kernels/FFTL2Kernel.hpp"
+#include <FFTTables.hpp>
+#include <FFTProc.hpp>
+#include <FFTL2Kernel.hpp>
 #include "fftw/lagrangehalfc_impl.h"
+
+using namespace std;
 
 // typedef double _Complex cplx;
 typedef std::complex<double> cplx; // https://stackoverflow.com/a/31800404
@@ -30,14 +32,10 @@ typedef std::complex<double> cplx; // https://stackoverflow.com/a/31800404
 //#define OCLFLAGS	CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE
 #define OCLFLAGS	CL_QUEUE_PROFILING_ENABLE
 
-using namespace std;
 
-// echo 2 | sudo tee /sys/module/hid_apple/parameters/fnmode
 struct OCLFFT
 {
 	OCLFFT(std::string xclbinPath);
-	void executeFFT();
-	void executeFFTAlt();
 	void torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolynomial *poly1, const TorusPolynomial *poly2);
 
 	static void ocl_check(const cl_int &err);
@@ -58,136 +56,7 @@ struct OCLFFT
 	cl::Buffer resultBuff;
 };
 
-tuple<vector<cplx>, vector<int32_t>, FFT_Processor_nayuki *> cpuFFT(const int &n);
-tuple<vector<APCplx>, vector<APInt32>, FFTProcessor *> kernelFFT(const int &n);
-pair<APCplx *, APInt32 *> fpgaFFT(OCLFFT *oclFFT, const int &n);
 
 int tvdiff(struct timeval* tv0, struct timeval* tv1);
-
-/**
- * FFT functions
-// */
-//EXPORT void IntPolynomial_ifft(LagrangeHalfCPolynomial* result, const IntPolynomial* p) {
-//    LagrangeHalfCPolynomial_IMPL* r = (LagrangeHalfCPolynomial_IMPL*) result;
-//    fp1024_nayuki.execute_reverse_int(r->coefsC, p->coefs);
-//}
-//EXPORT void TorusPolynomial_ifft(LagrangeHalfCPolynomial* result, const TorusPolynomial* p) {
-//    LagrangeHalfCPolynomial_IMPL* r = (LagrangeHalfCPolynomial_IMPL*) result;
-//    fp1024_nayuki.execute_reverse_torus32(r->coefsC, p->coefsT);
-//}
-//EXPORT void TorusPolynomial_fft(TorusPolynomial* result, const LagrangeHalfCPolynomial* p) {
-//    LagrangeHalfCPolynomial_IMPL* r = (LagrangeHalfCPolynomial_IMPL*) p;
-//    fp1024_nayuki.execute_direct_torus32(result->coefsT, r->coefsC);
-//}
-
-
-
-//EXPORT void IntPolynomial_ifft(LagrangeHalfCPolynomial* result, const IntPolynomial* p) {
-//    LagrangeHalfCPolynomial_IMPL* r = (LagrangeHalfCPolynomial_IMPL*) result;
-//    APCplx coefsC[FFTProcessor::N];
-//    APInt32 coefsP[FFTProcessor::N];
-//
-//    for (int i = 0; i < FFTProcessor::N; i++)
-//    {
-////    	coefsC[i] = r->coefsC[i];
-////    	coefsP[i] = p->coefs[i];
-////    	double coefCR = r->coefsC[i].real();
-////		double coefCI = r->coefsC[i].imag();
-//		coefsP[i] = p->coefs[i];
-//
-////		if (isnan(coefCR) == false)
-////		{
-////			coefsC[i].real(coefCR);
-////		}
-////
-////		if (isnan(coefCI) == false)
-////		{
-////			coefsC[i].imag(coefCI);
-////		}
-//    }
-//
-////    fp1024_nayuki.execute_reverse_int(r->coefsC, p->coefs);
-//    executeReverseInt(r->proc, coefsC, coefsP);
-//
-//    for (int i = 0; i < FFTProcessor::N; i++)
-//	{
-//    	double real = coefsC[i].real().to_double();
-//    	double imag = coefsC[i].imag().to_double();
-//    	r->coefsC[i].real(real);
-//    	r->coefsC[i].imag(imag);
-////    	p->coefs[i] = coefsP[i];
-//	}
-//}
-//
-//EXPORT void TorusPolynomial_ifft(LagrangeHalfCPolynomial* result, const TorusPolynomial* p) {
-//    LagrangeHalfCPolynomial_IMPL* r = (LagrangeHalfCPolynomial_IMPL*) result;
-//    APCplx coefsC[FFTProcessor::N];
-//    APInt32 coefsP[FFTProcessor::N];
-//
-//    for (int i = 0; i < FFTProcessor::N; i++)
-//    {
-////    	double coefCR = r->coefsC[i].real();
-////    	double coefCI = r->coefsC[i].imag();
-//    	coefsP[i] = p->coefsT[i];
-//
-////    	if (isnan(coefCR) == false)
-////    	{
-////    		coefsC[i].real(coefCR);
-////    	}
-////
-////    	if (isnan(coefCI) == false)
-////    	{
-////    		coefsC[i].imag(coefCI);
-////    	}
-//    }
-//
-////    fp1024_nayuki.execute_reverse_torus32(r->coefsC, p->coefsT);
-//    executeReverseTorus32(r->proc, coefsC, coefsP);
-//
-//    for (int i = 0; i < FFTProcessor::N; i++)
-//	{
-//    	double real = coefsC[i].real().to_double();
-//		double imag = coefsC[i].imag().to_double();
-//    	r->coefsC[i].real(real);
-//    	r->coefsC[i].imag(imag);
-////		p->coefsT[i] = coefsP[i];
-//	}
-//}
-//
-//EXPORT void TorusPolynomial_fft(TorusPolynomial* result, const LagrangeHalfCPolynomial* p) {
-//    LagrangeHalfCPolynomial_IMPL* r = (LagrangeHalfCPolynomial_IMPL*) p;
-//    APCplx coefsC[FFTProcessor::N];
-//    APInt32 coefsP[FFTProcessor::N];
-//
-//    for (int i = 0; i < FFTProcessor::N; i++)
-//    {
-////    	coefsC[i] = r->coefsC[i];
-////    	coefsP[i] = result->coefsT[i];
-//    	double coefCR = r->coefsC[i].real();
-//		double coefCI = r->coefsC[i].imag();
-////		coefsP[i] = result->coefsT[i];
-//
-//		if (isnan(coefCR) == false)
-//		{
-//			coefsC[i].real(coefCR);
-//		}
-//
-//		if (isnan(coefCI) == false)
-//		{
-//			coefsC[i].imag(coefCI);
-//		}
-//    }
-//
-////    fp1024_nayuki.execute_direct_torus32(result->coefsT, r->coefsC);
-////    executeDirectTorus32(r->proc, coefsP, coefsC);
-//
-//    for (int i = 0; i < FFTProcessor::N; i++)
-//	{
-//		result->coefsT[i] = coefsP[i];
-////		double real = coefsC[i].real().to_double();
-////		double imag = coefsC[i].imag().to_double();
-////		r->coefsC[i] = std::complex<double>(real, imag);
-//	}
-//}
 
 #endif // VITISFFT

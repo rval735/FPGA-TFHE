@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
 <hwkernel:HwKernelProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:hwkernel="http://www.xilinx.com/acceleration/hwkernel" name="fpga-tfhe_kernels" platform="/opt/xilinx/platforms/xilinx_u55n_gen3x4_xdma_1_202110_1/xilinx_u55n_gen3x4_xdma_1_202110_1.xpfm" platformUID="xilinx:u55n:gen3x4_xdma_1:202110.1" systemProject="fpga-tfhe_system" sysConfig="config0_0" cpu="">
-  <configuration name="Emulation-SW" id="com.xilinx.ide.accel.config.hwkernel.sw_emu.243574235" dirty="true">
+  <configuration name="Emulation-SW" id="com.xilinx.ide.accel.config.hwkernel.sw_emu.243574235">
     <configBuildOptions xsi:type="hwkernel:KernelOptions" kernelDebug="true">
       <kernels name="FFTL2Kernel" sourceFile="src/FFTL2Kernel.cpp">
         <args name="poly1" master="true"/>
@@ -52,7 +52,7 @@
       </kernels>
     </lastBuildOptions>
   </configuration>
-  <configuration name="Hardware" id="com.xilinx.ide.accel.config.hwkernel.hw.873656417">
+  <configuration name="Hardware" id="com.xilinx.ide.accel.config.hwkernel.hw.873656417" dirty="true">
     <configBuildOptions xsi:type="hwkernel:KernelOptions" target="hw">
       <kernels name="FFTL2Kernel" sourceFile="src/FFTL2Kernel.cpp">
         <args name="poly1" master="true"/>

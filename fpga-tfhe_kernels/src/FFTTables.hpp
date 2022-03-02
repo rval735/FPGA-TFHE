@@ -14,20 +14,11 @@
 #ifndef FFTTABLES_HPP
 #define FFTTABLES_HPP
 
-//#include <ap_fixed.h>
-//#include <ap_int.h>
 #include <cstdint>
 
-/// https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/C-Arbitrary-Precision-Fixed-Point-Types
-/// In this example the Vitis HLS ap_fixed type is used to define an 18-bit variable
-/// with 6 bits representing the numbers above the decimal point and 12-bits representing
-/// the value below the decimal point. The variable is specified as signed, the
-/// quantization mode is set to round to plus infinity and the default wrap-around mode
-/// is used for overflow.
-/// ap_fixed<18,6,AP_RND > my_type;
-#define AP_TOTAL 16
-#define AP_DECIMAL 2
-
+//// Future work: Employ fixed size numbers instead of cstdint
+//#include <ap_fixed.h>
+//#include <ap_int.h>
 //typedef ap_fixed<128, 40, AP_RND_ZERO, AP_SAT_ZERO> APDouble;
 //////typedef ap_fixed<64, 53, AP_RND_ZERO, AP_SAT_ZERO> APDouble; // like the std::double
 //typedef ap_uint<64> APUInt64;
@@ -43,7 +34,6 @@ typedef uint32_t APUInt32;
 typedef int32_t APInt32;
 typedef APInt32 APTorus32;
 
-// Private data structure
 struct FFTTables
 {
 	constexpr static int FFTSize = 2048;

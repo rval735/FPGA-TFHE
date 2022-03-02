@@ -11,12 +11,7 @@
 // Everyone is permitted to copy and distribute verbatim copies
 // of this license document, but changing it is not allowed.
 
-
 #include "FFTProc.hpp"
-
-#include <iostream>
-
-using namespace std;
 
 FFTProcessor::FFTProcessor()
 {
@@ -135,13 +130,11 @@ void executeDirectTorus32(FFTProcessor proc[1],
 
     fftForward(proc->realInOut, proc->imagInOut);
 
-//    std::cout <<"Rio\t\tpartial\n";
     for (int i = 0; i < n; i++)
     {
     	APDouble partial = proc->realInOut[i] * sN1 * p32;
 //    	res[i] = partial.to_ap_int();
     	res[i]=APTorus32(APInt64(partial));
-//    	std::cout << std::setprecision (12) << res[i] << "\t\t" << partial << std::endl;
     }
 }
 
@@ -164,25 +157,6 @@ void torusPolynomialAddTo(APTorus32 result[FFTProcessor::N],
     constexpr int n = FFTProcessor::N;
     for (int i = 0; i < n; ++i)
     {
-        result[i] += b[i];
+        result[i] = b[i];
     }
 }
-
-
-//thread_local FFT_Processor_nayuki fp1024_nayuki(1024);
-
-///**
-// * FFT functions
-// */
-//EXPORT void IntPolynomial_ifft(LagrangeHalfCPolynomial* result, const IntPolynomial* p) {
-//    LagrangeHalfCPolynomial_IMPL* r = (LagrangeHalfCPolynomial_IMPL*) result;
-//    fp1024_nayuki.execute_reverse_int(r->coefsC, p->coefs);
-//}
-//EXPORT void TorusPolynomial_ifft(LagrangeHalfCPolynomial* result, const TorusPolynomial* p) {
-//    LagrangeHalfCPolynomial_IMPL* r = (LagrangeHalfCPolynomial_IMPL*) result;
-//    fp1024_nayuki.execute_reverse_torus32(r->coefsC, p->coefsT);
-//}
-//EXPORT void TorusPolynomial_fft(TorusPolynomial* result, const LagrangeHalfCPolynomial* p) {
-//    LagrangeHalfCPolynomial_IMPL* r = (LagrangeHalfCPolynomial_IMPL*) p;
-//    fp1024_nayuki.execute_direct_torus32(result->coefsT, r->coefsC);
-//}

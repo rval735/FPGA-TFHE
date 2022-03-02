@@ -149,7 +149,7 @@
                                     								
                                 </option>
                                 								
-                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.other_flags.1988864992" name="Other flags" superClass="com.xilinx.accelerated.toolchain.hw_compiler.other_flags" useByScannerDiscovery="false" valueType="stringList"/>
+                                <option id="com.xilinx.accelerated.toolchain.hw_compiler.other_flags.1988864992" name="Other flags" superClass="com.xilinx.accelerated.toolchain.hw_compiler.other_flags" useByScannerDiscovery="false"/>
                                 								
                                 <inputType id="com.xilinx.accelerated.toolchain.hw_compiler.input.cl.2047301440" name="OpenCL files" superClass="com.xilinx.accelerated.toolchain.hw_compiler.input.cl"/>
                                 							
