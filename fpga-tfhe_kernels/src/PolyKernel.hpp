@@ -11,14 +11,14 @@
 // Everyone is permitted to copy and distribute verbatim copies
 // of this license document, but changing it is not allowed.
 
-#ifndef TORUSOPS_HPP
-#define TORUSOPS_HPP
+#ifndef POLYKERNEL_HPP
+#define POLYKERNEL_HPP
 
 #include "FFTTables.hpp"
-#include "FFTProc.hpp"
+#include "PolyProc.hpp"
 
-extern "C" void FFTL2Kernel(const APInt32 poly1[FFTProcessor::N],
-							const APTorus32 poly2[FFTProcessor::N],
-							APTorus32 result[FFTProcessor::N]);
+extern "C" void PolyKernel(const APInt32 poly1[PolyProcessor::N],
+						   const APTorus32 poly2[PolyProcessor::N],
+						   APTorus32 result[PolyProcessor::N]);
 
-#endif // TORUSOPS
+#endif // POLYKERNEL

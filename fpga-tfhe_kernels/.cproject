@@ -54,6 +54,8 @@
             </storageModule>
             			
             <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+            			
+            <storageModule moduleId="ilg.gnuarmeclipse.managedbuild.packs"/>
             		
         </cconfiguration>
         		
@@ -183,6 +185,26 @@
         	
     </storageModule>
     	
-    <storageModule moduleId="refreshScope"/>
+    <storageModule moduleId="refreshScope" versionNumber="2">
+        		
+        <configuration configurationName="Emulation-HW">
+            			
+            <resource resourceType="PROJECT" workspacePath="/fpga-tfhe_kernels"/>
+            		
+        </configuration>
+        		
+        <configuration configurationName="Emulation-SW">
+            			
+            <resource resourceType="PROJECT" workspacePath="/fpga-tfhe_kernels"/>
+            		
+        </configuration>
+        		
+        <configuration configurationName="Hardware">
+            			
+            <resource resourceType="PROJECT" workspacePath="/fpga-tfhe_kernels"/>
+            		
+        </configuration>
+        	
+    </storageModule>
     
 </cproject>

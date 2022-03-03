@@ -23,9 +23,9 @@
 #include "tfhe_core.h"
 #include "polynomials_arithmetic.h"
 #include "lagrangehalfc_arithmetic.h"
-#include "fpga/Vitis-FFT.h"
+#include "fpga/VitisPolynomial.h"
 
-extern OCLFFT *oclKernel;
+extern OCLPoly *oclKernel;
 
 //allocate memory space for a LagrangeHalfCPolynomial
 EXPORT LagrangeHalfCPolynomial* alloc_LagrangeHalfCPolynomial() {
@@ -80,6 +80,7 @@ EXPORT void torusPolynomialMultFFT(TorusPolynomial* result, const IntPolynomial*
 
 EXPORT void torusPolynomialAddMulRFFT(TorusPolynomial* result, const IntPolynomial* poly1, const TorusPolynomial* poly2)
 {
+	// The OCL call that replaces the functions below:
 	oclKernel->torusPolynomialAddMulRFFT(result, poly1, poly2);
 
 //    const int32_t N = poly1->N;

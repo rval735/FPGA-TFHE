@@ -12,8 +12,8 @@
 // of this license document, but changing it is not allowed.
 
 
-#ifndef FFTPROC_HPP
-#define FFTPROC_HPP
+#ifndef POLYPROC_HPP
+#define POLYPROC_HPP
 
 #include <hls_x_complex.h>
 
@@ -23,7 +23,7 @@
 // Every variable needs to add "__attribute((no_ctor))"
 typedef hls::x_complex<APDouble> APCplx;
 
-class FFTProcessor
+class PolyProcessor
 {
 public:
     constexpr static int N2 = FFTTables::FFTSize;
@@ -33,26 +33,26 @@ public:
     APDouble realInOut[N2];
     APDouble imagInOut[N2];
 
-    FFTProcessor();
+    PolyProcessor();
 };
 
-void executeReverseInt(FFTProcessor proc[1],
-					   APCplx res[FFTProcessor::N],
-					   const APInt32 a[FFTProcessor::N]);
+void executeReverseInt(PolyProcessor proc[1],
+					   APCplx res[PolyProcessor::N],
+					   const APInt32 a[PolyProcessor::N]);
 
-void executeReverseTorus32(FFTProcessor proc[1],
-						   APCplx res[FFTProcessor::N],
-						   const APTorus32 a[FFTProcessor::N]);
+void executeReverseTorus32(PolyProcessor proc[1],
+						   APCplx res[PolyProcessor::N],
+						   const APTorus32 a[PolyProcessor::N]);
 
-void executeDirectTorus32(FFTProcessor proc[1],
-						  APTorus32 res[FFTProcessor::N],
-						  const APCplx a[FFTProcessor::N]);
+void executeDirectTorus32(PolyProcessor proc[1],
+						  APTorus32 res[PolyProcessor::N],
+						  const APCplx a[PolyProcessor::N]);
 
-void lagrangeHalfCPolynomialMul(APCplx result[FFTProcessor::Ns2],
-								APCplx a[FFTProcessor::Ns2],
-								APCplx b[FFTProcessor::Ns2]);
+void lagrangeHalfCPolynomialMul(APCplx result[PolyProcessor::Ns2],
+								APCplx a[PolyProcessor::Ns2],
+								APCplx b[PolyProcessor::Ns2]);
 
-void torusPolynomialAddTo(APTorus32 result[FFTProcessor::N],
-						  const APTorus32 b[FFTProcessor::N]);
+void torusPolynomialAddTo(APTorus32 result[PolyProcessor::N],
+						  const APTorus32 b[PolyProcessor::N]);
 
-#endif // FFTPROC_HPP
+#endif // POLYPROC_HPP

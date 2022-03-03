@@ -1,4 +1,4 @@
-#include <fpga/Vitis-FFT.h>
+#include <fpga/VitisPolynomial.h>
 
 // Project FPGA-TFHE
 // https://github.com/rval735/FPGA-TFHE
@@ -17,8 +17,6 @@
 #include <cmath>
 #include <sys/time.h>
 #include "tfhe/tfhe.h"
-#include "fpga/Vitis-FFT.h"
-
 #include <iostream>
 
 using namespace std;
@@ -27,14 +25,14 @@ using namespace std;
 // ********************************* MAIN *******************************************
 // **********************************************************************************
 
-extern OCLFFT *oclKernel;
+extern OCLPoly *oclKernel;
 
 int32_t main(int32_t argc, char **argv)
 {
 	struct timeval start_time, end_time;
 	gettimeofday(&start_time, 0);
 
-	oclKernel = new OCLFFT(std::string(argv[1]));
+	oclKernel = new OCLPoly(std::string(argv[1]));
 
 	gettimeofday(&end_time, 0);
 	std::cout << "OCL setup time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
@@ -81,6 +79,8 @@ int32_t main(int32_t argc, char **argv)
 
     gettimeofday(&end_time, 0);
     std::cout << "TFHE setup time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
+
+    std::cout << "This will execute " << nb_test_gates << " gates over ciphered data." << std::endl;
 
     gettimeofday(&start_time, 0);
 
@@ -206,11 +206,11 @@ int32_t main(int32_t argc, char **argv)
         // verification
         if (bootsSymDecrypt(test + out, keyset) != mess)
         {
-            cerr << "ERROR!!!" << i << " " << gate << " "
+            cerr << "ERROR!!! #" << i << ",\tGate: # " << gate << ",\tPhase: "
                  << t32tod(lwePhase(test + out, keyset->lwe_key) - (mess ? MU : (-MU))) << endl;
         }
 
-        cout << i << " " << gate << " " << t32tod(lwePhase(test + out, keyset->lwe_key) - (mess ? MU : (-MU))) << endl;
+        cout << "#"<< i << ",\tGate #" << gate << ",\tPhase: " << t32tod(lwePhase(test + out, keyset->lwe_key) - (mess ? MU : (-MU))) << endl;
     }
 
 

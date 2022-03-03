@@ -11,9 +11,9 @@
 // Everyone is permitted to copy and distribute verbatim copies
 // of this license document, but changing it is not allowed.
 
-#include "FFTProc.hpp"
+#include "PolyProc.hpp"
 
-FFTProcessor::FFTProcessor()
+PolyProcessor::PolyProcessor()
 {
 	for (int i = 0; i < N2; i++)
 	{
@@ -22,13 +22,13 @@ FFTProcessor::FFTProcessor()
 	}
 }
 
-void executeReverseInt(FFTProcessor proc[1],
-					   APCplx res[FFTProcessor::N],
-					   const APInt32 a[FFTProcessor::N])
+void executeReverseInt(PolyProcessor proc[1],
+					   APCplx res[PolyProcessor::N],
+					   const APInt32 a[PolyProcessor::N])
 {
-	constexpr int n = FFTProcessor::N;
-	constexpr int n2 = FFTProcessor::N2;
-	constexpr int ns2 = FFTProcessor::Ns2;
+	constexpr int n = PolyProcessor::N;
+	constexpr int n2 = PolyProcessor::N2;
+	constexpr int ns2 = PolyProcessor::Ns2;
 
     for (int i = 0; i < n; i++)
     {
@@ -55,14 +55,14 @@ void executeReverseInt(FFTProcessor proc[1],
     }
 }
 
-void executeReverseTorus32(FFTProcessor proc[1],
-						   APCplx res[FFTProcessor::N],
-						   const APTorus32 a[FFTProcessor::N])
+void executeReverseTorus32(PolyProcessor proc[1],
+						   APCplx res[PolyProcessor::N],
+						   const APTorus32 a[PolyProcessor::N])
 {
 	static const APDouble pm33 = 1. / (APInt64(1) << 33);
 	//static const double pm33 = 1.1641532182693481e-10;
-    int n = FFTProcessor::N;
-    int n2 = FFTProcessor::N2;
+    int n = PolyProcessor::N;
+    int n2 = PolyProcessor::N2;
 
     for (int i = 0; i < n; i++)
     {
@@ -81,19 +81,19 @@ void executeReverseTorus32(FFTProcessor proc[1],
 
     fftInverse(proc->realInOut, proc->imagInOut);
 
-    for (int i = 0; i < FFTProcessor::Ns2; i++)
+    for (int i = 0; i < PolyProcessor::Ns2; i++)
     {
     	res[i] = APCplx(proc->realInOut[2 * i + 1], proc->imagInOut[2 * i + 1]);
     }
 }
 
-void executeDirectTorus32(FFTProcessor proc[1],
-						  APTorus32 res[FFTProcessor::N],
-						  const APCplx a[FFTProcessor::N])
+void executeDirectTorus32(PolyProcessor proc[1],
+						  APTorus32 res[PolyProcessor::N],
+						  const APCplx a[PolyProcessor::N])
 {
-    int n = FFTProcessor::N;
-    int n2 = FFTProcessor::N2;
-    int ns2 = FFTProcessor::Ns2;
+    int n = PolyProcessor::N;
+    int n2 = PolyProcessor::N2;
+    int ns2 = PolyProcessor::Ns2;
 //    static const double snD = 1.0 / n; // 0.0009765625;
     static const APDouble sN1 = 1.0 / n; //APDouble(snD);
     static const APDouble p32 = APDouble(APInt64(1) << 32);
@@ -139,11 +139,11 @@ void executeDirectTorus32(FFTProcessor proc[1],
 }
 
 /** termwise multiplication in Lagrange space */
-void lagrangeHalfCPolynomialMul(APCplx result[FFTProcessor::Ns2],
-								APCplx a[FFTProcessor::Ns2],
-								APCplx b[FFTProcessor::Ns2])
+void lagrangeHalfCPolynomialMul(APCplx result[PolyProcessor::Ns2],
+								APCplx a[PolyProcessor::Ns2],
+								APCplx b[PolyProcessor::Ns2])
 {
-    constexpr int Ns2 = FFTProcessor::Ns2;
+    constexpr int Ns2 = PolyProcessor::Ns2;
     for (int i = 0; i < Ns2; i++)
     {
     	result[i] = a[i] * b[i];
@@ -151,10 +151,10 @@ void lagrangeHalfCPolynomialMul(APCplx result[FFTProcessor::Ns2],
 }
 
 // TorusPolynomial += TorusPolynomial
-void torusPolynomialAddTo(APTorus32 result[FFTProcessor::N],
-						  const APTorus32 b[FFTProcessor::N])
+void torusPolynomialAddTo(APTorus32 result[PolyProcessor::N],
+						  const APTorus32 b[PolyProcessor::N])
 {
-    constexpr int n = FFTProcessor::N;
+    constexpr int n = PolyProcessor::N;
     for (int i = 0; i < n; ++i)
     {
         result[i] = b[i];

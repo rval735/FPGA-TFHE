@@ -11,17 +11,14 @@
 #include <ap_int.h>
 #include <ap_fixed.h>
 #include <ap_fixed_base.h>
-#include <fpga/Vitis-FFT.h>
 #include <algorithm>
 #include <sys/time.h>
 #include <cstdlib>
 #include <complex>
 #include <hls_stream.h>
-#include <stdio.h>
-#include "fftw/fft.h"
-#include "tfhe/polynomials.h"
+#include "fpga/VitisPolynomial.h"
 
-OCLFFT *oclKernel;
+OCLPoly *oclKernel;
 
 int tvdiff(struct timeval* tv0, struct timeval* tv1)
 {
@@ -36,7 +33,7 @@ T* alignedAlloc(size_t num)
     return reinterpret_cast<T*>(ptr);
 }
 
-void OCLFFT::ocl_check(const cl_int &err)
+void OCLPoly::ocl_check(const cl_int &err)
 {
 	if (err != CL_SUCCESS)
 	{
@@ -45,7 +42,7 @@ void OCLFFT::ocl_check(const cl_int &err)
 	}
 }
 
-OCLFFT::OCLFFT(string xclbinPath)
+OCLPoly::OCLPoly(string xclbinPath)
 {
 	cl_int err;
 
@@ -74,17 +71,17 @@ OCLFFT::OCLFFT(string xclbinPath)
 	program = cl::Program(context, devices, xclBins, nullptr, &err);
 	logger.logCreateProgram(err);
 
-	kernel = cl::Kernel(program, "FFTL2Kernel", &err);
+	kernel = cl::Kernel(program, "PolyKernel", &err);
 	logger.logCreateKernel(err);
 	std::cout << "Kernel has been created.\n";
 
-	poly1T = alignedAlloc<APInt32>(FFTProcessor::N);
-	poly2T = alignedAlloc<APTorus32>(FFTProcessor::N);
-	resultT = alignedAlloc<APTorus32>(FFTProcessor::N);
+	poly1T = alignedAlloc<APInt32>(PolyProcessor::N);
+	poly2T = alignedAlloc<APTorus32>(PolyProcessor::N);
+	resultT = alignedAlloc<APTorus32>(PolyProcessor::N);
 
-	poly1TBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, (size_t)(sizeof(APInt32) * FFTProcessor::N), poly1T);
-	poly2TBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, (size_t)(sizeof(APTorus32) * FFTProcessor::N), poly2T);
-	resultBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, (size_t)(sizeof(APTorus32) * FFTProcessor::N), resultT);
+	poly1TBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, (size_t)(sizeof(APInt32) * PolyProcessor::N), poly1T);
+	poly2TBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, (size_t)(sizeof(APTorus32) * PolyProcessor::N), poly2T);
+	resultBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, (size_t)(sizeof(APTorus32) * PolyProcessor::N), resultT);
 
 	// set args and enqueue kernel
 	int j = 0;
@@ -94,7 +91,7 @@ OCLFFT::OCLFFT(string xclbinPath)
 }
 
 template<class T1, class T2>
-int compareElems(T1 *elems, T2 *elems2, bool (*cmp)(T1,T2), bool errs = false, bool print = false, int n = FFTProcessor::N)
+int compareElems(T1 *elems, T2 *elems2, bool (*cmp)(T1,T2), bool errs = false, bool print = false, int n = PolyProcessor::N)
 {
 	int err = 0;
 
@@ -127,9 +124,9 @@ int compareElems(T1 *elems, T2 *elems2, bool (*cmp)(T1,T2), bool errs = false, b
 	return err;
 }
 
-void OCLFFT::torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolynomial *poly1, const TorusPolynomial *poly2)
+void OCLPoly::torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolynomial *poly1, const TorusPolynomial *poly2)
 {
-	for (int i = 0; i < FFTProcessor::N; i++)
+	for (int i = 0; i < PolyProcessor::N; i++)
 	{
 		poly1T[i] = poly1->coefs[i];
 		poly2T[i] = poly2->coefsT[i];
@@ -149,7 +146,7 @@ void OCLFFT::torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolynom
 	//cmdQ.flush();
 	cmdQ.finish();
 
-	for (int i = 0; i < FFTProcessor::N; i++)
+	for (int i = 0; i < PolyProcessor::N; i++)
 	{
 		result->coefsT[i] = resultT[i];
 	}

@@ -10,17 +10,15 @@
 
 ///Vitis_Libraries/dsp/L1/include/hw/vitis_fft/fixed
 
-#ifndef VITISFFT
-#define VITISFFT
+#ifndef VITISPOLY
+#define VITISPOLY
 
 #include <xcl/xcl2.hpp>
 #include <xf_utils_sw/logger.hpp>
 #include <utility> // std::pair
 #include <complex>
 
-#include <FFTTables.hpp>
-#include <FFTProc.hpp>
-#include <FFTL2Kernel.hpp>
+#include <PolyKernel.hpp>
 #include "fftw/lagrangehalfc_impl.h"
 
 using namespace std;
@@ -33,9 +31,9 @@ typedef std::complex<double> cplx; // https://stackoverflow.com/a/31800404
 #define OCLFLAGS	CL_QUEUE_PROFILING_ENABLE
 
 
-struct OCLFFT
+struct OCLPoly
 {
-	OCLFFT(std::string xclbinPath);
+	OCLPoly(std::string xclbinPath);
 	void torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolynomial *poly1, const TorusPolynomial *poly2);
 
 	static void ocl_check(const cl_int &err);
@@ -56,7 +54,6 @@ struct OCLFFT
 	cl::Buffer resultBuff;
 };
 
-
 int tvdiff(struct timeval* tv0, struct timeval* tv1);
 
-#endif // VITISFFT
+#endif // VITISPOLY
