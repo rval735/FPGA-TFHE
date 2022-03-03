@@ -61,9 +61,9 @@
       </binaryContainers>
     </configBuildOptions>
     <lastBuildOptions xsi:type="hwlink:LinkOptions" target="hw">
-      <binaryContainers name="fftKernel">
-        <kernels name="FFTL2Kernel" projectName="fpga-tfhe_kernels">
-          <computeUnits name="FFTL2Kernel_1" slr="">
+      <binaryContainers name="PolyKernel" traceMemory="FIFO:8K">
+        <kernels name="PolyKernel" projectName="fpga-tfhe_kernels">
+          <computeUnits name="PolyKernel_1" slr="">
             <args name="poly1" master="true" memory=""/>
             <args name="poly2" master="true" memory=""/>
             <args name="result" master="true" memory=""/>
