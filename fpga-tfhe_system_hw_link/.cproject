@@ -123,11 +123,7 @@
                             							
                             <tool commandLinePattern="${COMMAND} $(VPP_OPTS) --link ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" id="com.xilinx.ide.accel.tool.hwLinker.173256610" name="V++ Kernel Linker" superClass="com.xilinx.ide.accel.tool.hwLinker">
                                 								
-                                <option id="com.xilinx.accelerated.toolchain.hw_linker.other_flags.558523390" superClass="com.xilinx.accelerated.toolchain.hw_linker.other_flags" useByScannerDiscovery="false" valueType="stringList">
-                                    									
-                                    <listOptionValue builtIn="false" value="-R2"/>
-                                    								
-                                </option>
+                                <option id="com.xilinx.accelerated.toolchain.hw_linker.other_flags.558523390" name="Other flags" superClass="com.xilinx.accelerated.toolchain.hw_linker.other_flags" useByScannerDiscovery="false"/>
                                 							
                             </tool>
                             						

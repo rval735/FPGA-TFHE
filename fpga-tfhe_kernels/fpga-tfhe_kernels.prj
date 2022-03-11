@@ -32,7 +32,7 @@
       </kernels>
     </lastBuildOptions>
   </configuration>
-  <configuration name="Emulation-HW" id="com.xilinx.ide.accel.config.hwkernel.hw_emu.1644444310">
+  <configuration name="Emulation-HW" id="com.xilinx.ide.accel.config.hwkernel.hw_emu.1644444310" dirty="true">
     <configBuildOptions xsi:type="hwkernel:KernelOptions" kernelDebug="true" target="hw_emu">
       <kernels name="PolyKernel" sourceFile="src/PolyKernel.cpp">
         <args name="poly1" master="true"/>
@@ -65,7 +65,7 @@
     </lastBuildOptions>
   </configuration>
   <configuration name="Hardware" id="com.xilinx.ide.accel.config.hwkernel.hw.873656417">
-    <configBuildOptions xsi:type="hwkernel:KernelOptions" hardwareOptimizationLevel="O_2" target="hw">
+    <configBuildOptions xsi:type="hwkernel:KernelOptions" target="hw">
       <kernels name="PolyKernel" sourceFile="src/PolyKernel.cpp">
         <args name="poly1" master="true"/>
         <args name="poly2" master="true"/>
@@ -80,7 +80,7 @@
         <additionalSourceFiles>src/PolyProc.hpp</additionalSourceFiles>
       </kernels>
     </configBuildOptions>
-    <lastBuildOptions xsi:type="hwkernel:KernelOptions" hardwareOptimizationLevel="O_2" target="hw">
+    <lastBuildOptions xsi:type="hwkernel:KernelOptions" target="hw">
       <kernels name="PolyKernel" sourceFile="src/PolyKernel.cpp">
         <args name="poly1" master="true"/>
         <args name="poly2" master="true"/>

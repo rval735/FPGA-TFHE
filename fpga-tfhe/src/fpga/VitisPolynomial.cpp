@@ -17,6 +17,7 @@
 #include <complex>
 #include <hls_stream.h>
 #include "fpga/VitisPolynomial.h"
+#include "tfhe/lagrangehalfc_arithmetic.h"
 
 OCLPoly *oclKernel;
 
@@ -64,7 +65,6 @@ OCLPoly::OCLPoly(string xclbinPath)
 	cmdQ = cl::CommandQueue(context, device, OCLFLAGS, &err);
 	logger.logCreateCommandQueue(err);
 
-
 	string devName = device.getInfo<CL_DEVICE_NAME>();
 	std::cout << "Selected Device " << devName << "\n";
 	devices.resize(1);
@@ -88,6 +88,13 @@ OCLPoly::OCLPoly(string xclbinPath)
 	kernel.setArg(j++, poly1TBuff);
 	kernel.setArg(j++, poly2TBuff);
 	kernel.setArg(j++, resultBuff);
+}
+
+OCLPoly::~OCLPoly()
+{
+	free(poly1T);
+	free(poly2T);
+	free(resultT);
 }
 
 template<class T1, class T2>
@@ -143,11 +150,76 @@ void OCLPoly::torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolyno
 	cmdQ.enqueueMigrateMemObjects(ob, CL_MIGRATE_MEM_OBJECT_HOST);
 
 	// wait all to finish
-	//cmdQ.flush();
+	cmdQ.flush();
 	cmdQ.finish();
 
 	for (int i = 0; i < PolyProcessor::N; i++)
 	{
 		result->coefsT[i] = resultT[i];
 	}
+}
+
+
+void OCLPoly::testOp()
+{
+	constexpr int n = PolyProcessor::N;
+	TorusPolynomial *result = new_TorusPolynomial(n);
+	TorusPolynomial *poly2 = new_TorusPolynomial(n);
+	IntPolynomial *poly1 = new_IntPolynomial_array(1, n);
+
+	for (int i = 0; i < n; i++)
+	{
+		if (i % 3)
+		{
+			poly1T[i] = 2;
+			poly2T[i] = 2;
+			poly1->coefs[i] = 2;
+			poly2->coefsT[i] = 2;
+		}
+
+		if (i % 5)
+		{
+			poly1T[i] = 5;
+			poly2T[i] = 7;
+			poly1->coefs[i] = 5;
+			poly2->coefsT[i] = 7;
+		}
+		else
+		{
+			poly1T[i] = 1;
+			poly2T[i] = 1;
+			poly1->coefs[i] = 1;
+			poly2->coefsT[i] = 1;
+		}
+
+		result->coefsT[i] = 0;
+	}
+
+	// write data to DDR
+	vector<cl::Memory> ib = {poly1TBuff, poly2TBuff};
+	cmdQ.enqueueMigrateMemObjects(ib, 0);
+
+	cmdQ.enqueueTask(kernel);
+
+	// read data from DDR
+	std::vector<cl::Memory> ob = {resultBuff};
+	cmdQ.enqueueMigrateMemObjects(ob, CL_MIGRATE_MEM_OBJECT_HOST);
+
+	// wait all to finish
+	cmdQ.flush();
+	cmdQ.finish();
+
+	torusPolynomialAddMulRFFT(result, poly1, poly2, true);
+	int errs = 0;
+
+	for (int i = 0; i < n; i++)
+	{
+		if(result->coefsT[i] != resultT[i])
+		{
+			errs++;
+			std::cout << "Err: " << result->coefsT[i] << ",\t\t\t" << resultT[i] << endl;
+		}
+	}
+
+	std::cout << "Errs: " << errs << std::endl;
 }

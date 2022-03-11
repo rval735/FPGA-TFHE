@@ -26,7 +26,7 @@ void executeReverseInt(PolyProcessor proc[1],
 					   APCplx res[PolyProcessor::N],
 					   const APInt32 a[PolyProcessor::N])
 {
-	constexpr int n = PolyProcessor::N;
+	 int n = PolyProcessor::N;
 	constexpr int n2 = PolyProcessor::N2;
 	constexpr int ns2 = PolyProcessor::Ns2;
 
@@ -59,10 +59,10 @@ void executeReverseTorus32(PolyProcessor proc[1],
 						   APCplx res[PolyProcessor::N],
 						   const APTorus32 a[PolyProcessor::N])
 {
-	static const APDouble pm33 = 1. / (APInt64(1) << 33);
+	constexpr APDouble pm33 = 1. / (APInt64(1) << 33);
 	//static const double pm33 = 1.1641532182693481e-10;
-    int n = PolyProcessor::N;
-    int n2 = PolyProcessor::N2;
+	constexpr int n = PolyProcessor::N;
+	constexpr int n2 = PolyProcessor::N2;
 
     for (int i = 0; i < n; i++)
     {
@@ -91,12 +91,12 @@ void executeDirectTorus32(PolyProcessor proc[1],
 						  APTorus32 res[PolyProcessor::N],
 						  const APCplx a[PolyProcessor::N])
 {
-    int n = PolyProcessor::N;
-    int n2 = PolyProcessor::N2;
-    int ns2 = PolyProcessor::Ns2;
+	constexpr int n = PolyProcessor::N;
+	constexpr int n2 = PolyProcessor::N2;
+	constexpr int ns2 = PolyProcessor::Ns2;
 //    static const double snD = 1.0 / n; // 0.0009765625;
-    static const APDouble sN1 = 1.0 / n; //APDouble(snD);
-    static const APDouble p32 = APDouble(APInt64(1) << 32);
+	constexpr APDouble sN1 = 1.0 / n; //APDouble(snD);
+	constexpr APDouble p32 = APDouble(APInt64(1) << 32);
 
     for (int i = 0; i < n; i++)
     {
@@ -134,7 +134,7 @@ void executeDirectTorus32(PolyProcessor proc[1],
     {
     	APDouble partial = proc->realInOut[i] * sN1 * p32;
 //    	res[i] = partial.to_ap_int();
-    	res[i]=APTorus32(APInt64(partial));
+    	res[i] = APTorus32(APInt64(partial));
     }
 }
 

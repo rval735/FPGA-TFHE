@@ -22,7 +22,7 @@ static const FFTTables tablesInverse = FFTTables(true);
 // Returns a pointer to an opaque structure of FFT tables. n must be a power of 2 and n >= 4.
 FFTTables::FFTTables(bool isInverse)
 {
-	size_t n = FFTSize;
+	const size_t n = FFTSize;
 	// Precompute bit reversal table
 	APInt32 levels = floorLog2(n);
 	APUInt64 i;
@@ -60,7 +60,7 @@ FFTTables::FFTTables(bool isInverse)
 }
 
 // Returns sin(2 * pi * i / n), for n that is a multiple of 4.
-APDouble accurateSin(APUInt64 i, APUInt64 n)
+APDouble accurateSin(APUInt64 i, const APUInt64 n)
 {
 	if (n % 4 != 0)
 	{
@@ -120,7 +120,7 @@ APInt32 floorLog2(APUInt64 n)
 
 
 // Returns the bit reversal of the n-bit unsigned integer x.
-APUInt64 reverseBits(APUInt64 x, APUInt32 n)
+APUInt64 reverseBits(APUInt64 x, const APUInt32 n)
 {
 	APUInt64 result = 0;
 	APUInt32 i;

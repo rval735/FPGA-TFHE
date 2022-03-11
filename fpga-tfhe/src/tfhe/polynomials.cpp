@@ -78,21 +78,26 @@ EXPORT void torusPolynomialMultFFT(TorusPolynomial* result, const IntPolynomial*
     delete_LagrangeHalfCPolynomial_array(3,tmp);
 }
 
-EXPORT void torusPolynomialAddMulRFFT(TorusPolynomial* result, const IntPolynomial* poly1, const TorusPolynomial* poly2)
+EXPORT void torusPolynomialAddMulRFFT(TorusPolynomial* result, const IntPolynomial* poly1, const TorusPolynomial* poly2, bool runCPU)
 {
-	// The OCL call that replaces the functions below:
-	oclKernel->torusPolynomialAddMulRFFT(result, poly1, poly2);
-
-//    const int32_t N = poly1->N;
-//    LagrangeHalfCPolynomial* tmp = new_LagrangeHalfCPolynomial_array(3,N);
-//    TorusPolynomial* tmpr = new_TorusPolynomial(N);
-//    IntPolynomial_ifft(tmp+0,poly1);
-//    TorusPolynomial_ifft(tmp+1,poly2);
-//    LagrangeHalfCPolynomialMul(tmp+2,tmp+0,tmp+1);
-//    TorusPolynomial_fft(tmpr, tmp+2);
-//    torusPolynomialAddTo(result, tmpr);
-//    delete_TorusPolynomial(tmpr);
-//    delete_LagrangeHalfCPolynomial_array(3,tmp);
+	if (runCPU == false)
+	{
+		// The OCL call that replaces the functions below:
+		oclKernel->polyKernel(result, poly1, poly2);
+	}
+	else
+	{
+		const int32_t N = poly1->N;
+		LagrangeHalfCPolynomial* tmp = new_LagrangeHalfCPolynomial_array(3,N);
+		TorusPolynomial* tmpr = new_TorusPolynomial(N);
+		IntPolynomial_ifft(tmp + 0, poly1);
+		TorusPolynomial_ifft(tmp + 1, poly2);
+		LagrangeHalfCPolynomialMul(tmp + 2,tmp + 0,tmp + 1);
+		TorusPolynomial_fft(tmpr, tmp + 2);
+		torusPolynomialAddTo(result, tmpr);
+		delete_TorusPolynomial(tmpr);
+		delete_LagrangeHalfCPolynomial_array(3,tmp);
+	}
 }
 
 EXPORT void torusPolynomialSubMulRFFT(TorusPolynomial* result, const IntPolynomial* poly1, const TorusPolynomial* poly2)

@@ -43,9 +43,9 @@ struct FFTTables
 	FFTTables(bool isInverse);
 };
 
-APDouble accurateSin(APUInt64 i, APUInt64 n);
+APDouble accurateSin(APUInt64 i, const APUInt64 n);
 APInt32 floorLog2(APUInt64 n);
-APUInt64 reverseBits(APUInt64 x, APUInt32 n);
+APUInt64 reverseBits(APUInt64 x, const APUInt32 n);
 
 void fftForward(APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize]);
 void fftInverse(APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize]);
