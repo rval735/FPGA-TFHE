@@ -1,0 +1,1160 @@
+<ENTRY>
+{
+ "thisFile": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.xclbin.link_summary",
+ "connectId": "",
+ "serverToken": "",
+ "timestamp": "0"
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_CmdStep",
+ "dateTimestamp": "Sat Mar 12 11:22:01 2022",
+ "timestampMillis": "1647037321673",
+ "buildStep": {
+  "cmdId": "6bdf20e6-8411-4730-85bf-cf2a2c2b463c",
+  "name": "v++",
+  "logFile": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/link.steps.log",
+  "commandLine": "/opt/Xilinx/Vitis/2021.2/bin/unwrapped/lnx64.o/v++  --vivado.prop \"run.__KERNEL__.{STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS}={-directive sdx_optimization_effort_high}\" --advanced.misc \"report=type report_timing_summary name impl_report_timing_summary_route_design_summary steps {route_design} runs {impl_1} options {-max_paths 10}\" --advanced.misc \"report=type report_timing_summary name impl_report_timing_summary_post_route_phys_opt_design_summary steps {post_route_phys_opt_design} runs {impl_1} options {-max_paths 10}\" --target hw --link --config PolyKernel-link.cfg -oPolyKernel.xclbin ../../fpga-tfhe_kernels/Hardware/build/PolyKernel.xo ",
+  "args": [
+   "--target",
+   "hw",
+   "--link",
+   "--config",
+   "PolyKernel-link.cfg",
+   "-oPolyKernel.xclbin",
+   "../../fpga-tfhe_kernels/Hardware/build/PolyKernel.xo"
+  ],
+  "iniFiles": [
+   {
+    "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel-link.cfg",
+    "content": "platform=xilinx_u55n_gen3x4_xdma_1_202110_1\nsave-temps=1\nmessageDb=PolyKernel.mdb\ntemp_dir=PolyKernel.build\nreport_dir=PolyKernel.build/reports\nlog_dir=PolyKernel.build/logs\n\n[advanced]\nmisc=solution_name=link\n\n[connectivity]\nnk=PolyKernel:1:PolyKernel_1"
+   }
+  ],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 11:22:01 2022",
+ "timestampMillis": "1647037321673",
+ "status": {
+  "cmdId": "6bdf20e6-8411-4730-85bf-cf2a2c2b463c",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_FlowMetaData",
+ "dateTimestamp": "Sat Mar 12 11:22:07 2022",
+ "timestampMillis": "1647037327865",
+ "buildSummary": {
+  "hardwarePlatform": "xilinx_u55n_gen3x4_xdma_1_202110_1.xpfm",
+  "hardwareDsa": "hw.xsa",
+  "platformDirectory": "/opt/xilinx/platforms/xilinx_u55n_gen3x4_xdma_1_202110_1",
+  "runtime": "OpenCL",
+  "systemConfig": "Linux",
+  "flow": "BF_LINK",
+  "target": "TT_HW",
+  "binaryContainer": {
+   "base": {
+    "type": "BT_UKNOWN",
+    "name": "PolyKernel",
+    "file": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.xclbin",
+    "reports": [],
+    "uuid": ""
+   },
+   "kernels": []
+  },
+  "kernels": [
+   {
+    "base": {
+     "type": "KERNEL",
+     "name": "PolyKernel",
+     "file": "/home/klugo/workspace/fpga-tfhe_kernels/Hardware/build/PolyKernel.xo",
+     "reports": [],
+     "uuid": ""
+    },
+    "sources": [
+     "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xo/PolyKernel/PolyKernel/cpu_sources/PolyProc.cpp",
+     "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xo/PolyKernel/PolyKernel/cpu_sources/PolyKernel.hpp",
+     "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xo/PolyKernel/PolyKernel/cpu_sources/PolyKernel.cpp",
+     "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xo/PolyKernel/PolyKernel/cpu_sources/FFTTables.cpp",
+     "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xo/PolyKernel/PolyKernel/cpu_sources/PolyProc.hpp",
+     "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xo/PolyKernel/PolyKernel/cpu_sources/FFTTables.hpp"
+    ],
+    "psSources": [],
+    "cuNames": [
+     "PolyKernel_1"
+    ],
+    "type": "HLS",
+    "frequency": 0,
+    "freqUnits": ""
+   }
+  ],
+  "toolVersion": "Vitis V++ Compiler Release 2021.2.1. SW Build 3413829 on 2021-12-17-22:51:20"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_SubCmdStep",
+ "dateTimestamp": "Sat Mar 12 11:22:08 2022",
+ "timestampMillis": "1647037328127",
+ "buildStep": {
+  "cmdId": "53dd8f85-0996-4134-83ae-524645ab06bd",
+  "name": "system_link",
+  "logFile": "",
+  "commandLine": "system_link --xo /home/klugo/workspace/fpga-tfhe_kernels/Hardware/build/PolyKernel.xo -keep --config /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/syslinkConfig.ini --xpfm /opt/xilinx/platforms/xilinx_u55n_gen3x4_xdma_1_202110_1/xilinx_u55n_gen3x4_xdma_1_202110_1.xpfm --target hw --output_dir /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int --temp_dir /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/sys_link",
+  "args": [
+   "--xo",
+   "/home/klugo/workspace/fpga-tfhe_kernels/Hardware/build/PolyKernel.xo",
+   "-keep",
+   "--config",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/syslinkConfig.ini",
+   "--xpfm",
+   "/opt/xilinx/platforms/xilinx_u55n_gen3x4_xdma_1_202110_1/xilinx_u55n_gen3x4_xdma_1_202110_1.xpfm",
+   "--target",
+   "hw",
+   "--output_dir",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int",
+   "--temp_dir",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/sys_link"
+  ],
+  "iniFiles": [
+   {
+    "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/syslinkConfig.ini",
+    "content": "nk=PolyKernel:1:PolyKernel_1\n\n"
+   }
+  ],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 11:22:08 2022",
+ "timestampMillis": "1647037328130",
+ "status": {
+  "cmdId": "53dd8f85-0996-4134-83ae-524645ab06bd",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 11:22:23 2022",
+ "timestampMillis": "1647037343271",
+ "status": {
+  "cmdId": "53dd8f85-0996-4134-83ae-524645ab06bd",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_SubCmdStep",
+ "dateTimestamp": "Sat Mar 12 11:22:23 2022",
+ "timestampMillis": "1647037343273",
+ "buildStep": {
+  "cmdId": "71e3c88b-c379-457f-a831-76ddacc88723",
+  "name": "cf2sw",
+  "logFile": "",
+  "commandLine": "cf2sw -sdsl /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/sdsl.dat -rtd /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/cf2sw.rtd -nofilter /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/cf2sw_full.rtd -xclbin /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xclbin_orig.xml -o /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xclbin_orig.1.xml",
+  "args": [
+   "-sdsl",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/sdsl.dat",
+   "-rtd",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/cf2sw.rtd",
+   "-nofilter",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/cf2sw_full.rtd",
+   "-xclbin",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xclbin_orig.xml",
+   "-o",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xclbin_orig.1.xml"
+  ],
+  "iniFiles": [],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 11:22:23 2022",
+ "timestampMillis": "1647037343274",
+ "status": {
+  "cmdId": "71e3c88b-c379-457f-a831-76ddacc88723",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 11:22:26 2022",
+ "timestampMillis": "1647037346490",
+ "status": {
+  "cmdId": "71e3c88b-c379-457f-a831-76ddacc88723",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_SubCmdStep",
+ "dateTimestamp": "Sat Mar 12 11:22:26 2022",
+ "timestampMillis": "1647037346492",
+ "buildStep": {
+  "cmdId": "0adc9812-4c16-4979-a882-788a67f99ef4",
+  "name": "rtd2_system_diagram",
+  "logFile": "",
+  "commandLine": "rtd2SystemDiagram",
+  "args": [],
+  "iniFiles": [],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 11:22:26 2022",
+ "timestampMillis": "1647037346492",
+ "status": {
+  "cmdId": "0adc9812-4c16-4979-a882-788a67f99ef4",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 11:22:26 2022",
+ "timestampMillis": "1647037346809",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/systemDiagramModel.json",
+  "name": "",
+  "fileType": "JSON",
+  "reportType": "SYSTEM_DIAGRAM",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 11:22:26 2022",
+ "timestampMillis": "1647037346809",
+ "status": {
+  "cmdId": "0adc9812-4c16-4979-a882-788a67f99ef4",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_SubCmdStep",
+ "dateTimestamp": "Sat Mar 12 11:22:26 2022",
+ "timestampMillis": "1647037346811",
+ "buildStep": {
+  "cmdId": "f712f333-a418-4669-ac14-087cc7513666",
+  "name": "vpl",
+  "logFile": "",
+  "commandLine": "vpl -t hw -f xilinx_u55n_gen3x4_xdma_1_202110_1 --remote_ip_cache /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/.ipcache -s --output_dir /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int --log_dir /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/logs/link --report_dir /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link --config /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/vplConfig.ini -k /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/kernel_info.dat --webtalk_flag Vitis --temp_dir /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link --no-info --iprepo /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xo/ip_repo/xilinx_com_hls_PolyKernel_1_0 --messageDb /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/run_link/vpl.pb /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/dr.bd.tcl",
+  "args": [
+   "-t",
+   "hw",
+   "-f",
+   "xilinx_u55n_gen3x4_xdma_1_202110_1",
+   "--remote_ip_cache",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/.ipcache",
+   "-s",
+   "--output_dir",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int",
+   "--log_dir",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/logs/link",
+   "--report_dir",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link",
+   "--config",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/vplConfig.ini",
+   "-k",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/kernel_info.dat",
+   "--webtalk_flag",
+   "Vitis",
+   "--temp_dir",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link",
+   "--no-info",
+   "--iprepo",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xo/ip_repo/xilinx_com_hls_PolyKernel_1_0",
+   "--messageDb",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/run_link/vpl.pb",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/dr.bd.tcl"
+  ],
+  "iniFiles": [
+   {
+    "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/vplConfig.ini",
+    "content": "[advanced]\nmisc=report=type report_timing_summary name impl_report_timing_summary_route_design_summary steps {route_design} runs {impl_1} options {-max_paths 10}\nmisc=report=type report_timing_summary name impl_report_timing_summary_post_route_phys_opt_design_summary steps {post_route_phys_opt_design} runs {impl_1} options {-max_paths 10}\nparam=compiler.enablePerformanceTrace=1\nmisc=solution_name=link\nparam=compiler.vppCurrentWorkingDir=/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware\nmisc=BinaryName=PolyKernel\n\n[connectivity]\nnk=PolyKernel:1:PolyKernel_1\n\n[vivado]\nprop=run.__KERNEL__.{STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS}={-directive sdx_optimization_effort_high}\n\n"
+   }
+  ],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 11:22:26 2022",
+ "timestampMillis": "1647037346812",
+ "status": {
+  "cmdId": "f712f333-a418-4669-ac14-087cc7513666",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_CmdStep",
+ "dateTimestamp": "Sat Mar 12 11:22:28 2022",
+ "timestampMillis": "1647037348783",
+ "buildStep": {
+  "cmdId": "b8993434-9d2a-42d6-bb9b-59731c01fc51",
+  "name": "vpl",
+  "logFile": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/link.steps.log",
+  "commandLine": "/opt/Xilinx/Vitis/2021.2/bin/unwrapped/lnx64.o/vpl -t hw -f xilinx_u55n_gen3x4_xdma_1_202110_1 --remote_ip_cache /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/.ipcache -s --output_dir /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int --log_dir /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/logs/link --report_dir /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link --config /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/vplConfig.ini -k /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/kernel_info.dat --webtalk_flag Vitis --temp_dir /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link --no-info --iprepo /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xo/ip_repo/xilinx_com_hls_PolyKernel_1_0 --messageDb /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/run_link/vpl.pb /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/dr.bd.tcl ",
+  "args": [],
+  "iniFiles": [],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/run_link"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 11:22:28 2022",
+ "timestampMillis": "1647037348783",
+ "status": {
+  "cmdId": "b8993434-9d2a-42d6-bb9b-59731c01fc51",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_VivadoProject",
+ "dateTimestamp": "Sat Mar 12 11:22:33 2022",
+ "timestampMillis": "1647037353366",
+ "vivadoProject": {
+  "openDir": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/vivado/vpl",
+  "openScript": "openprj.tcl",
+  "relativeProject": "prj/prj.xpr"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_SubCmdStep",
+ "dateTimestamp": "Sat Mar 12 11:22:33 2022",
+ "timestampMillis": "1647037353367",
+ "buildStep": {
+  "cmdId": "56685d12-69f9-4cf5-9d75-4b915d94d0b7",
+  "name": "vivado",
+  "logFile": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/vivado/vpl/vivado.log",
+  "commandLine": "vivado -log vivado.log -applog -m64 -messageDb vivado.pb -mode batch -source vpl.tcl -notrace",
+  "args": [
+   "-log",
+   "vivado.log",
+   "-applog",
+   " -m64",
+   "-messageDb",
+   "vivado.pb",
+   "-mode",
+   "batch",
+   "-source",
+   "vpl.tcl",
+   "-notrace"
+  ],
+  "iniFiles": [],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/run_link"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 11:22:33 2022",
+ "timestampMillis": "1647037353367",
+ "status": {
+  "cmdId": "56685d12-69f9-4cf5-9d75-4b915d94d0b7",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_CmdStep",
+ "dateTimestamp": "Sat Mar 12 11:30:16 2022",
+ "timestampMillis": "1647037816206",
+ "buildStep": {
+  "cmdId": "179f2399-3d6c-4d4b-9348-ecbece605094",
+  "name": "vivado.impl",
+  "logFile": "",
+  "commandLine": "",
+  "args": [],
+  "iniFiles": [],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/vivado/vpl"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 11:30:16 2022",
+ "timestampMillis": "1647037816206",
+ "status": {
+  "cmdId": "179f2399-3d6c-4d4b-9348-ecbece605094",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_CmdStep",
+ "dateTimestamp": "Sat Mar 12 11:30:16 2022",
+ "timestampMillis": "1647037816207",
+ "buildStep": {
+  "cmdId": "2a2cde66-aca8-4749-a912-d708ac2f09db",
+  "name": "vivado.impl.impl_1",
+  "logFile": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/vivado/vpl/prj/prj.runs/impl_1/runme.log",
+  "commandLine": "",
+  "args": [],
+  "iniFiles": [],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/vivado/vpl/prj/prj.runs/impl_1"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 11:30:16 2022",
+ "timestampMillis": "1647037816207",
+ "status": {
+  "cmdId": "2a2cde66-aca8-4749-a912-d708ac2f09db",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:02:51 2022",
+ "timestampMillis": "1647039771045",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/vivado/vpl/prj/prj.runs/impl_1/system_diagram.json",
+  "name": "",
+  "fileType": "JSON",
+  "reportType": "SYSTEM_DIAGRAM_PLUS",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:03:35 2022",
+ "timestampMillis": "1647039815323",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/kernel_service.json",
+  "name": "",
+  "fileType": "JSON",
+  "reportType": "KERNEL_SERVICE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:03:35 2022",
+ "timestampMillis": "1647039815325",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/kernel_service.pb",
+  "name": "",
+  "fileType": "BINARY_PROTOBUF",
+  "reportType": "KERNEL_SERVICE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356293",
+ "status": {
+  "cmdId": "56685d12-69f9-4cf5-9d75-4b915d94d0b7",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356324",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_slr_util_placed.rpt",
+  "name": "",
+  "fileType": "TEXT",
+  "reportType": "GLOBAL_SLR_UTIL_PLACED",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356324",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_kernel_util_synthed.xutil",
+  "name": "",
+  "fileType": "XUTIL",
+  "reportType": "KERNEL_UTILIZATION_SYNTHESIS",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356325",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_kernel_util_routed.xutil",
+  "name": "",
+  "fileType": "XUTIL",
+  "reportType": "KERNEL_UTILIZATION_ROUTE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356325",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_slr_util_routed.pb",
+  "name": "",
+  "fileType": "BINARY_PROTOBUF",
+  "reportType": "GLOBAL_SLR_UTIL_ROUTED",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356326",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_full_util_routed.pb",
+  "name": "",
+  "fileType": "BINARY_PROTOBUF",
+  "reportType": "GLOBAL_UTILIZATION_ROUTE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356326",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_slr_util_routed.rpt",
+  "name": "",
+  "fileType": "TEXT",
+  "reportType": "GLOBAL_SLR_UTIL_ROUTED",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356327",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_kernel_util_placed.xutil",
+  "name": "",
+  "fileType": "XUTIL",
+  "reportType": "KERNEL_UTILIZATION_PLACEMENT",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356328",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_kernel_util_placed.rpt",
+  "name": "",
+  "fileType": "TEXT",
+  "reportType": "KERNEL_UTILIZATION_PLACEMENT",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356328",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_kernel_util_synthed.rpt",
+  "name": "",
+  "fileType": "TEXT",
+  "reportType": "KERNEL_UTILIZATION_SYNTHESIS",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356329",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_kernel_util_routed.rpt",
+  "name": "",
+  "fileType": "TEXT",
+  "reportType": "KERNEL_UTILIZATION_ROUTE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356329",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_slr_util_placed.pb",
+  "name": "",
+  "fileType": "BINARY_PROTOBUF",
+  "reportType": "GLOBAL_SLR_UTIL_PLACED",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356330",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_full_util_routed.rpt",
+  "name": "",
+  "fileType": "TEXT",
+  "reportType": "GLOBAL_UTILIZATION_ROUTE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356330",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_full_util_synthed.rpt",
+  "name": "",
+  "fileType": "TEXT",
+  "reportType": "GLOBAL_UTILIZATION_SYNTHESIS",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356331",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_full_util_synthed.pb",
+  "name": "",
+  "fileType": "BINARY_PROTOBUF",
+  "reportType": "GLOBAL_UTILIZATION_SYNTHESIS",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356347",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/syn/ulp_PolyKernel_1_0_synth_1_ulp_PolyKernel_1_0_utilization_synth.rpt",
+  "name": "PolyKernel",
+  "fileType": "TEXT",
+  "reportType": "GLOBAL_REPORT_UTILIZATION",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356348",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_system_diagram.json",
+  "name": "",
+  "fileType": "JSON",
+  "reportType": "SYSTEM_DIAGRAM_PLUS",
+  "cmdId": "2a2cde66-aca8-4749-a912-d708ac2f09db"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356355",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_hw_bb_locked_timing_summary_routed.rpt",
+  "name": "",
+  "fileType": "TEXT",
+  "reportType": "GLOBAL_REPORT_TIMING_SUMMARY",
+  "cmdId": "2a2cde66-aca8-4749-a912-d708ac2f09db"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356362",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_hw_bb_locked_timing_summary_routed.rpx",
+  "name": "",
+  "fileType": "BINARY_PROTOBUF",
+  "reportType": "GLOBAL_REPORT_TIMING_SUMMARY",
+  "cmdId": "2a2cde66-aca8-4749-a912-d708ac2f09db"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356363",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/imp/impl_1_hw_bb_locked_timing_summary_routed.rpv",
+  "name": "",
+  "fileType": "BINARY_PROTOBUF",
+  "reportType": "GLOBAL_REPORT_TIMING_SUMMARY_CONCISE",
+  "cmdId": "2a2cde66-aca8-4749-a912-d708ac2f09db"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356379",
+ "status": {
+  "cmdId": "b8993434-9d2a-42d6-bb9b-59731c01fc51",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356397",
+ "status": {
+  "cmdId": "f712f333-a418-4669-ac14-087cc7513666",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_SubCmdStep",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356399",
+ "buildStep": {
+  "cmdId": "f118199d-e7c4-43e5-9ac5-211ca2266000",
+  "name": "rtdgen",
+  "logFile": "",
+  "commandLine": "rtdgen",
+  "args": [],
+  "iniFiles": [],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356400",
+ "status": {
+  "cmdId": "f118199d-e7c4-43e5-9ac5-211ca2266000",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356404",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel_xml.rtd",
+  "name": "",
+  "fileType": "JSON",
+  "reportType": "XCLBIN_INFO",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_SubCmdStep",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356405",
+ "buildStep": {
+  "cmdId": "17c582a7-9b5c-4bbc-ab02-a9e809896d4a",
+  "name": "cf2sw",
+  "logFile": "",
+  "commandLine": "cf2sw -a /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/address_map.xml -sdsl /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/sdsl.dat -xclbin /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xclbin_orig.xml -rtd /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel.rtd -o /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel.xml",
+  "args": [
+   "-a",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/address_map.xml",
+   "-sdsl",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/sdsl.dat",
+   "-xclbin",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/xclbin_orig.xml",
+   "-rtd",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel.rtd",
+   "-o",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel.xml"
+  ],
+  "iniFiles": [],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:36 2022",
+ "timestampMillis": "1647040356406",
+ "status": {
+  "cmdId": "17c582a7-9b5c-4bbc-ab02-a9e809896d4a",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359124",
+ "status": {
+  "cmdId": "17c582a7-9b5c-4bbc-ab02-a9e809896d4a",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_SubCmdStep",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359125",
+ "buildStep": {
+  "cmdId": "4362cd19-c9e2-48e2-acd4-2f41636b6bfe",
+  "name": "rtdgen",
+  "logFile": "",
+  "commandLine": "writeSystemDiagram",
+  "args": [
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel.rtd",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/systemDiagramModelSlrBaseAddress.json"
+  ],
+  "iniFiles": [],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359125",
+ "status": {
+  "cmdId": "4362cd19-c9e2-48e2-acd4-2f41636b6bfe",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359127",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/systemDiagramModelSlrBaseAddress.json",
+  "name": "",
+  "fileType": "JSON",
+  "reportType": "SYSTEM_DIAGRAM_PLUS",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359128",
+ "status": {
+  "cmdId": "4362cd19-c9e2-48e2-acd4-2f41636b6bfe",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359128",
+ "status": {
+  "cmdId": "f118199d-e7c4-43e5-9ac5-211ca2266000",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_SubCmdStep",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359130",
+ "buildStep": {
+  "cmdId": "2db4bfcf-55a8-4cbd-b434-dffca4a95924",
+  "name": "xclbinutil",
+  "logFile": "",
+  "commandLine": "xclbinutil --add-section BITSTREAM:RAW:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/partial.bit --force --target hw --key-value SYS:dfx_enable:true --add-section :JSON:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel.rtd --append-section :JSON:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/appendSection.rtd --add-section CLOCK_FREQ_TOPOLOGY:JSON:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel_xml.rtd --add-section BUILD_METADATA:JSON:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel_build.rtd --add-section EMBEDDED_METADATA:RAW:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel.xml --add-section SYSTEM_METADATA:RAW:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/systemDiagramModelSlrBaseAddress.json --key-value SYS:PlatformVBNV:xilinx_u55n_gen3x4_xdma_1_202110_1 --output /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.xclbin",
+  "args": [
+   "--add-section",
+   "BITSTREAM:RAW:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/partial.bit",
+   "--force",
+   "--target",
+   "hw",
+   "--key-value",
+   "SYS:dfx_enable:true",
+   "--add-section",
+   ":JSON:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel.rtd",
+   "--append-section",
+   ":JSON:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/appendSection.rtd",
+   "--add-section",
+   "CLOCK_FREQ_TOPOLOGY:JSON:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel_xml.rtd",
+   "--add-section",
+   "BUILD_METADATA:JSON:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel_build.rtd",
+   "--add-section",
+   "EMBEDDED_METADATA:RAW:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/PolyKernel.xml",
+   "--add-section",
+   "SYSTEM_METADATA:RAW:/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/link/int/systemDiagramModelSlrBaseAddress.json",
+   "--key-value",
+   "SYS:PlatformVBNV:xilinx_u55n_gen3x4_xdma_1_202110_1",
+   "--output",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.xclbin"
+  ],
+  "iniFiles": [],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359130",
+ "status": {
+  "cmdId": "2db4bfcf-55a8-4cbd-b434-dffca4a95924",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359271",
+ "status": {
+  "cmdId": "2db4bfcf-55a8-4cbd-b434-dffca4a95924",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_SubCmdStep",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359273",
+ "buildStep": {
+  "cmdId": "149197fb-1d70-4a70-a4fc-1bf56e8a887c",
+  "name": "xclbinutilinfo",
+  "logFile": "",
+  "commandLine": "xclbinutil --quiet --force --info /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.xclbin.info --input /home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.xclbin",
+  "args": [
+   "--quiet",
+   "--force",
+   "--info",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.xclbin.info",
+   "--input",
+   "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.xclbin"
+  ],
+  "iniFiles": [],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359273",
+ "status": {
+  "cmdId": "149197fb-1d70-4a70-a4fc-1bf56e8a887c",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359627",
+ "status": {
+  "cmdId": "149197fb-1d70-4a70-a4fc-1bf56e8a887c",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_SubCmdStep",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359629",
+ "buildStep": {
+  "cmdId": "ddc5aed1-c1d3-4253-8db9-91d729e63f5a",
+  "name": "generate_sc_driver",
+  "logFile": "",
+  "commandLine": "",
+  "args": [],
+  "iniFiles": [],
+  "cwd": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359630",
+ "status": {
+  "cmdId": "ddc5aed1-c1d3-4253-8db9-91d729e63f5a",
+  "state": "CS_RUNNING"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359630",
+ "status": {
+  "cmdId": "ddc5aed1-c1d3-4253-8db9-91d729e63f5a",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359645",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/reports/link/system_estimate_PolyKernel.xtxt",
+  "name": "",
+  "fileType": "TEXT",
+  "reportType": "GLOBAL_SYSTEM_ESTIMATE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359649",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/guidance.html",
+  "name": "",
+  "fileType": "HTML",
+  "reportType": "GLOBAL_RULECHECK_GUIDANCE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359650",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/guidance.pb",
+  "name": "",
+  "fileType": "BINARY_PROTOBUF",
+  "reportType": "GLOBAL_RULECHECK_GUIDANCE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Report",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359651",
+ "report": {
+  "path": "/home/klugo/workspace/fpga-tfhe_system_hw_link/Hardware/PolyKernel.build/logs/optraceViewer.html",
+  "name": "",
+  "fileType": "HTML",
+  "reportType": "OPERATION_TRACE",
+  "cmdId": ""
+ }
+}
+</ENTRY>
+<ENTRY>
+{
+ "type": "ET_Status",
+ "dateTimestamp": "Sat Mar 12 12:12:39 2022",
+ "timestampMillis": "1647040359651",
+ "status": {
+  "cmdId": "6bdf20e6-8411-4730-85bf-cf2a2c2b463c",
+  "state": "CS_PASSED"
+ }
+}
+</ENTRY>
