@@ -81,7 +81,7 @@ OCLPoly::OCLPoly(string xclbinPath)
 
 	poly1TBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, (size_t)(sizeof(APInt32) * PolyProcessor::N), poly1T);
 	poly2TBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, (size_t)(sizeof(APTorus32) * PolyProcessor::N), poly2T);
-	resultBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, (size_t)(sizeof(APTorus32) * PolyProcessor::N), resultT);
+	resultBuff = cl::Buffer(context, CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY, (size_t)(sizeof(APTorus32) * PolyProcessor::N), resultT);
 
 	// set args and enqueue kernel
 	int j = 0;
