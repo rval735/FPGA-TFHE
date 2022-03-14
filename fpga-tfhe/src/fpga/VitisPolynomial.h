@@ -35,7 +35,8 @@ struct OCLPoly
 {
 	OCLPoly(std::string xclbinPath);
 	~OCLPoly();
-	void torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolynomial *poly1, const TorusPolynomial *poly2);
+	void polyKernel(TorusPolynomial *result, const IntPolynomial *poly1, const TorusPolynomial *poly2);
+	void testOp();
 
 	static void ocl_check(const cl_int &err);
 

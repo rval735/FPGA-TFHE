@@ -1,5 +1,3 @@
-#include <fpga/VitisPolynomial.h>
-
 // Project FPGA-TFHE
 // https://github.com/rval735/FPGA-TFHE
 //
@@ -16,8 +14,9 @@
 #include <cstdlib>
 #include <cmath>
 #include <sys/time.h>
-#include "tfhe/tfhe.h"
 #include <iostream>
+#include <fpga/VitisPolynomial.h>
+#include "tfhe/tfhe.h"
 
 using namespace std;
 
@@ -33,6 +32,9 @@ int32_t main(int32_t argc, char **argv)
 	gettimeofday(&start_time, 0);
 
 	oclKernel = new OCLPoly(std::string(argv[1]));
+
+//	oclKernel->testOp();
+//	return 0;
 
 	gettimeofday(&end_time, 0);
 	std::cout << "OCL setup time " << tvdiff(&start_time, &end_time) << "us" << std::endl;

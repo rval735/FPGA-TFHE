@@ -131,7 +131,7 @@ int compareElems(T1 *elems, T2 *elems2, bool (*cmp)(T1,T2), bool errs = false, b
 	return err;
 }
 
-void OCLPoly::torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolynomial *poly1, const TorusPolynomial *poly2)
+void OCLPoly::polyKernel(TorusPolynomial *result, const IntPolynomial *poly1, const TorusPolynomial *poly2)
 {
 	for (int i = 0; i < PolyProcessor::N; i++)
 	{
@@ -140,21 +140,68 @@ void OCLPoly::torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolyno
 	}
 
 	// write data to DDR
-	vector<cl::Memory> ib = {poly1TBuff, poly2TBuff};
-	cmdQ.enqueueMigrateMemObjects(ib, 0);
+	cmdQ.enqueueMigrateMemObjects({poly1TBuff, poly2TBuff}, 0);
 
+	// execute the Kernel
 	cmdQ.enqueueTask(kernel);
 
 	// read data from DDR
-	std::vector<cl::Memory> ob = {resultBuff};
-	cmdQ.enqueueMigrateMemObjects(ob, CL_MIGRATE_MEM_OBJECT_HOST);
+	cmdQ.enqueueMigrateMemObjects({resultBuff}, CL_MIGRATE_MEM_OBJECT_HOST);
 
 	// wait all to finish
-	cmdQ.flush();
+	//cmdQ.flush();
 	cmdQ.finish();
 
 	for (int i = 0; i < PolyProcessor::N; i++)
 	{
 		result->coefsT[i] = resultT[i];
 	}
+}
+
+
+void OCLPoly::testOp()
+{
+	constexpr int n = PolyProcessor::N;
+	TorusPolynomial *resultK = new_TorusPolynomial(n);
+	TorusPolynomial *resultC = new_TorusPolynomial(n);
+	TorusPolynomial *poly2 = new_TorusPolynomial(n);
+	IntPolynomial *poly1 = new_IntPolynomial_array(1, n);
+
+	for (int i = 0; i < n; i++)
+	{
+		if (i % 3)
+		{
+			poly1->coefs[i] = 2;
+			poly2->coefsT[i] = 2;
+		}
+
+		if (i % 5)
+		{
+			poly1->coefs[i] = 5;
+			poly2->coefsT[i] = 7;
+		}
+		else
+		{
+			poly1->coefs[i] = 1;
+			poly2->coefsT[i] = 1;
+		}
+
+		resultC->coefsT[i] = 0;
+		resultK->coefsT[i] = 0;
+	}
+
+	torusPolynomialAddMulRFFT(resultC, poly1, poly2, true);
+	torusPolynomialAddMulRFFT(resultK, poly1, poly2, false);
+	int errs = 0;
+
+	for (int i = 0; i < n; i++)
+	{
+		if(resultC->coefsT[i] != resultK->coefsT[i])
+		{
+			errs++;
+//			std::cout << "Err: " << result->coefsT[i] << ",\t\t\t" << resultT[i] << endl;
+		}
+	}
+
+	std::cout << "Errs: " << errs << std::endl;
 }

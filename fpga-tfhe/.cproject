@@ -53,6 +53,10 @@
                                     								
                                 </option>
                                 								
+                                <option id="com.xilinx.ide.accel.toolchain.sw_emu.debug.gcc_compiler.option.debug.850189244" superClass="com.xilinx.ide.accel.toolchain.sw_emu.debug.gcc_compiler.option.debug" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+                                								
+                                <option id="com.xilinx.ide.accel.toolchain.sw_emu.debug.gcc_compiler.option.optimization.1393296311" superClass="com.xilinx.ide.accel.toolchain.sw_emu.debug.gcc_compiler.option.optimization" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.more" valueType="enumerated"/>
+                                								
                                 <inputType id="com.xilinx.ide.accel.managedbuild.input.cpp.1978990099" superClass="com.xilinx.ide.accel.managedbuild.input.cpp"/>
                                 								
                                 <inputType id="com.xilinx.ide.accel.managedbuild.input.c.225097048" superClass="com.xilinx.ide.accel.managedbuild.input.c"/>
@@ -135,6 +139,10 @@
                                     								
                                 </option>
                                 								
+                                <option id="com.xilinx.ide.accel.toolchain.hw_emu.debug.gcc_compiler.option.debug.1603245336" superClass="com.xilinx.ide.accel.toolchain.hw_emu.debug.gcc_compiler.option.debug" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+                                								
+                                <option id="com.xilinx.ide.accel.toolchain.hw_emu.debug.gcc_compiler.option.optimization.677114242" superClass="com.xilinx.ide.accel.toolchain.hw_emu.debug.gcc_compiler.option.optimization" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.more" valueType="enumerated"/>
+                                								
                                 <inputType id="com.xilinx.ide.accel.managedbuild.input.cpp.2126929157" superClass="com.xilinx.ide.accel.managedbuild.input.cpp"/>
                                 								
                                 <inputType id="com.xilinx.ide.accel.managedbuild.input.c.680376033" superClass="com.xilinx.ide.accel.managedbuild.input.c"/>
@@ -214,6 +222,10 @@
                                     <listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../Vitis_Libraries/utils/L1/include&quot;"/>
                                     								
                                 </option>
+                                								
+                                <option id="com.xilinx.ide.accel.toolchain.hw.gcc_compiler.option.debug.785028451" superClass="com.xilinx.ide.accel.toolchain.hw.gcc_compiler.option.debug" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.default" valueType="enumerated"/>
+                                								
+                                <option id="gnu.cpp.compiler.option.optimization.level.1864450560" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
                                 								
                                 <inputType id="com.xilinx.ide.accel.managedbuild.input.cpp.393362565" superClass="com.xilinx.ide.accel.managedbuild.input.cpp"/>
                                 								

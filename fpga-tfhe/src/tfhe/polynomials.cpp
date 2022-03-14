@@ -83,7 +83,7 @@ EXPORT void torusPolynomialAddMulRFFT(TorusPolynomial* result, const IntPolynomi
 	if (runCPU == false)
 	{
 		// The OCL call that replaces the functions below:
-		oclKernel->torusPolynomialAddMulRFFT(result, poly1, poly2);
+		oclKernel->polyKernel(result, poly1, poly2);
 	}
 	else
 	{
