@@ -40,3 +40,5 @@ IDE.log
 *Emulation-HW*
 *Hardware*
 .vscode
+ip_cache
+tests
