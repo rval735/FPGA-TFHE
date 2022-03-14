@@ -34,6 +34,7 @@ typedef std::complex<double> cplx; // https://stackoverflow.com/a/31800404
 struct OCLPoly
 {
 	OCLPoly(std::string xclbinPath);
+	~OCLPoly();
 	void torusPolynomialAddMulRFFT(TorusPolynomial *result, const IntPolynomial *poly1, const TorusPolynomial *poly2);
 
 	static void ocl_check(const cl_int &err);
