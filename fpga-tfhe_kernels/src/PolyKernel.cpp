@@ -19,10 +19,28 @@ extern "C" void PolyKernel(const APInt32 poly1[PolyProcessor::N],
 						   const APTorus32 poly2[PolyProcessor::N],
 						   APTorus32 result[PolyProcessor::N])
 {
-	APCplx tmp0[PolyProcessor::N];
-	APCplx tmp1[PolyProcessor::N];
-	APCplx tmp2[PolyProcessor::N];
-	APTorus32 tmpT[PolyProcessor::N];
+#pragma HLS INTERFACE m_axi port = poly1 offset = slave bundle = gmem0
+#pragma HLS INTERFACE m_axi port = poly2 offset = slave bundle = gmem1
+#pragma HLS INTERFACE m_axi port = result offset = slave bundle = gmem0
+
+#pragma HLS INTERFACE s_axilite port = poly1
+#pragma HLS INTERFACE s_axilite port = poly2
+#pragma HLS INTERFACE s_axilite port = result
+#pragma HLS INTERFACE s_axilite port = return
+
+	APCplx tmp0[PolyProcessor::N2];
+	APCplx tmp1[PolyProcessor::N2];
+	APCplx tmp2[PolyProcessor::N2];
+	APTorus32 tmpT[PolyProcessor::N2];
+
+	for (int i = 0; i < PolyProcessor::N2; i++)
+	{
+		tmp0[i] = 0;
+		tmp1[i] = 0;
+		tmp2[i] = 0;
+	}
+
+	proc[0] = PolyProcessor();
 
 	executeReverseInt(proc, tmp0, poly1);
 	executeReverseTorus32(proc, tmp1, poly2);

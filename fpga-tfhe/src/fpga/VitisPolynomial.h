@@ -19,16 +19,13 @@
 #include <complex>
 
 #include <PolyKernel.hpp>
+#include <PolyProc.hpp>
 #include "fftw/lagrangehalfc_impl.h"
 
-using namespace std;
-
-// typedef double _Complex cplx;
-typedef std::complex<double> cplx; // https://stackoverflow.com/a/31800404
-
-//#define OCLFLAGS	CL_QUEUE_PROFILING_ENABLE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE
+#define OCLFLAGS	CL_QUEUE_PROFILING_ENABLE | CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE
 //#define OCLFLAGS	CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE
-#define OCLFLAGS	CL_QUEUE_PROFILING_ENABLE
+//#define OCLFLAGS	CL_QUEUE_PROFILING_ENABLE
+//#define OCLFLAGS 0
 
 
 struct OCLPoly
@@ -47,13 +44,15 @@ struct OCLPoly
 	cl::Kernel kernel;
 	xf::common::utils_sw::Logger logger = xf::common::utils_sw::Logger(std::cout, std::cerr);
 
-	APInt32 *poly1T;
-	APTorus32 *poly2T;
-	APTorus32 *resultT;
+	std::vector<APInt32, aligned_allocator<APInt32>> poly1T;
+	std::vector<APTorus32, aligned_allocator<APTorus32>> poly2T;
+	std::vector<APTorus32, aligned_allocator<APTorus32>> resultT;
 
 	cl::Buffer poly1TBuff;
 	cl::Buffer poly2TBuff;
 	cl::Buffer resultBuff;
+
+	cl_mem_ext_ptr_t inBufExt1, inBufExt2, outBufExt;
 };
 
 int tvdiff(struct timeval* tv0, struct timeval* tv1);

@@ -26,7 +26,7 @@ void executeReverseInt(PolyProcessor proc[1],
 					   APCplx res[PolyProcessor::N],
 					   const APInt32 a[PolyProcessor::N])
 {
-	 int n = PolyProcessor::N;
+	constexpr int n = PolyProcessor::N;
 	constexpr int n2 = PolyProcessor::N2;
 	constexpr int ns2 = PolyProcessor::Ns2;
 

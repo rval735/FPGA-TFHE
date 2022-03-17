@@ -15,13 +15,15 @@
 #ifndef POLYPROC_HPP
 #define POLYPROC_HPP
 
-#include <hls_x_complex.h>
+//#include <hls_x_complex.h>
+#include <complex>
 
 #include "FFTTables.hpp"
 
 //https://support.xilinx.com/s/question/0D52E00006mhdOTSAY/whats-better-stdcomplex-or-hlsxcomplex?language=en_US
 // Every variable needs to add "__attribute((no_ctor))"
-typedef hls::x_complex<APDouble> APCplx;
+//typedef hls::x_complex<APDouble> APCplx;
+typedef std::complex<APDouble> APCplx;
 
 class PolyProcessor
 {
