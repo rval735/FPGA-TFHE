@@ -91,13 +91,15 @@ OCLPoly::OCLPoly(string xclbinPath)
 	logger.logCreateKernel(err);
 	std::cout << "Kernel has been created.\n";
 
-	size_t poly1Size = (size_t)(sizeof(APInt32) * PolyProcessor::N);
-	size_t poly2Size = (size_t)(sizeof(APTorus32) * PolyProcessor::N);
+	constexpr unsigned int dataSize = PolyProcessor::N;
+	size_t poly1Size = (size_t)(sizeof(APInt32) * dataSize);
+	size_t poly2Size = (size_t)(sizeof(APTorus32) * dataSize);
+	size_t cplxSize = (size_t)(sizeof(APCplx) * dataSize * 2);
 
-	unsigned int dataSize = 1024;
 	poly1T = std::vector<APInt32, aligned_allocator<APInt32>>(dataSize);
 	poly2T = std::vector<APTorus32, aligned_allocator<APTorus32>>(dataSize);
 	resultT = std::vector<APTorus32, aligned_allocator<APTorus32>>(dataSize);
+	resT = std::vector<APCplx, aligned_allocator<APCplx>>(dataSize * 2);
 
     inBufExt1.obj = poly1T.data();
     inBufExt1.param = 0;
@@ -111,9 +113,16 @@ OCLPoly::OCLPoly(string xclbinPath)
     outBufExt.param = 0;
     outBufExt.flags = pc[2];
 
+    resExt.obj = resT.data();
+    resExt.param = 0;
+    resExt.flags = pc[3];
+
 	poly1TBuff = cl::Buffer(context, CL_MEM_READ_ONLY | CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR, poly1Size, &inBufExt1);
 	poly2TBuff = cl::Buffer(context, CL_MEM_READ_ONLY | CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR, poly2Size, &inBufExt2);
 	resultBuff = cl::Buffer(context, CL_MEM_WRITE_ONLY | CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR, poly2Size, &outBufExt);
+	resBuff = cl::Buffer(context, CL_MEM_READ_WRITE | CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR, cplxSize, &resExt);
+
+	std::cout << "Mem has been created.\n";
 
 //	poly1T = (APInt32 *)cmdQ.enqueueMapBuffer(poly1TBuff, CL_TRUE, CL_MAP_WRITE, 0, poly1Size);
 //	poly2T = (APTorus32 *)cmdQ.enqueueMapBuffer(poly2TBuff, CL_TRUE, CL_MAP_WRITE, 0, poly2Size);
@@ -124,6 +133,9 @@ OCLPoly::OCLPoly(string xclbinPath)
 	kernel.setArg(j++, poly1TBuff);
 	kernel.setArg(j++, poly2TBuff);
 	kernel.setArg(j++, resultBuff);
+	kernel.setArg(j++, resBuff);
+
+	std::cout << "Args has been set.\n";
 }
 
 OCLPoly::~OCLPoly()
@@ -179,21 +191,33 @@ void OCLPoly::polyKernel(TorusPolynomial *result, const IntPolynomial *poly1, co
 	cmdQ.enqueueMigrateMemObjects({poly1TBuff, poly2TBuff}, 0);
 	cmdQ.finish();
 
+	std::cout << "Migrate has been set.\n";
+
 	// execute the Kernel
 	cmdQ.enqueueTask(kernel);
 	cmdQ.finish();
 
+	std::cout << "Kernel has been set.\n";
 	// read data from DDR
 	cmdQ.enqueueMigrateMemObjects({resultBuff}, CL_MIGRATE_MEM_OBJECT_HOST);
+	cmdQ.enqueueMigrateMemObjects({resBuff}, CL_MIGRATE_MEM_OBJECT_HOST);
 
 	// wait all to finish
 	//cmdQ.flush();
 	cmdQ.finish();
 
+	std::cout << "Migrate has been set.\n";
 	for (int i = 0; i < PolyProcessor::N; i++)
 	{
 		result->coefsT[i] = resultT[i];
 	}
+
+	for (int i = 0; i < PolyProcessor::N; i++)
+	{
+		std::cout << "i: " << i << ", Res: " << resT[i] << ", Result:" << resultT[i] << endl;
+	}
+
+	std::cout << "Copy has been set.\n";
 }
 
 
@@ -209,19 +233,19 @@ void OCLPoly::testOp()
 	{
 		if (i % 3)
 		{
-			poly1->coefs[i] = 2;
-			poly2->coefsT[i] = 2;
+			poly1->coefs[i] = 20;
+			poly2->coefsT[i] = 50;
 		}
 
 		if (i % 5)
 		{
-			poly1->coefs[i] = 5;
-			poly2->coefsT[i] = 7;
+			poly1->coefs[i] = 75;
+			poly2->coefsT[i] = 77;
 		}
 		else
 		{
-			poly1->coefs[i] = 1;
-			poly2->coefsT[i] = 1;
+			poly1->coefs[i] = 100;
+			poly2->coefsT[i] = 100;
 		}
 
 		resultC->coefsT[i] = 0;
@@ -237,7 +261,6 @@ void OCLPoly::testOp()
 		if(resultC->coefsT[i] != resultK->coefsT[i])
 		{
 			errs++;
-//			std::cout << "Err: " << result->coefsT[i] << ",\t\t\t" << resultT[i] << endl;
 		}
 	}
 

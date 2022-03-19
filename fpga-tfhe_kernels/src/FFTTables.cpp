@@ -16,8 +16,6 @@
 
 using namespace std;
 
-static const FFTTables tablesForward = FFTTables(false);
-static const FFTTables tablesInverse = FFTTables(true);
 
 // Returns a pointer to an opaque structure of FFT tables. n must be a power of 2 and n >= 4.
 FFTTables::FFTTables(bool isInverse)
@@ -85,32 +83,39 @@ APDouble accurateSin(APUInt64 i, const APUInt64 n)
 			i = n / 2 - i;
 		}
 
-		APDouble val;
+		APDouble val = 0;
+		APDouble iD = (APDouble)i;
+		APDouble nD = (APDouble)n;
 		// Reduce to eighth cycle
 		if (i * 8 < n)
 		{
-			val = sin(2 * M_PI * i / n);
+			APDouble pre = iD / nD;
+			val = sin(2.0 * M_PI * pre);
 		}
 		else
 		{
-			val = cos(2 * M_PI * (n / 4 - i) / n);
+
+			APDouble pre = (nD / 4.0 - iD) / nD;
+			val = cos(2.0 * M_PI * pre);
 		}
 		// Apply sign
 		if (neg)
 		{
-			return -val;
+			return -1.0 * val;
 		}
-		else {
+		else
+		{
 			return val;
 		}
 	}
 }
 
 // Returns the largest i such that 2^i <= n.
-APInt32 floorLog2(APUInt64 n)
+APInt32 floorLog2(const APUInt64 n)
 {
 	APInt32 result = 0;
-	for (; n > 1; n /= 2)
+
+	for (APUInt64 i = n; i > 1; i /= 2)
 	{
 		result++;
 	}
@@ -120,20 +125,21 @@ APInt32 floorLog2(APUInt64 n)
 
 
 // Returns the bit reversal of the n-bit unsigned integer x.
-APUInt64 reverseBits(APUInt64 x, const APUInt32 n)
+APUInt64 reverseBits(const APUInt64 x, const APUInt32 n)
 {
 	APUInt64 result = 0;
-	APUInt32 i;
-	for (i = 0; i < n; i++, x >>= 1)
+	APUInt64 xD = x;
+
+	for (APUInt32 i = 0; i < n; i++, xD >>= 1)
 	{
-		result = (result << 1) | (x & 1);
+		result = (result << 1) | (xD & 1);
 	}
 
 	return result;
 }
 
 // Real and Imag sizes are expected to be FFTSize
-void fftForward(APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize])
+void fftForward(const FFTTables tablesForward, APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize])
 {
 	APUInt64 n = FFTTables::FFTSize;
 
@@ -239,7 +245,7 @@ void fftForward(APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTS
 }
 
 // Real and Imag sizes are expected to be FFTSize
-void fftInverse(APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize])
+void fftInverse(const FFTTables tablesInverse, APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize])
 {
 	APUInt64 n = FFTTables::FFTSize;
 

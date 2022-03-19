@@ -8,6 +8,7 @@
             <args name="poly1" master="true" memory="HBM[0]"/>
             <args name="poly2" master="true" memory="HBM[1]"/>
             <args name="result" master="true" memory="HBM[2]"/>
+            <args name="res" master="true" memory="HBM[3]"/>
           </computeUnits>
         </kernels>
       </binaryContainers>
@@ -19,6 +20,7 @@
             <args name="poly1" master="true" memory="HBM[0]"/>
             <args name="poly2" master="true" memory="HBM[1]"/>
             <args name="result" master="true" memory="HBM[2]"/>
+            <args name="res" master="true" memory="HBM[3]"/>
           </computeUnits>
         </kernels>
       </binaryContainers>
@@ -32,6 +34,7 @@
             <args name="poly1" master="true" memory="HBM[0]"/>
             <args name="poly2" master="true" memory="HBM[1]"/>
             <args name="result" master="true" memory="HBM[2]"/>
+            <args name="res" master="true" memory="HBM[3]"/>
           </computeUnits>
         </kernels>
       </binaryContainers>
@@ -43,6 +46,7 @@
             <args name="poly1" master="true" memory="HBM[0]"/>
             <args name="poly2" master="true" memory="HBM[1]"/>
             <args name="result" master="true" memory="HBM[2]"/>
+            <args name="res" master="true" memory="HBM[3]"/>
           </computeUnits>
         </kernels>
       </binaryContainers>
@@ -56,6 +60,7 @@
             <args name="poly1" master="true" memory="HBM[0]"/>
             <args name="poly2" master="true" memory="HBM[1]"/>
             <args name="result" master="true" memory="HBM[2]"/>
+            <args name="res" master="true" memory="HBM[3]"/>
           </computeUnits>
         </kernels>
       </binaryContainers>
@@ -67,6 +72,7 @@
             <args name="poly1" master="true" memory="HBM[0]"/>
             <args name="poly2" master="true" memory="HBM[1]"/>
             <args name="result" master="true" memory="HBM[2]"/>
+            <args name="res" master="true" memory="HBM[3]"/>
           </computeUnits>
         </kernels>
       </binaryContainers>

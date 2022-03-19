@@ -16,6 +16,7 @@
 
 #include <cstdint>
 
+
 //// Future work: Employ fixed size numbers instead of cstdint
 //#include <ap_fixed.h>
 //#include <ap_int.h>
@@ -44,10 +45,10 @@ struct FFTTables
 };
 
 APDouble accurateSin(APUInt64 i, const APUInt64 n);
-APInt32 floorLog2(APUInt64 n);
-APUInt64 reverseBits(APUInt64 x, const APUInt32 n);
+APInt32 floorLog2(const APUInt64 n);
+APUInt64 reverseBits(const APUInt64 x, const APUInt32 n);
 
-void fftForward(APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize]);
-void fftInverse(APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize]);
+void fftForward(const FFTTables tablesForward, APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize]);
+void fftInverse(const FFTTables tablesInverse, APDouble real[FFTTables::FFTSize], APDouble imag[FFTTables::FFTSize]);
 
 #endif // FFTTABLES_HPP

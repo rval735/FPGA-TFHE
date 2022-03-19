@@ -45,7 +45,7 @@ void executeReverseInt(PolyProcessor proc[1],
     	proc->imagInOut[i] = 0;
     }
 
-    fftInverse(proc->realInOut, proc->imagInOut);
+    fftInverse(proc->tablesInverse, proc->realInOut, proc->imagInOut);
 
     for (int i = 0; i < ns2; i++)
     {
@@ -60,7 +60,7 @@ void executeReverseTorus32(PolyProcessor proc[1],
 						   const APTorus32 a[PolyProcessor::N])
 {
 	constexpr APDouble pm33 = 1. / (APInt64(1) << 33);
-	//static const double pm33 = 1.1641532182693481e-10;
+	//constexpr APDouble pm33 = 1.1641532182693481e-10;
 	constexpr int n = PolyProcessor::N;
 	constexpr int n2 = PolyProcessor::N2;
 
@@ -79,7 +79,7 @@ void executeReverseTorus32(PolyProcessor proc[1],
     	proc->imagInOut[i] = 0;
     }
 
-    fftInverse(proc->realInOut, proc->imagInOut);
+    fftInverse(proc->tablesInverse, proc->realInOut, proc->imagInOut);
 
     for (int i = 0; i < PolyProcessor::Ns2; i++)
     {
@@ -95,7 +95,7 @@ void executeDirectTorus32(PolyProcessor proc[1],
 	constexpr int n2 = PolyProcessor::N2;
 	constexpr int ns2 = PolyProcessor::Ns2;
 //    static const double snD = 1.0 / n; // 0.0009765625;
-	constexpr APDouble sN1 = 1.0 / n; //APDouble(snD);
+	constexpr APDouble sN1 = 1.0 / (APDouble)n;
 	constexpr APDouble p32 = APDouble(APInt64(1) << 32);
 
     for (int i = 0; i < n; i++)
@@ -128,7 +128,7 @@ void executeDirectTorus32(PolyProcessor proc[1],
     	proc->imagInOut[n2 - 1 - 2 * i] = -a[i].imag();
     }
 
-    fftForward(proc->realInOut, proc->imagInOut);
+    fftForward(proc->tablesForward, proc->realInOut, proc->imagInOut);
 
     for (int i = 0; i < n; i++)
     {

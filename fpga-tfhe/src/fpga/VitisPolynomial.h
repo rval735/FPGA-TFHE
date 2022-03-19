@@ -47,12 +47,14 @@ struct OCLPoly
 	std::vector<APInt32, aligned_allocator<APInt32>> poly1T;
 	std::vector<APTorus32, aligned_allocator<APTorus32>> poly2T;
 	std::vector<APTorus32, aligned_allocator<APTorus32>> resultT;
+	std::vector<APCplx, aligned_allocator<APCplx>> resT;
 
 	cl::Buffer poly1TBuff;
 	cl::Buffer poly2TBuff;
 	cl::Buffer resultBuff;
+	cl::Buffer resBuff;
 
-	cl_mem_ext_ptr_t inBufExt1, inBufExt2, outBufExt;
+	cl_mem_ext_ptr_t inBufExt1, inBufExt2, resExt, outBufExt;
 };
 
 int tvdiff(struct timeval* tv0, struct timeval* tv1);
