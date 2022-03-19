@@ -15,18 +15,15 @@
 
 extern "C" void PolyKernel(const APInt32 poly1[PolyProcessor::N],
 						   const APTorus32 poly2[PolyProcessor::N],
-						   APTorus32 result[PolyProcessor::N],
-						   APCplx res[PolyProcessor::N2])
+						   APTorus32 result[PolyProcessor::N])
 {
 #pragma HLS INTERFACE m_axi port = poly1 offset = slave bundle = gmem0
 #pragma HLS INTERFACE m_axi port = poly2 offset = slave bundle = gmem1
 #pragma HLS INTERFACE m_axi port = result offset = slave bundle = gmem2
-#pragma HLS INTERFACE m_axi port = res offset = slave bundle = gmem3
 
 #pragma HLS INTERFACE s_axilite port = poly1
 #pragma HLS INTERFACE s_axilite port = poly2
 #pragma HLS INTERFACE s_axilite port = result
-#pragma HLS INTERFACE s_axilite port = res
 #pragma HLS INTERFACE s_axilite port = return
 
 	APCplx tmp0[PolyProcessor::N2];
@@ -37,7 +34,7 @@ extern "C" void PolyKernel(const APInt32 poly1[PolyProcessor::N],
 
 	executeReverseInt(&proc, tmp0, poly1);
 	executeReverseTorus32(&proc, tmp1, poly2);
-	lagrangeHalfCPolynomialMul(res, tmp0, tmp1);
-//	executeDirectTorus32(&proc, tmpT, tmp2);
-//	torusPolynomialAddTo(result, tmpT);
+	lagrangeHalfCPolynomialMul(tmp2, tmp0, tmp1);
+	executeDirectTorus32(&proc, tmpT, tmp2);
+	torusPolynomialAddTo(result, tmpT);
 }

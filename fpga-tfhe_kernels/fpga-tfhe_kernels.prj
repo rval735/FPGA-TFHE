@@ -6,7 +6,6 @@
         <args name="poly1" master="true"/>
         <args name="poly2" master="true"/>
         <args name="result" master="true"/>
-        <args name="res" master="true"/>
         <supportedTargets>sw_emu</supportedTargets>
         <supportedTargets>hw_emu</supportedTargets>
         <supportedTargets>hw</supportedTargets>
@@ -40,7 +39,6 @@
         <args name="poly1" master="true"/>
         <args name="poly2" master="true"/>
         <args name="result" master="true"/>
-        <args name="res" master="true"/>
         <supportedTargets>sw_emu</supportedTargets>
         <supportedTargets>hw_emu</supportedTargets>
         <supportedTargets>hw</supportedTargets>
@@ -74,7 +72,6 @@
         <args name="poly1" master="true"/>
         <args name="poly2" master="true"/>
         <args name="result" master="true"/>
-        <args name="res" master="true"/>
         <supportedTargets>sw_emu</supportedTargets>
         <supportedTargets>hw_emu</supportedTargets>
         <supportedTargets>hw</supportedTargets>
@@ -90,7 +87,6 @@
         <args name="poly1" master="true"/>
         <args name="poly2" master="true"/>
         <args name="result" master="true"/>
-        <args name="res" master="true"/>
         <supportedTargets>sw_emu</supportedTargets>
         <supportedTargets>hw_emu</supportedTargets>
         <supportedTargets>hw</supportedTargets>

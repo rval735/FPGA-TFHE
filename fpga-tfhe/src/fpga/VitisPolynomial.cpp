@@ -94,12 +94,10 @@ OCLPoly::OCLPoly(string xclbinPath)
 	constexpr unsigned int dataSize = PolyProcessor::N;
 	size_t poly1Size = (size_t)(sizeof(APInt32) * dataSize);
 	size_t poly2Size = (size_t)(sizeof(APTorus32) * dataSize);
-	size_t cplxSize = (size_t)(sizeof(APCplx) * dataSize * 2);
 
 	poly1T = std::vector<APInt32, aligned_allocator<APInt32>>(dataSize);
 	poly2T = std::vector<APTorus32, aligned_allocator<APTorus32>>(dataSize);
 	resultT = std::vector<APTorus32, aligned_allocator<APTorus32>>(dataSize);
-	resT = std::vector<APCplx, aligned_allocator<APCplx>>(dataSize * 2);
 
     inBufExt1.obj = poly1T.data();
     inBufExt1.param = 0;
@@ -113,36 +111,24 @@ OCLPoly::OCLPoly(string xclbinPath)
     outBufExt.param = 0;
     outBufExt.flags = pc[2];
 
-    resExt.obj = resT.data();
-    resExt.param = 0;
-    resExt.flags = pc[3];
-
 	poly1TBuff = cl::Buffer(context, CL_MEM_READ_ONLY | CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR, poly1Size, &inBufExt1);
 	poly2TBuff = cl::Buffer(context, CL_MEM_READ_ONLY | CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR, poly2Size, &inBufExt2);
 	resultBuff = cl::Buffer(context, CL_MEM_WRITE_ONLY | CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR, poly2Size, &outBufExt);
-	resBuff = cl::Buffer(context, CL_MEM_READ_WRITE | CL_MEM_EXT_PTR_XILINX | CL_MEM_USE_HOST_PTR, cplxSize, &resExt);
 
 	std::cout << "Mem has been created.\n";
-
-//	poly1T = (APInt32 *)cmdQ.enqueueMapBuffer(poly1TBuff, CL_TRUE, CL_MAP_WRITE, 0, poly1Size);
-//	poly2T = (APTorus32 *)cmdQ.enqueueMapBuffer(poly2TBuff, CL_TRUE, CL_MAP_WRITE, 0, poly2Size);
-//	resultT = (APTorus32 *)cmdQ.enqueueMapBuffer(resultBuff, CL_TRUE, CL_MAP_READ, 0, poly2Size);
 
 	// set args and enqueue kernel
 	int j = 0;
 	kernel.setArg(j++, poly1TBuff);
 	kernel.setArg(j++, poly2TBuff);
 	kernel.setArg(j++, resultBuff);
-	kernel.setArg(j++, resBuff);
 
-	std::cout << "Args has been set.\n";
+	std::cout << "Kernel Args. has been set.\n";
+	std::cout << "Ready to receive data...\n";
 }
 
 OCLPoly::~OCLPoly()
 {
-//	cmdQ.enqueueUnmapMemObject(poly1TBuff, poly1T);
-//	cmdQ.enqueueUnmapMemObject(poly2TBuff, poly2T);
-//	cmdQ.enqueueUnmapMemObject(resultBuff, resultT);
 }
 
 template<class T1, class T2>
@@ -190,36 +176,23 @@ void OCLPoly::polyKernel(TorusPolynomial *result, const IntPolynomial *poly1, co
 	// write data to DDR
 	cmdQ.enqueueMigrateMemObjects({poly1TBuff, poly2TBuff}, 0);
 	cmdQ.finish();
-
-	std::cout << "Migrate has been set.\n";
+//	std::cout << "Input mem objects migrated\n";
 
 	// execute the Kernel
 	cmdQ.enqueueTask(kernel);
 	cmdQ.finish();
+//	std::cout << "Kernel finished\n";
 
-	std::cout << "Kernel has been set.\n";
 	// read data from DDR
 	cmdQ.enqueueMigrateMemObjects({resultBuff}, CL_MIGRATE_MEM_OBJECT_HOST);
-	cmdQ.enqueueMigrateMemObjects({resBuff}, CL_MIGRATE_MEM_OBJECT_HOST);
-
-	// wait all to finish
-	//cmdQ.flush();
 	cmdQ.finish();
+//	std::cout << "Output mem object migrated\n";
 
-	std::cout << "Migrate has been set.\n";
 	for (int i = 0; i < PolyProcessor::N; i++)
 	{
 		result->coefsT[i] = resultT[i];
 	}
-
-	for (int i = 0; i < PolyProcessor::N; i++)
-	{
-		std::cout << "i: " << i << ", Res: " << resT[i] << ", Result:" << resultT[i] << endl;
-	}
-
-	std::cout << "Copy has been set.\n";
 }
-
 
 void OCLPoly::testOp()
 {

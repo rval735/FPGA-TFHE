@@ -19,7 +19,6 @@
 
 extern "C" void PolyKernel(const APInt32 poly1[PolyProcessor::N],
 						   const APTorus32 poly2[PolyProcessor::N],
-						   APTorus32 result[PolyProcessor::N],
-						   APCplx res[PolyProcessor::N2]);
+						   APTorus32 result[PolyProcessor::N]);
 
 #endif // POLYKERNEL
