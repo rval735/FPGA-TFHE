@@ -173,14 +173,20 @@ void OCLPoly::polyKernel(TorusPolynomial *result, const IntPolynomial *poly1, co
 		poly2T[i] = poly2->coefsT[i];
 	}
 
+//	struct timeval start_time, end_time;
+
 	// write data to DDR
 	cmdQ.enqueueMigrateMemObjects({poly1TBuff, poly2TBuff}, 0);
 	cmdQ.finish();
 //	std::cout << "Input mem objects migrated\n";
 
+//	gettimeofday(&start_time, 0);
 	// execute the Kernel
 	cmdQ.enqueueTask(kernel);
 	cmdQ.finish();
+//	gettimeofday(&end_time, 0);
+//	std::cout << "FPGA kernel execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
+
 //	std::cout << "Kernel finished\n";
 
 	// read data from DDR
@@ -225,17 +231,28 @@ void OCLPoly::testOp()
 		resultK->coefsT[i] = 0;
 	}
 
+
+	struct timeval start_time, end_time;
+	gettimeofday(&start_time, 0);
 	torusPolynomialAddMulRFFT(resultC, poly1, poly2, true);
+	gettimeofday(&end_time, 0);
+	std::cout << "CPU execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
+
+	gettimeofday(&start_time, 0);
 	torusPolynomialAddMulRFFT(resultK, poly1, poly2, false);
-	int errs = 0;
+	gettimeofday(&end_time, 0);
+	std::cout << "FPGA execution time " << tvdiff(&start_time, &end_time) << "us" << std::endl;
+
+	int diffs = 0;
 
 	for (int i = 0; i < n; i++)
 	{
 		if(resultC->coefsT[i] != resultK->coefsT[i])
 		{
-			errs++;
+			diffs++;
+			//std::cout << "Diff: " << resultC->coefsT[i] << " != " << resultK->coefsT[i] << std::endl;
 		}
 	}
 
-	std::cout << "Errs: " << errs << std::endl;
+	std::cout << "Diffs: " << diffs << std::endl;
 }

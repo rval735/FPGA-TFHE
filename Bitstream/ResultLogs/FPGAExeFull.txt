@@ -1,0 +1,118 @@
+./fpga-tfhe PolyKernel.xclbin
+INFO: Reading PolyKernel.xclbin
+Loading: 'PolyKernel.xclbin'
+Found Platform
+Platform Name: Xilinx
+Info: Context created
+Info: Command queue created
+Selected Device xilinx_u55n_gen3x4_xdma_base_1
+Info: Program created
+Info: Kernel created
+Kernel has been created.
+Mem has been created.
+Kernel Args. has been set.
+Ready to receive data...
+OCL setup time 3602300us
+TFHE setup time 29710862us
+This will execute 100 gates over ciphered data.
+#0,	Gate #6,	Phase: -0.00384671
+#1,	Gate #3,	Phase: -0.00315066
+#2,	Gate #9,	Phase: -0.0024602
+#3,	Gate #4,	Phase: -0.00273147
+#4,	Gate #10,	Phase: -0.00279988
+#5,	Gate #7,	Phase: -0.000366055
+#6,	Gate #7,	Phase: -4.12951e-05
+#7,	Gate #6,	Phase: 0.00025404
+#8,	Gate #6,	Phase: 0.0019947
+#9,	Gate #9,	Phase: -0.00445944
+#10,	Gate #7,	Phase: 0.00489226
+#11,	Gate #3,	Phase: 0.00297448
+#12,	Gate #5,	Phase: -0.00402466
+#13,	Gate #5,	Phase: 0.000177537
+#14,	Gate #10,	Phase: -0.000137642
+#15,	Gate #4,	Phase: 0.00255498
+#16,	Gate #10,	Phase: -0.00203732
+#17,	Gate #10,	Phase: -0.00123969
+#18,	Gate #10,	Phase: 0.000890086
+#19,	Gate #7,	Phase: 0.000738272
+#20,	Gate #10,	Phase: -0.00443865
+#21,	Gate #0,	Phase: -0.00263525
+#22,	Gate #2,	Phase: -0.00358877
+#23,	Gate #3,	Phase: -0.00333187
+#24,	Gate #8,	Phase: -0.0051627
+#25,	Gate #9,	Phase: -0.00304804
+#26,	Gate #6,	Phase: 0.00204429
+#27,	Gate #8,	Phase: -0.00249666
+#28,	Gate #2,	Phase: 0.00138135
+#29,	Gate #10,	Phase: -0.00180071
+#30,	Gate #3,	Phase: 0.000689549
+#31,	Gate #0,	Phase: -0.00078564
+#32,	Gate #10,	Phase: 0.0032591
+#33,	Gate #5,	Phase: -0.000543882
+#34,	Gate #3,	Phase: -0.00149046
+#35,	Gate #1,	Phase: -0.000509157
+#36,	Gate #2,	Phase: -0.00319987
+#37,	Gate #9,	Phase: 0.00228518
+#38,	Gate #7,	Phase: -0.00205756
+#39,	Gate #1,	Phase: -0.00229231
+#40,	Gate #5,	Phase: 0.00153273
+#41,	Gate #10,	Phase: -0.000985104
+#42,	Gate #8,	Phase: -9.01155e-05
+#43,	Gate #3,	Phase: 0.00386896
+#44,	Gate #6,	Phase: -0.00346208
+#45,	Gate #10,	Phase: 0.000251928
+#46,	Gate #6,	Phase: -0.00261127
+#47,	Gate #9,	Phase: 0.00212348
+#48,	Gate #8,	Phase: -0.00151742
+#49,	Gate #7,	Phase: 0
+#50,	Gate #5,	Phase: 0.00530474
+#51,	Gate #10,	Phase: 0.0023928
+#52,	Gate #2,	Phase: -0.000918882
+#53,	Gate #4,	Phase: -0.000456066
+#54,	Gate #1,	Phase: 0.00118606
+#55,	Gate #10,	Phase: -0.00376253
+#56,	Gate #3,	Phase: 0.00269951
+#57,	Gate #0,	Phase: 0.000379099
+#58,	Gate #3,	Phase: 0.000115973
+#59,	Gate #0,	Phase: 0.000952915
+#60,	Gate #6,	Phase: -0.00596736
+#61,	Gate #9,	Phase: 0.00259857
+#62,	Gate #7,	Phase: -0.00315053
+#63,	Gate #4,	Phase: 0.000710068
+#64,	Gate #8,	Phase: -0.000949844
+#65,	Gate #1,	Phase: -0.00393826
+#66,	Gate #1,	Phase: 0.00334831
+#67,	Gate #4,	Phase: -0.00252568
+#68,	Gate #6,	Phase: -0.00244213
+#69,	Gate #10,	Phase: -5.09839e-05
+#70,	Gate #7,	Phase: -0.00359743
+#71,	Gate #0,	Phase: 0.00290471
+#72,	Gate #8,	Phase: -0.001014
+#73,	Gate #1,	Phase: 0.00195179
+ #74,	Gate #7,	Phase: 0.000964988
+#75,	Gate #2,	Phase: 0.0015468
+#76,	Gate #5,	Phase: 0.00123174
+#77,	Gate #5,	Phase: -0.00173251
+#78,	Gate #4,	Phase: 0.00139782
+#79,	Gate #7,	Phase: 0
+#80,	Gate #1,	Phase: -0.00243583
+#81,	Gate #3,	Phase: 0.00045695
+#82,	Gate #0,	Phase: -0.000394774
+#83,	Gate #4,	Phase: 0.00160546
+#84,	Gate #1,	Phase: -0.00420967
+#85,	Gate #8,	Phase: 0.00429963
+#86,	Gate #5,	Phase: -0.000535914
+#87,	Gate #5,	Phase: -0.00435352
+#88,	Gate #8,	Phase: 0.000354202
+#89,	Gate #0,	Phase: -0.00385497
+#90,	Gate #10,	Phase: -0.0055551
+#91,	Gate #4,	Phase: 0.00272258
+#92,	Gate #3,	Phase: 0.000945864
+#93,	Gate #10,	Phase: -0.00132077
+#94,	Gate #7,	Phase: 0.00158198
+#95,	Gate #0,	Phase: -0.00105547
+#96,	Gate #0,	Phase: 0.00222282
+#97,	Gate #5,	Phase: 0.00286213
+#98,	Gate #10,	Phase: 0.00309328
+#99,	Gate #3,	Phase: -0.000124648
+TFHE 100 operations time 25038145us
