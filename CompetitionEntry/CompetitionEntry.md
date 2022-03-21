@@ -99,9 +99,9 @@ Initially, the main trouble was to define the scope of "what to work on" for the
 
 Afterward, another project related to blockchain arose on the developer's radar: [nucypher TFHE](https://github.com/nucypher/nufhe). Even though the code did not compile and was not testable, it provided the insights to deploy an FHE system onto the FPGA.
 
-Fortunately, the TFHE repository bases its code in C/C++. Thanks to Vitis HLS, as a simple tool to translate code to hardware, it was possible to transfer FFT functions to a kernel that executes on the Varium C1100; it was possible within a two and a half month period.
+Fortunately, the TFHE repository bases its code in C/C++. Thanks to Vitis HLS, as a developer tool to translate code to hardware, it was possible to transfer FFT functions to a kernel that executes on the Varium C1100. This achievement was possible within a three month period. The main challenge was to test differences between software - hardware emulation, which behaved diffently when using static variables, a challenge of two weeks debugging.
 
-Thanks to Hackster and Xilinx's support, this project deployed its bitstream in physical hardware. This step is critical in any hardware development. For example, software and hardware emulations compiled the kernels. However, when compiling the xclbin to the Varium C1100 it could not compile because of library restrictions. Nevertheless, after many other challenges, the project reached a deliverable stage.
+Thanks to Hackster and Xilinx's support, this project deployed its bitstream in physical hardware and even a docker container. This step is critical in any hardware development. For example, software and hardware emulations compiled the kernels. However, when creating the xclbin to the Varium C1100, it could not compile because of library restrictions. Nevertheless, after many other challenges, the project reached a deliverable stage.
 
 ### Conclusion
 
