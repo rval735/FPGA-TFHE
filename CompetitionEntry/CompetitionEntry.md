@@ -54,7 +54,7 @@ TFHE has no restriction on the number of gates or composition. Therefore, it can
 
 ### Project implementation
 
-The focus of this project explored the execution of certain functions used by the TFHE library on the Varium C1100 FPGA board. As a background, TFHE is utilized by the NuCypher Blockchain project in two implementations [here](https://github.com/nucypher/nufhe) & [here](https://github.com/nucypher/TFHE.jl). These give this project a perspective projection into its future integration on a public blockchain.
+The focus of this project explored the execution of particular functions used by the TFHE library on the Varium C1100 FPGA board. As a background, TFHE is utilized by the NuCypher Blockchain project in two implementations [here](https://github.com/nucypher/nufhe) & [here](https://github.com/nucypher/TFHE.jl). These give this project a perspective projection into its future integration on a public blockchain.
 
 Thanks to TFHE source code in C/C++ and Vitis HLS developer tools, this project offloaded processing to the Varium C1100. In particular, operations around the (Inverse) Fast Fourier Transform (FFT) and polynomial multiplications. Given the hackathon time constraints and the FHE algorithm understanding, only these operations deploy to the HLS kernel to reach the deadline with a product that takes advantage of the FPGA. Future work will deploy additional gates and employ a larger hardware footprint.
 
@@ -63,14 +63,14 @@ With an overview of the [TFHE github](https://github.com/tfhe/tfhe) structure:
 [//]: <> (brew install gource ffmpeg)
 [//]: <> (gource -720x480 --seconds-per-day 0.05 --auto-skip-seconds 0.01  -o - | ffmpeg -y -r 30 -f image2pipe -vcodec ppm -i - -vcodec libx264 -preset ultrafast -pix_fmt yuv420p -crf 1 -threads 0 -bf 0 gource.mp4)
 
-![TFHE Repository visualization](Images/Gource-TFHE.png)
-https://youtu.be/aFW0Yi3MpQg
+![Visual representation of commits to the FPGA-TFHE repository](Images/Gource-TFHE.png)
+https://youtu.be/WzIiM5qDPM8
 
 As shown earlier, TFHE needs to calculate a "bootstrap key" (BSK) to perform operations over encrypted data while keeping acceptable noise. Even though the BSK creation happens once, it is a time-consuming operation. This project focused its efforts on this execution into the FPGA provided by the need for FFT and fixed data length at the time of execution.
 
-### FFT Kernel
+### FPGA Poly Kernel
 
-The BSK creation requires the following operations: 
+TFHE is a complex protocol with multiple layers of cryptographic algorithms and mathematical functions. The FPGA Poly Kernel developed for this project focused on the deployment specific functions required in the BSK creation, as listed below:
 
 - IFFT over integer polynomials
 - IFFT over torus polynomials
@@ -82,9 +82,31 @@ Despite their fancy names, they involve a lot of sums/multiplications and fixed-
 
 [Vitis HLS](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_2/ug1399-vitis-hls.pdf) is a high-level synthesis tool that enables C/C++ to hardwire onto the device logic fabric and RAM/DSP blocks. This project exploits Vitis HLS to implement hardware kernels in the [Vitis IDE](https://www.xilinx.com/products/design-tools/vitis/vitis-platform.html) flow based on the TFHE C++ code.
 
-![Vitis overview developing the FPGA kernel](Images/VitisIDE.png)
+The structure of representative kernel files within the xclbin bitstream is in the image below:
 
-### Implementation 
+![Poly Kernel high level overview](Images/PolyKernel.png)
+
+### Implementation
+
+There two important parts related to this project: the PolyKernel.xclbin and the VitisPolynomial (h & cpp). The first is the compiled bitstream composed of three cpp files PolyKernel, PolyProc & FFTTables. The second part takes responsibility to create the XRT-OpenCL objects needed to load the bitstream, communicate with the FPGA and bridge existing code to the TFHE framework. The image below provides a high level representation of these two parts:
+
+![XRT and x86 application](Images/XRTRuntime.png)
+
+The source code as well as compiled binaries are in the github repository [here](https://github.com/rval735/FPGA-TFHE). Here is an outline of the repository:
+- Bitstream: Binary files compiled for FPGA, bitstream info and 
+- Competition entry: This explanation in a MD format as well as all the images
+- fpga-tfhe: The CPU portion with the rest of the TFHE framework code
+- fpga-tfhe_kernels: Source code for the HLS kernel used to compile the bitstream
+- fpga-tfhe_system & fpga-tfhe_system_hw_link: Vitis auto-generated files to link the compilation of HLS kernels and CPU XRT code.
+- Vitis_Libraries: A submodule reference to the Vitis Libraries, initially considered for the FFT level 2.
+
+Using the Vitis Analyzer over the FPGA kernel, it is possible to see the overall structure of the implementation:
+
+![HBM connections of inputs in the FPGA kernel](Images/VitisAnalyzer.png)
+
+Here it shows how the two inputs and one output connect directly to an HBM module inside the Varium C1100. Also, it shows the hardware utilization with very low percentage numbers, which leave room for future improvements over multiple cores or deployment of the whole BSK algorithm.
+
+
 
 
 ### Results
@@ -94,22 +116,22 @@ Despite their fancy names, they involve a lot of sums/multiplications and fixed-
 
 
 ### Challenges
-
+ 
 Initially, the main trouble was to define the scope of "what to work on" for the hackathon. The first approach was the development of zero-knowledge proofs on the FPGA, however open source code (ex. [1](https://github.com/ZcashFoundation/zcash-fpga), [2](https://github.com/MinaProtocol/mina)) was hard to understand and difficult to decode towards a working prototype.
 
 Afterward, another project related to blockchain arose on the developer's radar: [nucypher TFHE](https://github.com/nucypher/nufhe). Even though the code did not compile and was not testable, it provided the insights to deploy an FHE system onto the FPGA.
 
-Fortunately, the TFHE repository bases its code in C/C++. Thanks to Vitis HLS, as a developer tool to translate code to hardware, it was possible to transfer FFT functions to a kernel that executes on the Varium C1100. This achievement was possible within a three month period. The main challenge was to test differences between software - hardware emulation, which behaved diffently when using static variables, a challenge of two weeks debugging.
+Fortunately, the TFHE repository bases its code in C/C++. Thanks to Vitis HLS, as a developer tool to translate code to hardware, it was possible to transfer FFT functions to a kernel that executes on the Varium C1100. This achievement was possible within three months. The main challenge was to test differences between software-hardware emulation, which behaved differently when using static variables, a challenge of two weeks debugging.
 
 Thanks to Hackster and Xilinx's support, this project deployed its bitstream in physical hardware and even a docker container. This step is critical in any hardware development. For example, software and hardware emulations compiled the kernels. However, when creating the xclbin to the Varium C1100, it could not compile because of library restrictions. Nevertheless, after many other challenges, the project reached a deliverable stage.
 
 ### Conclusion
 
-This project is a precursor to the full deployment of TFHE circuits on reconfigurable hardware. The execution of FFT/polynomial operations only scratches the surface of the potential this line of research has for private computations in the cloud and public blockchains. 
+This project is a precursor to the full deployment of TFHE circuits on reconfigurable hardware. The execution of FFT/polynomial operations only scratches the surface of the potential this line of research has for private computations in the cloud and specially public blockchains. 
 
-Even though the initial results might not be impressive, the fact that Vitis HLS simplified code translation from a dynamic memory to a static-length circuit environment within the time constraints of this hackathon is an achievement in itself. 
+Even though the initial results require further improvements, the fact that Vitis HLS simplified code translation from a dynamic memory to a static-length circuit environment within the time constraints of this hackathon is an achievement in itself. 
 
-Despite Vitis' excellent support for software/hardware emulation, tests on real hardware are fundamental to align the project's objectives and its execution.
+Despite Vitis support for software/hardware emulation, tests on real hardware are fundamental to align the project's objectives and its execution.
 
 ### Future work
 
@@ -121,8 +143,8 @@ This project shows how to deploy C++ code to an FPGA. The steps necessary to tak
 
  There are multiple [practical applications of FHE](https://www.youtube.com/watch?v=YLbED9OexOY), once FHE becomes more relevant in the blockchain and cloud applications, Xilinx FPGA would be well-positioned to be the reference hardware in the deployment of these payloads.
 
-
 ### Acronyms
+
 - FHE: Fully Homomorphic Encryption
 - TFHE: FHE over the Torus
 - FPGA: Field Programmable Gate Array
@@ -144,8 +166,8 @@ This project shows how to deploy C++ code to an FPGA. The steps necessary to tak
 - IDE: Integrated Development Environment
 
 ### Bio
-Ph.D. rval735 is a programmer based in Auckland, New Zealand. He focuses his research on Binary Neural Networks. This project serves as the first brick to construct a bridge between blockchain technologies and Artificial Neural Networks.
+Ph.D. rval735 is a programmer based in Auckland, New Zealand. He focuses his research on Binary Neural Networks. This project serves as the first brick to construct a bridge between blockchain technologies and private Artificial Neural Networks.
 
-He is very passionate about topics around BNN, Blockchain, and FPGA acceleration and looks forward to taking better advantage of reconfigurable hardware to make public ledger networks more efficient.
+He is very passionate about topics around ANN, Blockchain, and FPGA acceleration and looks forward to taking better advantage of reconfigurable hardware to make public ledger networks more efficient.
 
 If you would like to contribute to his projects in any possible way, visit the GitHub repository, check his crypto address if you would like help with anything that you can 😉.
