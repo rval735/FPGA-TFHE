@@ -34,13 +34,30 @@ It contains four distinctive sections:
 
 ### Install
 
-The contents in this repository should be sufficient to recreate a Vitis project. Nonetheless the hardware makefiles are provided to compile it from the command line. 
+The contents in this repository should be sufficient to recreate a Vitis project.
 
-### Experiments
+### Binaries
 
+This project includes the bitstream compiled for the Varium C1100 FPGA and the corresponding XRT enabled CPU executable. This was compiled using Vitis 2021.2.1 in Ubuntu 21.04. To execute it, simply reference them from the Bitstream folder:
+
+```
+./fpga-tfhe PolyKernel.xclbin
+```
+
+This will execute the BSK on the FPGA and then 100 circuits with that bootstrap key.
 
 ### Docker Deployment
 
+This project has a docker file that allows users to create their image using the bitstream and compiled binary to run the executable example. The following example code helps to perform such task:
+
+```
+## Create the image from the Dockerfile located in the FPGA-TFHE repository
+docker build -t VariumC1100-TFHE .
+
+## Run container with a link to the device 
+DEVICE="--device=/dev/xclmgmt256:/dev/xclmgmt256 --device=/dev/dri/renderD128:/dev/dri/renderD128"
+docker run --name xillTest --rm -t -i $DEVICE VariumC1100-TFHE bash
+```
 
 ### License
 
