@@ -70,7 +70,7 @@ As shown earlier, TFHE needs to calculate a "bootstrap key" (BSK) to perform ope
 
 ### FPGA Poly Kernel
 
-TFHE is a complex protocol with multiple layers of cryptographic algorithms and mathematical functions. The FPGA Poly Kernel developed for this project focused on the deployment specific functions required in the BSK creation, as listed below:
+TFHE is a complex protocol with multiple layers of cryptographic algorithms and mathematical functions. The FPGA Poly Kernel developed for this project focused on the deployment-specific functions required in the BSK creation, as listed below:
 
 - IFFT over integer polynomials
 - IFFT over torus polynomials
@@ -84,17 +84,21 @@ Despite their fancy names, they involve a lot of sums/multiplications and fixed-
 
 The structure of representative kernel files within the xclbin bitstream is in the image below:
 
-![Poly Kernel high level overview](Images/PolyKernel.png)
+![Poly Kernel high-level overview](Images/PolyKernel.png)
 
 ### Implementation
 
-There two important parts related to this project: the PolyKernel.xclbin and the VitisPolynomial (h & cpp). The first is the compiled bitstream composed of three cpp files PolyKernel, PolyProc & FFTTables. The second part takes responsibility to create the XRT-OpenCL objects needed to load the bitstream, communicate with the FPGA and bridge existing code to the TFHE framework. The image below provides a high level representation of these two parts:
+There are two important parts related to this project: the PolyKernel.xclbin and the VitisPolynomial (h & cpp). The first is the compiled bitstream composed of three cpp files PolyKernel, PolyProc & FFTTables. The second part takes responsibility to create the XRT-OpenCL objects needed to load the bitstream, communicate with the FPGA, and bridge existing code to the TFHE framework. The image below provides a high-level representation of these two parts:
 
 ![XRT and x86 application](Images/XRTRuntime.png)
 
-The source code as well as compiled binaries are in the github repository [here](https://github.com/rval735/FPGA-TFHE). Here is an outline of the repository:
-- Bitstream: Binary files compiled for FPGA, bitstream info and 
-- Competition entry: This explanation in a MD format as well as all the images
+Inside the PolyKernel.cpp file, there are abstract functions that perform FFT, iFFT, or polynomial operations to help the calculation of the BSK. The following representation provides an overview of their pipeline structure:
+
+![PolyKernel pipeline](Images/PolyKernelPipeline.png)
+
+The source code, as well as compiled binaries, are in the Github repository [here](https://github.com/rval735/FPGA-TFHE). Here is an outline of the repository:
+- Bitstream: Binary files compiled for FPGA, bitstream info and log output
+- Competition entry: This project entry as an MD format as well as all the images
 - fpga-tfhe: The CPU portion with the rest of the TFHE framework code
 - fpga-tfhe_kernels: Source code for the HLS kernel used to compile the bitstream
 - fpga-tfhe_system & fpga-tfhe_system_hw_link: Vitis auto-generated files to link the compilation of HLS kernels and CPU XRT code.
@@ -104,16 +108,34 @@ Using the Vitis Analyzer over the FPGA kernel, it is possible to see the overall
 
 ![HBM connections of inputs in the FPGA kernel](Images/VitisAnalyzer.png)
 
-Here it shows how the two inputs and one output connect directly to an HBM module inside the Varium C1100. Also, it shows the hardware utilization with very low percentage numbers, which leave room for future improvements over multiple cores or deployment of the whole BSK algorithm.
-
-
-
+Here it shows how the two inputs and one output connect directly to an HBM module inside the Varium C1100. Also, it shows the hardware utilization with very low percentage numbers, which leaves room for future improvements over multiple cores or deployment of the whole BSK algorithm.
 
 ### Results
 
+The log output of the execution between FPGA-CPU is in the repository inside [Bitstream/ResultLogs](https://github.com/rval735/FPGA-TFHE/tree/main/Bitstream/ResultLogs). It displays three runs: KernelTest, FPGAExeFull, CPUExeFull in a txt format. Below are two graphs that summarize the results obtained from these executions:
+
+![100 Circuits execution time in seconds](Images/CircuitsExe.png)
+
+![Single kernel execution time in nano seconds](Images/SingleKernel.png)
+
+There is certainly an overhead to execute on the FPGA, especially when moving data between the FPGA and the CPU. There are still areas of improvement that future work would consider to minimize such overhead while keeping the CPU free to perform other tasks. Among those changes is the full deployment of the BSK into the FPGA; then the whole TFHE algorithm into it. With the experience gained with this project and access to the hardware (thanks Xilinx), that objective is reachable.
 
 ### Docker Deployment
 
+With the documentation offered by Xilinx [here](https://www.xilinx.com/developer/articles/containerizing-alveo-accelerated-application-with-docker.html) and the [repository](https://github.com/Xilinx/Xilinx_Base_Runtime) with code samples.
+
+With that in context, this project has a docker file that allows users to create their image using the bitstream and compiled binary to run the executable example. It is a prelude to FPGA containerization apps that deploy easily on the [Xilinx App Store](https://www.xilinx.com/products/app-store/alveo/all-apps.html).
+
+The following example code helps to perform such task:
+
+```
+## Create the image from the Dockerfile located in the FPGA-TFHE repository
+docker build -t VariumC1100-TFHE .
+
+## Run container with a link to the device 
+DEVICE="--device=/dev/xclmgmt256:/dev/xclmgmt256 --device=/dev/dri/renderD128:/dev/dri/renderD128"
+docker run --name xillTest --rm -t -i $DEVICE VariumC1100-TFHE bash
+```
 
 ### Challenges
  
